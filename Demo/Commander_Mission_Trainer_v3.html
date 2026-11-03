@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>COMMANDER — Junior Astronaut Mission Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Silkscreen&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#0b0b0d;--panel:#151518;--panel2:#1d1d21;--ink:#f1ede4;--mut:#8f8b84;--blk:#000;
+ --acc:#ffd23f;--acc2:#ff5b2e;
+ --good:#7ae582;--bad:#ff4d4d;
+ --f-head:'Archivo Black','Arial Black',Impact,sans-serif;
+ --f-mono:'Space Mono','Courier New',monospace;
+ --f-px:'Silkscreen','Space Mono',monospace;
+ --f-body:'Space Grotesk',system-ui,'Segoe UI',sans-serif;
+ --sh:5px;
+}
+body.t-moon{--acc:#7df9ff;--acc2:#ffd23f}
+body.t-mars{--acc:#ff5b2e;--acc2:#ffc94d}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,input:focus-visible,.card:focus-visible{outline:3px dashed var(--acc);outline-offset:3px}
+/* grain */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.07;mix-blend-mode:overlay;
+ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+/* ================= SCENE ================= */
+#scene{position:fixed;inset:0;z-index:0;overflow:hidden}
+#scene::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(241,237,228,.09) 1px,transparent 1.3px);background-size:24px 24px}
+#stars i{position:absolute;width:2px;height:2px;background:var(--ink);animation:tw 2.6s steps(2) infinite}
+@keyframes tw{50%{opacity:.25}}
+.planet{position:absolute;width:115vmin;height:115vmin;right:-38vmin;bottom:-62vmin;border-radius:50%;border:3px solid var(--blk);transition:background .8s,filter .8s;
+ background:radial-gradient(circle at 30% 30%,#55555c 0 5%,transparent 5.3%),radial-gradient(circle at 58% 18%,#5f5f66 0 3%,transparent 3.3%),radial-gradient(circle at 44% 52%,#5d5d64 0 8%,transparent 8.3%),radial-gradient(circle at 20% 62%,#64646b 0 4%,transparent 4.3%),#8a8a91;opacity:.55}
+.planet::after{content:"";position:absolute;inset:0;border-radius:50%;background-image:radial-gradient(#000 38%,transparent 42%);background-size:9px 9px;
+ -webkit-mask:linear-gradient(120deg,transparent 35%,#000 70%);mask:linear-gradient(120deg,transparent 35%,#000 70%)}
+body.t-mars .planet{background:radial-gradient(ellipse 18% 7% at 40% 40%,#7a2a10 0 60%,transparent 62%),radial-gradient(ellipse 12% 5% at 62% 26%,#8c3314 0 60%,transparent 62%),radial-gradient(circle at 50% 4%,#f3e9dc 0 6%,transparent 6.4%),radial-gradient(circle at 24% 60%,#93391a 0 6%,transparent 6.3%),#c1491a}
+.sat{position:absolute;top:9%;left:8%;width:clamp(44px,9vmin,90px);aspect-ratio:1;border-radius:50%;border:3px solid var(--blk);box-shadow:6px 6px 0 var(--blk);transition:.8s;
+ background:radial-gradient(circle at 70% 70%,rgba(0,0,0,.35) 0 30%,transparent 31%),#c1491a}
+body.t-moon .sat{background:radial-gradient(ellipse 22% 16% at 38% 40%,#5bd17a 0 70%,transparent 73%),radial-gradient(ellipse 14% 20% at 66% 62%,#5bd17a 0 70%,transparent 73%),radial-gradient(circle at 72% 72%,rgba(0,0,0,.4) 0 32%,transparent 33%),#3c7dff}
+body.t-mars .sat{width:clamp(24px,4.5vmin,44px);border-radius:46% 54% 50% 50%/56% 44% 56% 44%;background:#8c8379;top:12%;left:12%}
+.sat2{position:absolute;top:22%;left:26%;width:14px;height:12px;border-radius:50%;background:#7d746b;border:2px solid #000;opacity:0;transition:.8s}
+body.t-mars .sat2{opacity:1}
+.veil{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1s}
+.veil.night{background:rgba(3,4,22,.6)}
+body.night .veil.night{opacity:1}
+.veil.storm{background:repeating-linear-gradient(-8deg,rgba(255,120,60,.0) 0 18px,rgba(255,120,60,.16) 18px 20px),rgba(120,40,10,.35);background-size:200% 200%;animation:storm 1.2s linear infinite}
+body.storm .veil.storm{opacity:1}
+@keyframes storm{to{background-position:-160px 40px}}
+
+/* ================= GENERIC ================= */
+#app{position:relative;z-index:1;height:100%;height:100dvh}
+.screen{display:none;height:100%}
+.screen.on{display:flex}
+.box{background:var(--panel);border:3px solid var(--ink);box-shadow:var(--sh) var(--sh) 0 var(--acc)}
+.btn{font-family:var(--f-head);text-transform:uppercase;letter-spacing:.04em;font-size:1rem;padding:14px 22px;background:var(--acc);color:#000;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--ink)}
+.btn.alt{background:var(--panel);color:var(--ink)}
+.px{font-family:var(--f-px);text-transform:uppercase;letter-spacing:.06em}
+.mono{font-family:var(--f-mono)}
+
+/* ================= LANDING ================= */
+#landing{flex-direction:column;justify-content:center;align-items:flex-start;padding:28px clamp(20px,6vw,80px);gap:18px;max-width:900px;margin:0 auto;position:relative}
+.eyebrow{font-family:var(--f-px);font-size:.75rem;background:var(--ink);color:#000;padding:4px 8px;transform:rotate(-1.5deg)}
+.title{font-family:var(--f-head);font-size:clamp(3rem,15vw,8.5rem);line-height:.82;letter-spacing:-.02em;text-shadow:6px 6px 0 var(--acc2)}
+.title .o{color:transparent;-webkit-text-stroke:2px var(--ink);text-shadow:none}
+.subt{font-family:var(--f-mono);font-size:clamp(.85rem,2.4vw,1.05rem);max-width:540px;line-height:1.55;color:#d9d4ca}
+.subt b{background:var(--acc);color:#000;padding:0 4px}
+.field{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
+.field input{font-family:var(--f-mono);font-size:1rem;padding:12px 14px;background:#000;color:var(--ink);border:3px solid var(--ink);width:min(260px,70vw);text-transform:uppercase;letter-spacing:.08em}
+.field input::placeholder{color:#5f5b55}
+.ticker{position:absolute;left:0;right:0;bottom:0;border-top:3px solid var(--ink);background:var(--acc);color:#000;overflow:hidden;white-space:nowrap;font-family:var(--f-px);font-size:.8rem;padding:8px 0}
+.ticker span{display:inline-block;padding-left:100%;animation:tick 26s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+.credit{font-family:var(--f-mono);font-size:.68rem;color:var(--mut)}
+
+/* ================= SELECT ================= */
+#select{flex-direction:column;gap:16px;padding:22px clamp(14px,4vw,40px) 22px;overflow-y:auto;max-width:980px;margin:0 auto}
+#select h2{font-family:var(--f-head);font-size:clamp(1.8rem,6vw,3rem);line-height:1}
+.worlds{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.world{text-align:left;background:var(--panel);border:3px solid var(--ink);box-shadow:5px 5px 0 #3a3a40;padding:14px;display:flex;flex-direction:column;gap:10px;transition:transform .1s,box-shadow .1s;position:relative;overflow:hidden}
+.world:hover{transform:translate(-2px,-2px)}
+.world.sel{box-shadow:8px 8px 0 var(--wc)}
+.world[data-m=moon]{--wc:#7df9ff}.world[data-m=mars]{--wc:#ff5b2e}
+.world .disc{width:clamp(70px,16vw,120px);aspect-ratio:1;border-radius:50%;border:3px solid #000;box-shadow:5px 5px 0 #000;position:relative}
+.world[data-m=moon] .disc{background:radial-gradient(circle at 30% 34%,#55555c 0 9%,transparent 10%),radial-gradient(circle at 64% 60%,#5d5d64 0 13%,transparent 14%),#9a9aa1}
+.world[data-m=mars] .disc{background:radial-gradient(ellipse 34% 11% at 46% 46%,#7a2a10 0 60%,transparent 62%),radial-gradient(circle at 50% 4%,#f3e9dc 0 10%,transparent 11%),#c8521f}
+.world .disc::after{content:"";position:absolute;inset:0;border-radius:50%;background-image:radial-gradient(#000 38%,transparent 42%);background-size:6px 6px;-webkit-mask:linear-gradient(120deg,transparent 40%,#000 75%);mask:linear-gradient(120deg,transparent 40%,#000 75%)}
+.world h3{font-family:var(--f-head);font-size:clamp(1.4rem,5vw,2.2rem);line-height:1}
+.world .loc{font-family:var(--f-px);font-size:.7rem;color:var(--wc)}
+.spec{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-family:var(--f-mono);font-size:.74rem;border-top:2px dashed #3a3a40;padding-top:8px}
+.spec dt{color:var(--mut);text-transform:uppercase}
+.spec dd{color:var(--ink)}
+.world .tick{position:absolute;top:10px;right:10px;font-family:var(--f-px);font-size:.7rem;background:var(--wc);color:#000;padding:3px 6px;border:2px solid #000;opacity:0}
+.world.sel .tick{opacity:1}
+.diff{display:flex;gap:10px;flex-wrap:wrap}
+.diff button{flex:1;min-width:120px;padding:10px 12px;border:3px solid var(--ink);background:var(--panel);text-align:left;font-family:var(--f-head);font-size:.95rem;box-shadow:4px 4px 0 #3a3a40}
+.diff button small{display:block;font-family:var(--f-mono);font-size:.68rem;color:var(--mut);margin-top:2px;font-weight:400}
+.diff button.sel{background:var(--ink);color:#000;box-shadow:4px 4px 0 var(--acc)}
+.diff button.sel small{color:#333}
+.sel-row{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.lbl{font-family:var(--f-px);font-size:.75rem;color:var(--mut)}
+
+/* ================= GAME ================= */
+#game{display:none;height:100%;margin:0 auto;max-width:560px;padding:10px 12px max(12px,env(safe-area-inset-bottom));gap:12px;
+ grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr) auto auto;grid-template-areas:"time" "res" "stage" "opts" "notes"}
+#game.on{display:grid}
+
+/* --- time --- */
+.time{grid-area:time;padding:8px 10px;display:flex;flex-direction:column;gap:7px;position:relative}
+.t-row{display:flex;align-items:center;gap:10px}
+.t-day{display:flex;align-items:baseline;gap:6px;position:relative}
+.t-day small{font-family:var(--f-px);font-size:.8rem;color:var(--acc)}
+.t-day b{font-family:var(--f-head);font-size:2.2rem;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.t-day b.flip{animation:flip .22s steps(2)}
+@keyframes flip{0%{transform:translateY(-4px);color:var(--acc)}100%{transform:none}}
+.t-prev{position:absolute;left:100%;top:-6px;margin-left:4px;font-family:var(--f-px);font-size:.66rem;background:var(--acc);color:#000;padding:2px 5px;border:2px solid #000;white-space:nowrap;transform:rotate(4deg) scale(0);transition:transform .12s}
+.t-prev.on{transform:rotate(4deg) scale(1)}
+.chips{display:flex;flex-direction:column;gap:4px;margin-left:auto;align-items:flex-end}
+.chip{font-family:var(--f-px);font-size:.64rem;padding:2px 6px;border:2px solid var(--ink);white-space:nowrap}
+.chip.hot{background:var(--acc);color:#000}
+.chip.c3{display:none}
+.aria{width:40px;height:40px;flex:none;border:3px solid var(--ink);background:#b388ff;color:#000;font-family:var(--f-px);font-size:.8rem;box-shadow:3px 3px 0 var(--ink)}
+.aria.alert{animation:al 1s steps(2) infinite}
+@keyframes al{50%{background:var(--bad)}}
+.strip{display:grid;gap:2px;height:12px}
+.strip i{background:#2b2b31;position:relative}
+.strip i.lit{background:#5a5a62}
+.strip i.dark{background:#16162e}
+.strip i.past{opacity:.35}
+.strip i.now{background:var(--acc);outline:2px solid var(--ink);z-index:1}
+.strip i.sup::after{content:"";position:absolute;left:50%;top:-6px;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--acc2)}
+.strip i.storm{background:#a8431a}
+.goal{display:none}
+.bubble{position:absolute;right:6px;top:calc(100% + 10px);z-index:20;width:min(300px,86vw);background:#b388ff;color:#000;border:3px solid var(--ink);box-shadow:5px 5px 0 #000;padding:10px 12px;font-family:var(--f-mono);font-size:.8rem;line-height:1.4;display:none}
+.bubble.on{display:block;animation:popin .18s}
+.bubble b{font-family:var(--f-px);display:block;font-size:.7rem;margin-bottom:3px}
+@keyframes popin{from{transform:scale(.8);opacity:0}}
+
+/* --- resources --- */
+.res-wrap{grid-area:res;padding:10px 8px 8px}
+.res-h{display:none}
+.res-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.res{--v:50;--g:50;position:relative;display:grid;grid-template-areas:"bar" "rv";justify-items:center;gap:4px}
+.ri{grid-area:bar;align-self:end;z-index:2;width:24px;height:24px;margin-bottom:6px;display:grid;place-items:center;color:#000;pointer-events:none;background:var(--rc);border:2px solid #000}
+.ri svg{width:15px!important;height:15px!important}
+.ri svg{width:18px;height:18px}
+.rn{display:none}
+.rv{grid-area:rv;font-family:var(--f-head);font-size:.95rem;font-variant-numeric:tabular-nums;line-height:1}
+.bar{grid-area:bar;width:100%;height:62px;border:3px solid var(--ink);background:#0e0e10;position:relative;overflow:hidden}
+.bar .fill,.bar .ghost{position:absolute;left:0;right:0;bottom:0;height:calc(var(--v)*1%);background:var(--rc);transition:height .45s cubic-bezier(.3,.9,.3,1),width .45s cubic-bezier(.3,.9,.3,1)}
+.bar .ghost{height:calc(var(--g)*1%);background:var(--ink);transition:height .6s ease .45s,width .6s ease .45s}
+.bar .ghost.up{background:var(--good);transition:none}
+.bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 calc(10% - 2px),#0e0e10 calc(10% - 2px) 10%);pointer-events:none}
+.res.low .rv{color:#ffb020}
+.res.crit .rv{color:var(--bad)}
+.res.crit .bar{border-color:var(--bad);animation:crit .6s steps(2) infinite}
+@keyframes crit{50%{border-color:var(--ink)}}
+.dot{position:absolute;top:-11px;left:50%;width:8px;height:8px;border-radius:50%;background:var(--ink);transform:translateX(-50%) scale(0);transition:transform .1s;z-index:3;border:2px solid #000}
+.dot.on{transform:translateX(-50%) scale(1)}
+.dot.big{transform:translateX(-50%) scale(1.7)}
+.dot.q{background:transparent;border:2px dashed var(--ink)}
+.dot.up{background:var(--good)}.dot.dn{background:var(--bad)}
+.res.hit-dn{animation:shake .35s}
+.res.hit-dn .bar{border-color:var(--bad)}
+.res.hit-up .bar{border-color:var(--good)}
+@keyframes shake{20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.pop{position:absolute;left:50%;top:-6px;z-index:6;font-family:var(--f-head);font-size:1.05rem;padding:1px 6px;border:2px solid #000;box-shadow:3px 3px 0 #000;pointer-events:none;white-space:nowrap;animation:popf 1.5s cubic-bezier(.2,.9,.3,1) forwards}
+.pop.up{background:var(--good);color:#000}.pop.dn{background:var(--bad);color:#000}
+@keyframes popf{0%{transform:translate(-50%,10px) scale(.3) rotate(-8deg);opacity:0}15%{transform:translate(-50%,-14px) scale(1.15) rotate(-6deg);opacity:1}70%{transform:translate(-50%,-20px) scale(1) rotate(-6deg);opacity:1}100%{transform:translate(-50%,-34px) scale(1) rotate(-6deg);opacity:0}}
+
+/* --- stage / card --- */
+.stage{grid-area:stage;position:relative;display:flex;align-items:center;justify-content:center;min-height:0;perspective:1000px}
+.deck{position:absolute;width:min(100%,380px);height:min(100%,500px);border:3px solid var(--ink);background:var(--panel2)}
+.deck.d1{transform:translate(7px,7px)}.deck.d2{transform:translate(14px,14px);opacity:.5}
+.card{position:relative;width:min(100%,380px);height:min(100%,500px);min-height:300px;background:var(--panel);border:3px solid var(--ink);display:flex;flex-direction:column;touch-action:none;cursor:grab;will-change:transform;z-index:2;overflow:hidden}
+.card:active{cursor:grabbing}
+.card.enter{animation:deal .38s cubic-bezier(.2,1,.3,1.15)}
+@keyframes deal{from{transform:translateY(-30px) rotate(-6deg) scale(.92);opacity:0}}
+.c-art{--c:#ffd23f;position:relative;flex:0 0 46%;background:var(--c);border-bottom:3px solid var(--ink);overflow:hidden;display:flex;align-items:flex-end;justify-content:center}
+.c-art::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(0,0,0,.28) 30%,transparent 34%);background-size:8px 8px;-webkit-mask:linear-gradient(200deg,#000,transparent 70%);mask:linear-gradient(200deg,#000,transparent 70%)}
+.c-art::after{content:"";position:absolute;left:-10%;right:-10%;bottom:-40%;height:70%;border-radius:50%;background:rgba(0,0,0,.18)}
+.c-face{position:relative;z-index:1;height:88%;aspect-ratio:1}
+.c-face svg{width:100%;height:100%;display:block}
+.c-meta{position:absolute;top:8px;left:10px;right:10px;display:flex;justify-content:space-between;z-index:2;font-family:var(--f-px);font-size:.66rem;color:#000}
+.c-meta .tg{background:#000;color:var(--c);padding:2px 6px}
+.c-plate{position:absolute;left:12px;bottom:-1px;z-index:3;background:#000;color:var(--ink);border:3px solid var(--ink);border-bottom:0;padding:5px 9px 4px;font-family:var(--f-head);font-size:.92rem;line-height:1.05;transform:rotate(-2deg);transform-origin:bottom left}
+.c-plate small{display:block;font-family:var(--f-px);font-size:.6rem;color:var(--c);font-weight:400}
+.c-body{flex:1;display:flex;align-items:center;padding:16px 18px 34px;position:relative}
+.c-text{font-size:clamp(1rem,2.6vh,1.18rem);line-height:1.42;font-weight:500}
+.c-hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-family:var(--f-px);font-size:.6rem;color:var(--mut)}
+.stamp{position:absolute;top:calc(46% + 12px);z-index:5;max-width:70%;font-family:var(--f-head);font-size:1.15rem;line-height:1.05;text-transform:uppercase;padding:6px 10px;border:3px solid #000;box-shadow:4px 4px 0 #000;opacity:0;pointer-events:none;transition:opacity .08s}
+.stamp.sl{right:12px;background:var(--ink);color:#000;transform:rotate(5deg)}
+.stamp.sr{left:12px;background:var(--acc);color:#000;transform:rotate(-5deg)}
+
+/* --- options --- */
+.opts{grid-area:opts;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ob{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:9px 11px;border:3px solid var(--ink);background:var(--panel);box-shadow:4px 4px 0 var(--ink);text-align:left;transition:transform .08s,box-shadow .08s,background .1s;min-height:58px}
+.ob.r{align-items:flex-end;text-align:right}
+.ob .ot{font-family:var(--f-head);font-size:.9rem;line-height:1.1;text-transform:uppercase}
+.ob .od{font-family:var(--f-px);font-size:.62rem;padding:1px 5px;background:#000;color:var(--ink);border:1px solid var(--ink)}
+.ob .od.long{background:var(--acc);color:#000}
+.ob:hover,.ob.hl{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.ob.hl{background:var(--ink);color:#000}
+.ob.r.hl{background:var(--acc)}
+.ob:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+
+/* --- notes --- */
+.notes{grid-area:notes;padding:8px 12px;display:flex;gap:10px;align-items:flex-start;min-height:52px;box-shadow:var(--sh) var(--sh) 0 #3a3a40}
+.n-h{font-family:var(--f-px);font-size:.62rem;background:var(--acc2);color:#000;padding:2px 5px;white-space:nowrap;margin-top:2px}
+.nlist{list-style:none;font-family:var(--f-mono);font-size:.76rem;line-height:1.4;color:#d9d4ca}
+.nlist li{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nlist li:not(:first-child){display:none}
+.nlist li.new{animation:type .4s steps(6)}
+@keyframes type{from{opacity:0;transform:translateX(-6px)}}
+
+/* --- stickers --- */
+.sticker{position:fixed;left:50%;top:44%;z-index:40;pointer-events:none;transform:translate(-50%,-50%) rotate(-4deg) scale(0);font-family:var(--f-head);font-size:clamp(1.3rem,5vw,2rem);text-transform:uppercase;line-height:1;background:var(--acc);color:#000;border:3px solid #000;box-shadow:7px 7px 0 #000;padding:12px 18px;text-align:center;max-width:88vw}
+.sticker small{display:block;font-family:var(--f-mono);font-size:.78rem;text-transform:none;margin-top:6px;font-weight:400}
+.sticker.good{background:var(--good)}.sticker.bad{background:var(--bad)}.sticker.time{background:var(--ink)}
+.sticker.show{animation:stk 1.5s cubic-bezier(.2,1,.3,1.2) forwards}
+@keyframes stk{0%{transform:translate(-50%,-50%) rotate(-12deg) scale(1.8);opacity:0}12%{transform:translate(-50%,-50%) rotate(-4deg) scale(1);opacity:1}80%{transform:translate(-50%,-50%) rotate(-4deg) scale(1);opacity:1}100%{transform:translate(-50%,-60%) rotate(-4deg) scale(.95);opacity:0}}
+
+/* ================= OVER ================= */
+#over{overflow-y:auto;padding:20px 14px}
+.rep{margin:auto;width:min(100%,640px);padding:66px 20px 20px;display:flex;flex-direction:column;gap:16px;position:relative}
+.rep .stampbig{position:absolute;top:16px;right:14px;font-family:var(--f-head);font-size:clamp(1rem,4vw,1.5rem);padding:6px 10px;border:4px solid var(--bad);color:var(--bad);transform:rotate(8deg)}
+.rep .stampbig.win{border-color:var(--good);color:var(--good)}
+.rep h2{font-family:var(--f-head);font-size:clamp(2rem,8vw,3.4rem);line-height:.9;max-width:80%}
+.rep p{font-family:var(--f-mono);font-size:.85rem;line-height:1.55;color:#d9d4ca}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.st{border:3px solid var(--ink);padding:10px;background:#0e0e10}
+.st b{display:block;font-family:var(--f-head);font-size:clamp(1.4rem,5vw,2rem);line-height:1}
+.st small{font-family:var(--f-px);font-size:.6rem;color:var(--mut)}
+.sec h3{font-family:var(--f-px);font-size:.72rem;color:var(--acc);margin-bottom:8px}
+.achs{display:flex;flex-wrap:wrap;gap:6px}
+.achs span{font-family:var(--f-mono);font-size:.72rem;padding:4px 8px;border:2px solid var(--ink)}
+.achs span.got{background:var(--acc);color:#000;border-color:#000}
+.achs span.no{opacity:.3;border-style:dashed}
+.lb{list-style:none;font-family:var(--f-mono);font-size:.8rem;display:flex;flex-direction:column;gap:4px}
+.lb li{display:flex;justify-content:space-between;padding:6px 10px;border:2px solid #3a3a40}
+.lb li.me{border-color:var(--acc);background:#000}
+.learned{font-family:var(--f-mono);font-size:.78rem;line-height:1.5;color:#d9d4ca;padding-left:18px}
+.rep .row{display:flex;gap:12px;flex-wrap:wrap}.rep .row .btn{flex:1}
+
+/* ================= v3: TAGLINE ================= */
+.tagline{font-family:var(--f-head);font-size:clamp(1rem,3.4vw,1.45rem);line-height:1.15;max-width:640px;background:var(--ink);color:#000;padding:8px 12px;border:3px solid #000;box-shadow:5px 5px 0 var(--acc2);transform:rotate(-.8deg)}
+.btn:disabled,.btn:disabled:hover{background:#2a2a2f;color:var(--mut);box-shadow:5px 5px 0 #000;transform:none;cursor:not-allowed}
+.ch-lbl{font-family:var(--f-px);font-size:.72rem;color:var(--acc)}
+/* ================= v3: BRIEFING ================= */
+#brief{align-items:center;justify-content:center;padding:20px 16px;overflow-y:auto}
+.malert{width:min(100%,620px);margin:auto;position:relative;animation:popin .25s}
+.malert-h{display:flex;align-items:center;gap:10px;background:var(--bad);color:#000;padding:10px 14px;border-bottom:3px solid var(--ink);font-family:var(--f-head);font-size:clamp(1.1rem,4.5vw,1.6rem);letter-spacing:.02em}
+.malert-h i{width:14px;height:14px;background:#000;flex:none;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.malert-h span{margin-left:auto;font-family:var(--f-px);font-size:.62rem}
+.malert-b{padding:18px 18px 22px;display:flex;flex-direction:column;gap:16px;align-items:flex-start}
+.malert-b p{font-family:var(--f-mono);font-size:clamp(.92rem,2.6vw,1.08rem);line-height:1.6}
+.malert-b p b{background:var(--acc);color:#000;padding:0 4px}
+.cons{display:flex;flex-wrap:wrap;gap:6px}
+.cons span{font-family:var(--f-px);font-size:.62rem;border:2px solid var(--ink);padding:3px 6px}
+/* ================= v3: LOADOUT ================= */
+#load{flex-direction:column;gap:12px;padding:16px clamp(12px,3vw,32px) 20px;overflow-y:auto;max-width:1180px;margin:0 auto}
+.ld-top{display:flex;align-items:flex-end;gap:12px;position:relative}
+.ld-top h2{font-family:var(--f-head);font-size:clamp(1.6rem,6vw,2.8rem);line-height:1}
+.ld-top .aria{margin-left:auto}
+.ld-top .bubble{top:calc(100% + 8px);right:0;left:auto}
+.objs{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.objs .lbl{font-size:.62rem;background:var(--bg);padding:2px 4px}
+.obj{--oc:#fff;font-family:var(--f-px);font-size:.62rem;padding:5px 8px;border:2px solid #3a3a40;display:flex;align-items:center;gap:6px;background:var(--panel);transition:background .2s,color .2s}
+.obj .pips{display:flex;gap:2px}.obj .pips i{width:7px;height:7px;border:1px solid var(--ink)}
+.obj .pips i.on{background:var(--oc)}
+.obj.part{border-color:var(--oc)}
+.obj.full{background:var(--oc);color:#000;border-color:#000;box-shadow:3px 3px 0 var(--ink)}
+.obj.full .pips i{border-color:#000;background:#000}
+.meters{position:sticky;top:-16px;z-index:5;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:10px 12px 12px}
+.mass{display:flex;flex-direction:column;gap:6px}
+.mass-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-family:var(--f-px);font-size:.66rem;flex-wrap:wrap}
+.mass-h b{font-family:var(--f-head);font-size:clamp(1.3rem,5vw,1.9rem);font-variant-numeric:tabular-nums;font-weight:400}
+.mass-h em{font-style:normal;padding:2px 6px;background:var(--good);color:#000;border:2px solid #000}
+.mbar{position:relative;height:30px;border:3px solid var(--ink);background:#0e0e10}
+.mbar .mf{position:absolute;left:0;top:0;bottom:0;background:var(--acc2);transition:width .35s cubic-bezier(.3,.9,.3,1),background .2s}
+.mbar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(5% - 2px),#0e0e10 calc(5% - 2px) 5%);pointer-events:none}
+.mbar .cap{position:absolute;top:-8px;bottom:-8px;width:4px;background:var(--ink);z-index:2;transform:translateX(-2px)}
+.mbar .cap::after{content:"CAP";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-family:var(--f-px);font-size:.55rem;background:var(--ink);color:#000;padding:0 3px}
+.meters.over .mf{background:var(--bad)}
+.meters.over .mass-h b{color:var(--bad)}
+.meters.over .mass-h em{background:var(--bad)}
+.meters.over{box-shadow:var(--sh) var(--sh) 0 var(--bad)}
+.minis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mini{font-family:var(--f-px);font-size:.58rem;color:var(--mut);display:flex;flex-direction:column;gap:3px}
+.mini span{display:flex;justify-content:space-between;gap:6px}
+.mini em{font-style:normal;color:var(--ink);font-family:var(--f-mono);font-size:.7rem}
+.mini .mb{height:8px;border:2px solid #3a3a40;background:#0e0e10;position:relative;overflow:hidden}
+.mini .mb i{position:absolute;left:0;top:0;bottom:0;background:#8f8b84;transition:width .35s}
+.mini.bad em{color:var(--bad)}.mini.bad .mb i{background:var(--bad)}
+.mini.ok em{color:var(--good)}
+.items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.it{position:relative;display:flex}
+.it-b{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding:10px;text-align:left;background:var(--panel);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--acc);transition:transform .08s,box-shadow .08s,opacity .15s,border-color .12s;min-height:128px;position:relative;overflow:hidden}
+.it-b:hover{transform:translate(-2px,-2px)}
+.it-b:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.it-b[aria-pressed=false]{border-style:dashed;border-color:#5a5a62;box-shadow:4px 4px 0 #222;opacity:.55}
+.it-b[aria-pressed=false]::after{content:"LEFT ON EARTH";position:absolute;right:-30px;bottom:16px;transform:rotate(-14deg);font-family:var(--f-px);font-size:.58rem;background:var(--bad);color:#000;border:2px solid #000;padding:2px 30px 2px 8px}
+.it-top{display:flex;align-items:center;gap:8px;width:100%;padding-right:22px}
+.it-ic{width:32px;height:32px;flex:none;display:grid;place-items:center;background:var(--ic);border:2px solid #000;color:#000}
+.it-ic svg{width:20px;height:20px}
+.it-n{font-family:var(--f-head);font-size:.84rem;line-height:1.05;text-transform:uppercase}
+.it-row{display:flex;align-items:center;gap:8px;width:100%}
+.it-kg{font-family:var(--f-mono);font-size:.76rem;font-weight:700}
+.it-ob{display:flex;gap:3px}.it-ob i{width:9px;height:9px;border:2px solid #000;background:var(--oc)}
+.pills{display:flex;flex-wrap:wrap;gap:4px}
+.pl{font-family:var(--f-mono);font-size:.64rem;line-height:1.2;padding:2px 6px;border:2px solid #000;color:#000;font-weight:700}
+.pl.g{background:var(--good)}.pl.r{background:var(--bad)}
+.it-q{position:absolute;top:8px;right:8px;width:24px;height:24px;border:2px solid var(--ink);background:#b388ff;color:#000;font-family:var(--f-px);font-size:.7rem;z-index:2;box-shadow:2px 2px 0 #000}
+.ld-foot{display:flex;gap:14px;align-items:stretch;flex-wrap:wrap}
+.ld-notes{flex:1 1 280px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start;box-shadow:var(--sh) var(--sh) 0 #3a3a40}
+.ld-notes .nlist li:not(:first-child){display:none}
+.ld-btns{display:flex;gap:10px;margin-left:auto;align-items:center;flex-wrap:wrap}
+.it-b.flash{animation:shake .3s}
+/* ================= v3: LAUNCH SUMMARY ================= */
+#summary{padding:20px 14px;overflow-y:auto}
+.sum{margin:auto;width:min(100%,640px);padding:58px 20px 20px;display:flex;flex-direction:column;gap:14px;position:relative}
+.sum h2{font-family:var(--f-head);font-size:clamp(1.8rem,7vw,3rem);line-height:.92}
+.sum-l{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:start}
+.sum-l dt{font-family:var(--f-px);font-size:.62rem;padding:3px 6px;background:var(--good);color:#000;border:2px solid #000;white-space:nowrap}
+.sum-l dt.lft{background:var(--bad)}
+.sum-l dd{font-family:var(--f-mono);font-size:.82rem;line-height:1.5}
+.cq{list-style:none;display:flex;flex-direction:column;gap:6px}
+.cq li{font-family:var(--f-mono);font-size:.8rem;line-height:1.4;padding:6px 10px;border-left:6px solid var(--bad);background:#0e0e10}
+.cq li b{font-family:var(--f-px);font-size:.6rem;display:block;color:var(--bad);font-weight:400}
+.cq li.ok{border-left-color:var(--good)}.cq li.ok b{color:var(--good)}
+.sum p{font-family:var(--f-mono);font-size:.78rem;color:var(--mut)}
+.sum .row{display:flex;gap:12px;flex-wrap:wrap}.sum .row .btn{flex:1}
+.btn.big{font-size:clamp(1.2rem,4vw,1.6rem);padding:16px 26px}
+.sum .stampbig{position:absolute;top:16px;right:14px;font-family:var(--f-head);font-size:clamp(.9rem,3.4vw,1.2rem);padding:5px 9px;border:4px solid var(--good);color:var(--good);transform:rotate(8deg)}
+/* liftoff overlay */
+#liftoff{position:fixed;inset:0;z-index:45;display:none;place-items:center;background:rgba(0,0,0,.6);pointer-events:none;overflow:hidden}
+#liftoff.on{display:grid}
+.rk{width:clamp(80px,16vmin,130px);animation:shake .25s infinite}
+.rk svg{width:100%;display:block}
+.rk .flame{transform-origin:50% 0;animation:flm .12s steps(2) infinite}
+@keyframes flm{50%{transform:scaleY(.7)}}
+#liftoff.go .rk{animation:none;transform:translateY(-140vh);transition:transform 1.1s cubic-bezier(.6,0,.9,.5)}
+.cd{position:absolute;bottom:14%;left:50%;transform:translateX(-50%) rotate(-3deg);font-family:var(--f-head);font-size:clamp(2rem,9vw,4rem);background:var(--acc);color:#000;border:3px solid #000;box-shadow:7px 7px 0 #000;padding:6px 18px;white-space:nowrap}
+/* game: science chip */
+.scib{position:absolute;top:-12px;right:62px;z-index:3;display:flex;align-items:center;gap:5px;padding:1px 6px;border:2px solid var(--ink);background:#0e0e10;line-height:1.1}
+.scib i{font-style:normal;font-family:var(--f-px);font-size:.55rem;color:#4cc9f0}
+.scib b{font-family:var(--f-head);font-size:.8rem;font-variant-numeric:tabular-nums;font-weight:400}
+.scib.bump{animation:flip .3s steps(2)}
+.stats.s4{grid-template-columns:repeat(2,1fr)}
+.lo-l{display:flex;flex-wrap:wrap;gap:5px}
+.lo-l span{font-family:var(--f-mono);font-size:.7rem;padding:3px 7px;border:2px solid #000;color:#000;font-weight:700}
+.lo-l span.pk{background:var(--good)}.lo-l span.lf{background:var(--bad)}
+.lo-l + .lo-l{margin-top:6px}
+.achs span.half{border-style:dashed;border-color:var(--acc)}
+@media (min-width:640px){.items{grid-template-columns:repeat(3,minmax(0,1fr))}.stats.s4{grid-template-columns:repeat(4,1fr)}}
+@media (min-width:980px){
+ .items{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .meters{grid-template-columns:minmax(0,1.8fr) minmax(0,1fr);align-items:end;gap:24px}
+ .minis{grid-template-columns:1fr;gap:10px}
+ .ld-notes{flex-direction:row}
+ .scib{position:static;flex-direction:column;justify-content:center;height:48px;min-width:52px;border-width:3px;margin-left:auto;padding:0 6px}
+ .scib b{font-size:1.1rem}
+ .t-row .scib + .aria{margin-left:0}
+ .t-row{gap:8px}
+ .scib{min-width:46px;padding:0 4px}
+}
+/* ================= DESKTOP ================= */
+@media (min-width:980px){
+ :root{--sh:7px}
+ #game{max-width:1260px;padding:24px 28px;gap:22px 28px;grid-template-columns:300px minmax(0,1fr) 300px;grid-template-rows:auto minmax(0,1fr) auto;
+  grid-template-areas:"res stage time" "res stage notes" "res opts notes"}
+ .res-wrap{padding:16px 16px 18px;align-self:center}
+ .res-h{display:flex;justify-content:space-between;font-family:var(--f-px);font-size:.75rem;color:var(--mut);margin-bottom:12px;border-bottom:2px dashed #3a3a40;padding-bottom:8px}
+ .res-grid{grid-template-columns:1fr;gap:14px}
+ .res{grid-template-columns:40px minmax(0,1fr) auto;grid-template-areas:"ri rn rv" "ri bar bar";justify-items:stretch;align-items:center;gap:4px 12px}
+ .ri{grid-area:ri;align-self:stretch;width:40px;height:auto;margin:0;border:3px solid var(--ink);background:var(--rc)}
+ .ri svg{width:22px!important;height:22px!important}
+ .ri{border:3px solid var(--ink)!important}
+ .rn{display:block;grid-area:rn;font-family:var(--f-px);font-size:.72rem;letter-spacing:.04em}
+ .rv{font-size:1.5rem;text-align:right}
+ .bar{height:22px}
+ .bar .fill,.bar .ghost{top:0;bottom:0;right:auto;height:auto;width:calc(var(--v)*1%)}
+ .bar .ghost{width:calc(var(--g)*1%)}
+ .bar::after{background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 2px),#0e0e10 calc(10% - 2px) 10%)}
+ .dot{top:50%;left:auto;right:-16px;transform:translateY(-50%) scale(0)}
+ .dot.on{transform:translateY(-50%) scale(1)}
+ .dot.big{transform:translateY(-50%) scale(1.7)}
+ .pop{left:auto;right:-6px;top:-12px}
+ @keyframes popf{0%{transform:translate(20px,0) scale(.3) rotate(-8deg);opacity:0}15%{transform:translate(20px,-6px) scale(1.15) rotate(-6deg);opacity:1}70%{transform:translate(24px,-8px) scale(1) rotate(-6deg);opacity:1}100%{transform:translate(30px,-20px) rotate(-6deg);opacity:0}}
+ .time{padding:16px;gap:12px}
+ .t-row{flex-wrap:wrap}
+ .t-day b{font-size:4rem}
+ .t-day small{font-size:1rem}
+ .chips{flex-direction:row;flex-wrap:wrap;width:100%;margin-left:0;align-items:flex-start;order:3}
+ .chip.c3{display:inline-block}
+ .aria{margin-left:auto;width:48px;height:48px}
+ .strip{height:18px}
+ .goal{display:block;font-family:var(--f-px);font-size:.68rem;color:var(--mut)}
+ .gbar{height:10px;border:2px solid var(--ink);margin-top:4px;background:#0e0e10}
+ .gbar i{display:block;height:100%;background:var(--acc);transition:width .4s}
+ .bubble{right:auto;left:-20px;top:calc(100% + 10px)}
+ .notes{flex-direction:column;align-self:start;padding:14px 16px}
+ .nlist{display:flex;flex-direction:column;gap:10px;font-size:.8rem}
+ .nlist li{display:block;-webkit-line-clamp:unset}
+ .nlist li:not(:first-child){display:block;opacity:.45}
+ .nlist li:nth-child(n+4){display:none}
+ .deck,.card{height:min(100%,560px);width:min(100%,420px)}
+ .c-text{font-size:1.2rem}
+ .opts{width:min(100%,420px);justify-self:center}
+ .ob{min-height:68px;padding:12px 14px}
+ .ob .ot{font-size:1rem}
+ .sticker{top:40%}
+}
+@media (max-height:720px) and (max-width:979px){
+ .bar{height:46px}.t-day b{font-size:1.8rem}.c-art{flex-basis:40%}.c-body{padding:12px 14px 26px}.c-text{font-size:.95rem}.notes{min-height:0}.ob{min-height:50px;padding:7px 9px}
+}
+@media (max-width:370px){.ob .ot{font-size:.8rem}.rv{font-size:.8rem}.chip{font-size:.58rem}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="scene"><div id="stars"></div><div class="planet"></div><div class="sat"></div><div class="sat2"></div><div class="veil night"></div><div class="veil storm"></div></div>
+
+<div id="app">
+ <section class="screen on" id="landing">
+  <span class="eyebrow">NASA SPACE APPS '26 // PROTOTYPE</span>
+  <h1 class="title">COMM<span class="o">ANDER</span></h1>
+  <p class="tagline">The Moon doesn't give you answers. It gives you consequences.</p>
+  <p class="subt">Near future. A robotic precursor found promising ground near the lunar south pole, and you've been picked as <b>Junior Mission Commander</b>. Limited mass, power, budget and time. Pack it, land it, run it. Every decision costs <b>resources</b> and <b>time</b>. There is no perfect answer.</p>
+  <div class="field"><input id="cs" maxlength="12" placeholder="Callsign" autocomplete="off" aria-label="Commander callsign"><button class="btn" id="toSelect" type="button">Start ▶</button></div>
+  <p class="credit">Inspired by Reigns + Lapse: A Forgotten Future. A student-made experiment, not an official NASA product.</p>
+  <div class="ticker" aria-hidden="true"><span>◀ SWIPE LEFT TO DECLINE ✦ SWIPE RIGHT TO APPROVE ▶ ✦ EVERY CHOICE COSTS TIME ✦ LUNAR NIGHTS LAST 14 DAYS ✦ MARS IS 20 LIGHT-MINUTES AWAY ✦ NO CHOICE IS FREE ✦ KEEP ALL 7 SYSTEMS ABOVE ZERO ✦ 10,000 KG OF CARGO. CHOOSE WISELY ✦ THERE IS NO PERFECT ANSWER ✦</span></div>
+ </section>
+
+ <section class="screen" id="select">
+  <div><span class="lbl">STEP 01 //</span><h2>PICK YOUR ROCK.</h2></div>
+  <div class="worlds">
+   <button class="world sel" data-m="moon" type="button"><span class="tick">SELECTED</span><div class="disc"></div><div><span class="loc">LUNAR SOUTH POLE</span><h3>THE MOON</h3></div>
+    <dl class="spec"><dt>Day</dt><dd>14 days sun / 14 dark</dd><dt>Signal</dt><dd>1.3 sec to Earth</dd><dt>Resupply</dt><dd>Lander every 14 days</dd><dt>Hazard</dt><dd>Lunar night, temp swings</dd><dt>Goal</dt><dd>Reach Day 84</dd></dl></button>
+   <button class="world" data-m="mars" type="button"><span class="tick">SELECTED</span><div class="disc"></div><div><span class="loc">JEZERO CRATER</span><h3>MARS</h3></div>
+    <dl class="spec"><dt>Day</dt><dd>1 sol = 24h 39m</dd><dt>Signal</dt><dd>3–22 min to Earth</dd><dt>Resupply</dt><dd>Ship every 30 sols</dd><dt>Hazard</dt><dd>Dust storms, isolation</dd><dt>Goal</dt><dd>Reach Sol 100</dd></dl></button>
+  </div>
+  <span class="lbl">STEP 02 // DIFFICULTY</span>
+  <div class="diff" id="diff">
+   <button type="button" data-d="cadet">CADET<small>Slow drain. Shows ▲▼ hints.</small></button>
+   <button type="button" data-d="commander" class="sel">COMMANDER<small>The intended balance.</small></button>
+   <button type="button" data-d="veteran">VETERAN<small>Space is not your friend.</small></button>
+  </div>
+  <div class="sel-row"><button class="btn alt" id="back" type="button">◀ Back</button><button class="btn" id="launch" type="button">Next ▶</button></div>
+ </section>
+
+ <section class="screen" id="brief">
+  <div class="malert box" role="alertdialog" aria-labelledby="brH" aria-describedby="brTxt">
+   <div class="malert-h" id="brH"><i></i>MISSION ALERT<span>CH.1 // ACADEMY</span></div>
+   <div class="malert-b">
+    <span class="ch-lbl">CHAPTER 1 // MISSION CONTROL ACADEMY</span>
+    <p id="brTxt"></p>
+    <div class="cons" id="brCons"></div>
+    <button class="btn" id="toLoad" type="button">Open cargo manifest ▶</button>
+   </div>
+  </div>
+ </section>
+ <section class="screen" id="load">
+  <div class="ld-top">
+   <div><span class="ch-lbl">CHAPTER 1 // CARGO LOADOUT</span><h2>CARGO MANIFEST</h2></div>
+   <button class="aria" id="ldAria" type="button" aria-label="Ask ARIA for a packing hint">AI</button>
+   <div class="bubble" id="ldBubble" role="status"></div>
+  </div>
+  <div class="objs" id="objs"></div>
+  <div class="meters box" id="meters">
+   <div class="mass">
+    <div class="mass-h"><span>LAUNCH MASS</span><b><span id="mKg">0</span> / <span id="mCap">10,000</span> KG</b><em id="mMsg"></em></div>
+    <div class="mbar" role="meter" id="mBar" aria-label="Launch mass" aria-valuemin="0"><div class="mf" id="mFill"></div><i class="cap" id="mCapLine"></i></div>
+   </div>
+   <div class="minis">
+    <div class="mini" id="bMini"><span>BUDGET<em id="bTxt"></em></span><div class="mb"><i id="bFill"></i></div></div>
+    <div class="mini" id="pMini"><span>POWER BALANCE<em id="pTxt"></em></span><div class="mb"><i id="pFill"></i></div></div>
+   </div>
+  </div>
+  <div class="items" id="items"></div>
+  <div class="ld-foot">
+   <div class="ld-notes box"><span class="n-h">FIELD NOTES</span><ol class="nlist" id="ldNotes" aria-live="polite"><li>Tap an item to pack or unpack it.</li></ol></div>
+   <div class="ld-btns"><button class="btn alt" id="ldBack" type="button">◀ Back</button><button class="btn" id="toSum" type="button">Review launch ▶</button></div>
+  </div>
+ </section>
+ <section class="screen" id="summary"><div class="sum box" id="sumBox"></div></section>
+ <section class="screen" id="game">
+  <div class="time box">
+   <div class="t-row">
+    <div class="t-day"><small id="tUnit">DAY</small><b id="tNum">001</b><span class="t-prev" id="tPrev"></span></div>
+    <div class="chips"><span class="chip" id="chipA"></span><span class="chip" id="chipB"></span><span class="chip c3" id="chipC"></span></div>
+    <span class="scib" id="sciB" title="Science score"><i>SCI</i><b id="sciN">0</b></span>
+    <button class="aria" id="aria" type="button" aria-label="Ask ARIA, the colony AI">AI</button>
+   </div>
+   <div class="strip" id="strip"></div>
+   <div class="goal"><span id="goalTxt"></span><div class="gbar"><i id="gfill"></i></div></div>
+   <div class="bubble" id="bubble" role="status"></div>
+  </div>
+  <div class="res-wrap box"><div class="res-h"><span>SYSTEMS</span><span id="baseName"></span></div><div class="res-grid" id="resGrid"></div></div>
+  <div class="stage" id="stage"><div class="deck d2"></div><div class="deck d1"></div><div class="card" id="card" tabindex="0"></div></div>
+  <div class="opts"><button class="ob" id="bL" type="button"><span class="ot" id="bLt"></span><span class="od" id="bLd"></span></button><button class="ob r" id="bR" type="button"><span class="ot" id="bRt"></span><span class="od" id="bRd"></span></button></div>
+  <div class="notes box"><span class="n-h">FIELD NOTES</span><ol class="nlist" id="nlist" aria-live="polite"><li>Your first decision unlocks a note.</li></ol></div>
+ </section>
+
+ <section class="screen" id="over"><div class="rep box" id="rep"></div></section>
+</div>
+<div class="sticker" id="sticker" role="status"></div>
+<div id="liftoff" aria-hidden="true"><div class="rk"><svg viewBox="0 0 60 140"><path class="flame" d="M20 104 L30 136 L40 104Z" fill="#ff5b2e" stroke="#000" stroke-width="3"/><path d="M24 104 L30 122 L36 104Z" fill="#ffd23f"/><path d="M30 4 C44 18 46 40 46 64 V100 H14 V64 C14 40 16 18 30 4Z" fill="#f1ede4" stroke="#000" stroke-width="4"/><path d="M14 74 L2 98 V108 L14 100Z M46 74 L58 98 V108 L46 100Z" fill="#ff5b2e" stroke="#000" stroke-width="4" stroke-linejoin="round"/><circle cx="30" cy="46" r="8" fill="#7df9ff" stroke="#000" stroke-width="4"/><rect x="18" y="98" width="24" height="8" fill="#555" stroke="#000" stroke-width="3"/></svg></div><div class="cd" id="cd">3</div></div>
+<script>
+(function(){
+"use strict";
+/* ===================== DATA ===================== */
+const ICON={
+ P:'<path d="M13 2 4 14h7l-1 8 9-12h-7z" fill="currentColor"/>',
+ F:'<path d="M5 20c0-10 6-15 15-15 0 9-5 15-14 15M5 20l9-9" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>',
+ W:'<path d="M12 2c4.5 5.5 6.5 9 6.5 12a6.5 6.5 0 0 1-13 0C5.5 11 7.5 7.5 12 2z" fill="currentColor"/>',
+ R:'<path d="M12 2 4 5v6c0 5.5 3.5 9.5 8 11 4.5-1.5 8-5.5 8-11V5z" fill="currentColor"/>',
+ M:'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.8"/><rect x="8" y="8.5" width="2.6" height="3.4" fill="currentColor"/><rect x="13.4" y="8.5" width="2.6" height="3.4" fill="currentColor"/><path d="M8 14.5q4 3.6 8 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+ C:'<path d="M12 11v10M8 21h8" stroke="currentColor" stroke-width="2.8" fill="none"/><circle cx="12" cy="9" r="2.4" fill="currentColor"/><path d="M6.5 3.8a7.5 7.5 0 0 0 0 10.4M17.5 3.8a7.5 7.5 0 0 1 0 10.4" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round"/>',
+ H:'<circle cx="12" cy="7" r="4" fill="currentColor"/><path d="M4 22c0-5 3.5-8 8-8s8 3 8 8z" fill="currentColor"/>'
+};
+const RES=[
+ {k:'P',n:'POWER',c:'#ffd23f'},{k:'F',n:'FOOD',c:'#7ae582'},{k:'W',n:'WATER',c:'#4cc9f0'},
+ {k:'R',n:'SHIELDING',c:'#b388ff'},{k:'M',n:'MORALE',c:'#ff70a6'},{k:'C',n:'COMMS',c:'#ff9f1c'},{k:'H',n:'CREW HEALTH',c:'#f1ede4'}];
+
+const CH={
+ eng:{n:'CHIEF ENG. RAO',r:'ENGINEERING',c:'#ffd23f',skin:'#c68642',hair:'#1a1a1a',hs:'long',hat:'hard'},
+ sci:{n:'DR. OKAFOR',r:'SCIENCE TEAM',c:'#4cc9f0',skin:'#8d5524',hair:'#111',hs:'curly',glasses:1},
+ ops:{n:'OPS LEAD CHEN',r:'OPERATIONS',c:'#b388ff',skin:'#f1c27d',hair:'#222',hs:'short'},
+ med:{n:'DR. SILVA',r:'MEDICAL',c:'#ff70a6',skin:'#e0ac69',hair:'#5a3825',hs:'bun'},
+ com:{n:'LT. HADDAD',r:'COMMS',c:'#ff9f1c',skin:'#c68642',hair:'#2b1b10',hs:'short',headset:1},
+ bot:{n:'MEI TANAKA',r:'BOTANY',c:'#7ae582',skin:'#f1c27d',hair:'#111',hs:'long'},
+ ls:{n:'SGT. NOVAK',r:'LIFE SUPPORT',c:'#5fa8ff',skin:'#ffdbac',hair:'#c9a26b',hs:'short'},
+ hq:{n:'MISSION CONTROL',r:'EARTH',c:'#9be7ff',kind:'earth'},
+ psy:{n:'DR. ADEYEMI',r:'CREW PSYCH',c:'#ff9f1c',skin:'#6b3e1f',hair:'#111',hs:'bald',glasses:1},
+ rook:{n:'ROOKIE KIM',r:'JUNIOR ASTRONAUT',c:'#c6ff3d',skin:'#ffe0bd',hair:'#333',hs:'cap'},
+ aria:{n:'ARIA',r:'COLONY AI',c:'#b388ff',kind:'ai'},
+ arch:{n:'INES DUARTE',r:'HABITAT BUILDER',c:'#ff9f1c',skin:'#e0ac69',hair:'#3b2414',hs:'long',hat:'hard'},
+ cook:{n:'CHEF MARCO',r:'GALLEY',c:'#ffd23f',skin:'#f1c27d',hair:'#111',hs:'short',hat:'chef'}
+};
+
+/* t / f / L / R / d can be {moon:..., mars:...}. d = extra days the choice takes (default 1). */
+const CARDS=[
+ {id:'greenhouse',w:'eng',m:'b',t:'Expanding the greenhouse by 25% takes 3 {Ds} of crew work, and the grow lights will drain power for good.',
+  L:{t:'Not now',e:{F:-4,P:3}},R:{t:'Expand it',d:3,e:{F:12,P:-10},next:{id:'greenhouse2',in:4}},
+  f:'Grow lights are one of the biggest power users on any space base.'},
+ {id:'icerover',w:'sci',m:'b',t:{moon:'Radar spotted possible ice in a crater a 2-day drive south. Send the rover?',mars:'Radar shows ice under a dune field, a 4-sol drive away. Send the rover?'},
+  L:{t:'Too risky',e:{M:-3}},R:{t:'Send rover',d:{moon:2,mars:4},e:{P:-5},sci:1,ch:{p:.6,win:{W:18,M:5},lose:{H:-5,P:-6},wm:'ICE FOUND!',lm:'ROVER DAMAGED',winNext:'ice2'}},
+  f:'Water ice gives drinking water, breathable oxygen, and even rocket fuel.'},
+ {id:'solarstorm',w:'ops',m:'b',t:{moon:'Solar flare alert! Radiation hits in hours. Shelter everyone for 2 days?',mars:'Solar flare alert! Mars has no magnetic field to deflect it. Shelter for 2 sols?'},
+  L:{t:'Keep working',e:{P:3},ch:{p:.5,win:{M:4},lose:{R:-14,H:-8},wm:'FLARE MISSED US',lm:'RADIATION SPIKE'}},R:{t:'Take shelter',d:2,e:{R:7,M:-7}},
+  f:'Astronauts shelter behind water tanks during flares, because water blocks radiation well.'},
+ {id:'relay',w:'com',m:'b',t:{moon:'A ridge blocks our view of Earth. A relay satellite would fix it. 2 days to set up.',mars:'Messages to Earth take up to 22 minutes. A bigger antenna would help. 3 sols to build.'},
+  L:{t:'Not now',e:{C:-6}},R:{t:'Build it',d:{moon:2,mars:3},e:{C:15,P:-8}},
+  f:{moon:'Radio reaches the Moon in about 1.3 seconds, as long as nothing blocks the view.',mars:'Radio takes 3 to 22 minutes to cross between Earth and Mars, depending on orbits.'}},
+ {id:'restday',w:'med',m:'b',t:'The crew is running on fumes. I\'m prescribing 2 {Ds} of rest.',
+  L:{t:'Keep schedule',e:{M:-10,H:-4,P:2}},R:{t:'Rest',d:2,e:{M:12,H:6}},
+  f:'Tired crews make mistakes. NASA plans astronaut sleep and time off carefully.'},
+ {id:'filter',w:'ls',m:'b',t:'The water recycler filter is clogging. Swapping it takes most of a {D}.',
+  L:{t:'Delay it',e:{P:2},later:{in:3,e:{W:-14,H:-3},msg:'RECYCLER FAILED'}},R:{t:'Swap it',d:2,e:{P:-4,W:8}},
+  f:'The ISS recycles about 98% of its water, sweat and urine included.'},
+ {id:'shield',w:'arch',m:'b',t:{moon:'Let\'s bury the habitat under regolith for radiation shielding. The diggers need 4 days.',mars:'Let\'s pile Martian soil over the habitat to block radiation. It\'s 4 sols of digging.'},
+  L:{t:'Skip it',e:{R:-6}},R:{t:'Start digging',d:4,e:{R:16,P:-8,M:-3}},
+  f:'A couple of metres of packed soil can block much of the radiation from space.'},
+ {id:'salad',w:'cook',m:'b',t:'Fresh salad night! The crew would love it, but it eats into the harvest.',
+  L:{t:'Ration it',e:{M:-6,F:2}},R:{t:'Salad night',e:{M:11,F:-8}},
+  f:'In 2015, ISS astronauts ate lettuce grown in orbit in NASA\'s Veggie chamber.'},
+ {id:'broadcast',w:'hq',m:'b',t:{moon:'Schools on Earth want a live lesson from the Moon. With a 1.3-second delay, it\'ll feel almost real-time!',mars:'Schools on Earth want a lesson from Mars. With a 12-minute delay it can\'t be live, so we\'d record a Q&A.'},
+  L:{t:'Decline',e:{M:-3,C:2}},R:{t:'Do it',e:{M:12,C:-6,P:-3}},
+  f:{moon:'Apollo TV broadcasts reached Earth with just over a second of delay.',mars:'A Mars crew can\'t chat live with Earth. Every reply takes minutes.'}},
+ {id:'potato',w:'bot',m:'b',t:'I want to test a tough new potato strain. It\'s 3 {Ds} to plant, and it could boom… or bust.',
+  L:{t:'Proven crops',e:{M:-2}},R:{t:'Plant it',d:3,e:{P:-3},sci:1,ch:{p:.65,win:{F:16},lose:{F:-8},wm:'BUMPER HARVEST',lm:'CROP BLIGHT'}},
+  f:'Potatoes are a top space crop: lots of calories from very little space.'},
+ {id:'oxygen',w:'ls',m:'b',t:'Oxygen reserves are thin. I can push the electrolysis unit, which splits water into oxygen.',
+  L:{t:'Hold steady',e:{H:-6}},R:{t:'Make oxygen',e:{H:10,W:-8,P:-7}},
+  f:'Electrolysis splits H₂O into hydrogen and oxygen. The ISS makes its air this way.'},
+ {id:'vr',w:'psy',m:'b',t:{moon:'The crew keeps staring at Earth through the window. A VR "beach day" might help.',mars:'Earth is just a bright dot in the Martian sky now. The crew is homesick. VR beach day?'},
+  L:{t:'No time',e:{M:-7}},R:{t:'Beach day',e:{M:14,P:-6}},
+  f:{moon:'From the Moon, Earth looks nearly four times wider than the Moon does from Earth.',mars:'From Mars, Earth looks like a bright evening star, too small to see continents.'}},
+ {id:'panels',w:'eng',m:'b',t:{moon:'Clingy moondust is coating the solar panels. Someone has to suit up and brush it off.',mars:'Red dust is choking the solar panels. Suit up and clean them?'},
+  L:{t:'Leave it',e:{P:-9}},R:{t:'Spacewalk',e:{P:14,R:-5,H:-3}},
+  f:'Every spacewalk adds radiation dose and risk, so each one is planned in detail.'},
+ {id:'cargo',w:'hq',m:'b',t:{moon:'A lander leaves Earth soon, just a few days\' flight away. Room for one priority: food or spare parts?',mars:'The next cargo ship is months out and lands in about 8 sols. Food or spare parts?'},
+  L:{moon:{t:'Pack food',e:{F:14,C:-2}},mars:{t:'Pack food',e:{M:-2},later:{in:8,e:{F:22},msg:'FOOD CARGO LANDED'}}},
+  R:{moon:{t:'Pack parts',e:{P:10,C:6,F:-4}},mars:{t:'Pack parts',e:{M:-2},later:{in:8,e:{P:14,C:10},msg:'PARTS CARGO LANDED'}}},
+  f:{moon:'Earth to the Moon takes about 3 days. Close enough for regular resupply.',mars:'Earth to Mars takes 6 to 9 months, so cargo must be planned far ahead.'}},
+ {id:'compost',w:'bot',m:'b',t:'We could compost waste into fertilizer. Great for crops… the habitat will smell for days.',
+  L:{t:'No thanks',e:{F:-3}},R:{t:'Compost',e:{F:9,M:-6}},
+  f:'Turning waste back into food and air is called "closing the loop." It\'s key far from Earth.'},
+ {id:'doubleshift',w:'rook',m:'b',t:'Commander! I volunteer for a double shift to finish the battery repairs today!',
+  L:{t:'Go rest',e:{P:-3,M:3}},R:{t:'Approved',e:{P:10,H:-7}},
+  f:'On real missions, safety beats speed. Overwork raises injury risk.'},
+ {id:'battery',w:'eng',m:'b',t:'A battery bank upgrade takes 3 {Ds}. It hurts now but pays off big.',
+  L:{t:'Not now',e:{P:-4}},R:{t:'Upgrade',d:3,e:{P:-6,M:-4,F:-3},later:{in:2,e:{P:20},msg:'BATTERIES UPGRADED'}},
+  f:{moon:'Batteries must carry a lunar base through 14 days of darkness. That\'s a LOT of storage.',mars:'Batteries store solar power for the Martian night and for dusty days.'}},
+ {id:'exercise',w:'med',m:'b',t:{moon:'In one-sixth gravity, the crew\'s bones and muscles are weakening. Make 2 hours of exercise mandatory?',mars:'In Mars\'s 38% gravity, the crew\'s bones are weakening. Mandatory workouts?'},
+  L:{t:'Their choice',e:{M:4,H:-8}},R:{t:'Mandatory',e:{H:10,M:-5,F:-3}},
+  f:'ISS astronauts exercise about 2 hours a day to protect bones and muscles.'},
+ {id:'dataset',w:'sci',m:'b',t:'We have a huge science dataset for Earth. Sending it will hog the comms link for 2 {Ds}.',
+  L:{t:'Hold it',e:{M:-5}},R:{t:'Transmit',d:2,e:{C:-10,M:8},sci:1},
+  f:'NASA\'s Deep Space Network has giant antennas in California, Spain and Australia.'},
+ {id:'newcrew',w:'hq',m:'b',t:{moon:'Four new colonists are ready. It\'s only a 3-day flight to the Moon. Accept them?',mars:'Four colonists can join the next transfer, landing in about 8 sols. Accept them?'},
+  L:{t:'Not yet',e:{M:-5}},R:{moon:{t:'Welcome',e:{H:14,F:-10,W:-8},next:{id:'homesick',in:3}},mars:{t:'Welcome',e:{M:4},later:{in:8,e:{H:16,F:-10,W:-8},msg:'NEW CREW LANDED'},next:{id:'homesick',in:10}}},
+  f:'More people means more hands, but also more air, water and food every single day.'},
+ {id:'meteor',w:'ops',m:'b',t:'A micrometeoroid pinged the hull. Tiny leak. Patch it now or keep an eye on it?',
+  L:{t:'Monitor',ch:{p:.5,win:{M:2},lose:{H:-10,P:-5},wm:'LEAK HELD',lm:'CRACK SPREAD'}},R:{t:'Patch now',e:{P:-5,M:-2,H:2}},
+  f:'Micrometeoroids can travel many times faster than a bullet.'},
+ {id:'automate',w:'aria',m:'b',t:'I can automate greenhouse watering, Commander. It saves crew time but uses extra computing power.',
+  L:{t:'Keep manual',e:{M:-4}},R:{t:'Automate',e:{P:-6,M:6,W:4}},
+  f:'Robots and AI will handle many chores at future bases, freeing astronauts for science.'},
+ {id:'birthday',w:'cook',m:'b',t:{moon:'It\'s Rookie Kim\'s birthday, the first one on the Moon! Bake a cake with the sugar reserve?',mars:'It\'s Rookie Kim\'s birthday! Earth birthday or Mars birthday? Either way… cake?'},
+  L:{t:'Next year',e:{M:-6}},R:{t:'Bake it',e:{M:10,F:-5}},
+  f:{moon:'Food is a big morale boost. Astronauts help pick their menus before launch.',mars:'One Mars year lasts 687 Earth days, so Mars birthdays come almost half as often.'}},
+ {id:'clock',w:'ops',m:'b',t:{moon:'One lunar "day" lasts a whole Earth month. The crew\'s body clocks are confused. Install circadian lighting?',mars:'A sol is 39 minutes longer than an Earth day. Switch the crew to Mars time?'},
+  L:{moon:{t:'Leave it',e:{M:-5,H:-4}},mars:{t:'Stay on Earth time',e:{H:-5,C:4}}},
+  R:{moon:{t:'Install',d:2,e:{M:7,H:7,P:-6}},mars:{t:'Mars time',e:{H:7,M:5,C:-7}}},
+  f:{moon:'The Moon spins once every 29.5 Earth days, so a lunar day lasts about two Earth weeks.',mars:'Mars rover teams on Earth work on "Mars time," shifting their schedule about 40 minutes a day.'}},
+
+ /* story follow-ups */
+ {id:'greenhouse2',w:'bot',m:'f',t:'The new greenhouse wing is thriving! Harvest now, or wait 4 {Ds} for full-size crops?',
+  L:{t:'Harvest now',e:{F:10}},R:{t:'Wait',e:{P:-3},later:{in:4,e:{F:18,M:4},msg:'FULL HARVEST'}},
+  f:'Plants recycle air too: they take in CO₂ and release oxygen.'},
+ {id:'ice2',w:'sci',m:'f',t:'There\'s more ice deeper down. A permanent drill takes 3 {Ds} to install.',
+  L:{t:'Enough',e:{M:-2}},R:{t:'Install drill',d:3,e:{P:-10,W:8},sci:1,later:{in:2,e:{W:12},msg:'DRILL ONLINE'}},
+  f:'Using local materials is called ISRU: In-Situ Resource Utilization.'},
+ {id:'homesick',w:'psy',m:'f',t:'The new colonists are homesick. Schedule extra video calls home?',
+  L:{t:'They\'ll adapt',e:{M:-8}},R:{t:'Extra calls',e:{M:10,C:-8}},
+  f:{moon:'From the Moon, video calls home have barely a second of delay.',mars:'From Mars, "calls" are recorded messages. Replies take many minutes.'}},
+
+ /* MOON */
+ {id:'m_night',w:'ops',m:'moon',t:'Lunar night falls in {nightIn} days: 14 days with zero sunlight. Ration heating now to stockpile power?',
+  L:{t:'Stay warm',e:{M:4,P:-6}},R:{t:'Ration heat',e:{P:12,M:-7,H:-2}},f:'Lunar nights can drop below −170°C.'},
+ {id:'m_peak',w:'eng',m:'moon',t:'A crater rim near the pole gets sunlight almost all month. Moving the solar farm there takes 4 days.',
+  L:{t:'Stay put',e:{P:-4}},R:{t:'Move it',d:4,e:{P:18,C:-6,M:-3}},f:'Some lunar south pole peaks are sunlit most of the time. It\'s a big reason Artemis targets the pole.'},
+ {id:'m_psr',w:'sci',m:'moon',t:'A crater that never sees sunlight holds ancient ice, but it\'s below −200°C down there. Go on a 2-day expedition?',
+  L:{t:'Too cold',e:{M:-3}},R:{t:'Go',d:2,e:{P:-6},sci:1,ch:{p:.55,win:{W:20,M:6},lose:{H:-9,P:-4},wm:'ANCIENT ICE!',lm:'GEAR FROZE'}},f:'Some polar craters haven\'t seen sunlight in billions of years.'},
+ {id:'m_far',w:'sci',m:'moon',t:'A far-side expedition could reveal amazing geology. That\'s 3 days with no contact with Earth.',
+  L:{t:'Stay in touch',e:{M:-3}},R:{t:'Go far side',d:3,e:{C:-12},sci:1,ch:{p:.7,win:{M:12,H:2},lose:{H:-8},wm:'BIG DISCOVERY',lm:'ROVER BROKE DOWN'}},f:'The far side never faces Earth, so you need a relay satellite to call home.'},
+ {id:'m_thermal',w:'arch',m:'moon',t:'Sunlit surfaces hit +120°C and shadows drop to −170°C. Add thermal blankets? 2 days of work.',
+  L:{t:'Skip',e:{H:-5,P:-3}},R:{t:'Add blankets',d:2,e:{H:6,P:5,M:-4}},f:'With no air to hold heat, the Moon swings from scorching to freezing.'},
+ {id:'m_dust',w:'med',m:'moon',t:'Moondust is sharp like glass and it\'s getting into everyone\'s lungs. Install a dust airlock?',
+  L:{t:'Brush it off',e:{H:-8}},R:{t:'Install',d:2,e:{H:8,P:-6}},f:'Apollo astronauts said moondust smelled like spent gunpowder.'},
+ {id:'m_artemis',w:'hq',m:'moon',t:'An Artemis crew wants to visit for 3 days. Great for spirits, but more mouths to feed.',
+  L:{t:'Decline',e:{C:-5}},R:{t:'Host them',d:3,e:{M:12,F:-8,W:-5,C:5}},f:'NASA\'s Artemis program aims for a long-term human presence on the Moon.'},
+ {id:'m_pad',w:'arch',m:'moon',t:'Rocket landings sandblast the base with dust. Bake a landing pad from regolith? That\'s 3 days.',
+  L:{t:'Not needed',e:{H:-4,C:-4}},R:{t:'Build pad',d:3,e:{P:-9,H:6,C:6}},f:'Landing engines spray lunar dust at high speed. Hard pads protect nearby gear.'},
+ {id:'m_quake',w:'ops',m:'moon',t:'Seismometers picked up a moonquake. Inspect every structure? It takes 2 days.',
+  L:{t:'Skip it',ch:{p:.6,win:{M:2},lose:{H:-8,W:-6},wm:'ALL CLEAR',lm:'TANK LEAKED'}},R:{t:'Inspect',d:2,e:{P:-3,M:-4,H:3}},f:'Apollo seismometers recorded moonquakes. Some shallow ones lasted about 10 minutes.'},
+ {id:'m_o2',w:'sci',m:'moon',t:'Moon rock is about 40% oxygen by mass! Our reactor can bake it out if we feed it power.',
+  L:{t:'Too hungry',e:{H:-3}},R:{t:'Run reactor',d:2,e:{P:-12,H:10,M:3},sci:1},f:'Heating lunar soil to release oxygen is a key ISRU technology.'},
+ {id:'m_mast',w:'com',m:'moon',t:'Earth sits low on the horizon here and hills block it. Build a taller mast? 2 days.',
+  L:{t:'Live with gaps',e:{C:-8}},R:{t:'Build mast',d:2,e:{C:14,P:-6,M:-2}},f:'Radio needs a clear line of sight. Near the poles, Earth hugs the horizon.'},
+
+ /* MARS */
+ {id:'r_storm',w:'ops',m:'mars',t:'A dust storm is rolling in. Spend a sol tying down the solar panels first?',
+  L:{t:'Hunker down',e:{P:-12}},R:{t:'Secure panels',e:{P:-3,H:-5,R:-3}},f:'In 2018, a planet-wide dust storm ended NASA\'s Opportunity rover mission.'},
+ {id:'r_delay',w:'hq',m:'mars',t:'Earth wants to approve every major decision, even with a 20-minute delay each way. Agree?',
+  L:{t:'We decide',e:{M:8,C:-7}},R:{t:'Follow Earth',e:{C:8,M:-8}},f:'With minutes of delay, Mars crews must handle emergencies on their own.'},
+ {id:'r_valles',w:'sci',m:'mars',t:'Valles Marineris, a 4,000 km canyon! A 6-sol expedition could find a lot.',
+  L:{t:'Too far',e:{M:-4}},R:{t:'Launch',d:6,e:{P:-6,F:-4},sci:1,ch:{p:.6,win:{M:14,W:12},lose:{H:-10,R:-5},wm:'HIDDEN ICE FOUND',lm:'TEAM INJURED'}},f:'Valles Marineris is about as long as the USA is wide.'},
+ {id:'r_perch',w:'bot',m:'mars',t:'Martian soil has toxic perchlorates. Washing it for farming takes 2 sols and lots of water.',
+  L:{t:'Hydroponics only',e:{F:-6,P:-3}},R:{t:'Wash soil',d:2,e:{F:13,W:-10}},f:'Perchlorate salts in Martian soil are harmful to people, so soil must be cleaned first.'},
+ {id:'r_heli',w:'sci',m:'mars',t:'Our scout helicopter can map ice sites ahead. It\'s fragile in the thin air, though.',
+  L:{t:'Ground it',e:{M:-2}},R:{t:'Fly',e:{P:-4},sci:1,ch:{p:.7,win:{W:10,C:4,M:4},lose:{C:-6,M:-4},wm:'ICE SITE MAPPED',lm:'HELICOPTER LOST'}},f:'NASA\'s Ingenuity helicopter made 72 flights on Mars.'},
+ {id:'r_moxie',w:'ls',m:'mars',t:'We can make oxygen straight from the CO₂ air. The converter is power hungry.',
+  L:{t:'Use reserves',e:{H:-5}},R:{t:'Run it',e:{H:10,P:-10},sci:1},f:'NASA\'s MOXIE proved we can make oxygen from Mars\'s thin CO₂ air.'},
+ {id:'r_conj',w:'com',m:'mars',t:'Solar conjunction is coming: the Sun will block all signals to Earth for 2 weeks. Spend 2 sols pre-loading plans?',
+  L:{t:'Wing it',e:{C:-12,M:-3}},R:{t:'Prepare',d:2,e:{C:8,P:-4,M:-3}},f:'Every 2 years or so, Mars slips behind the Sun and missions pause commands.'},
+ {id:'r_drill',w:'eng',m:'mars',t:'Radar shows ice 2 metres below us. Drilling a well takes 3 sols.',
+  L:{t:'Not now',e:{W:-4}},R:{t:'Drill',d:3,e:{W:16,P:-10},sci:1},f:'Orbiters have spotted water ice just below the surface across much of Mars.'},
+ {id:'r_tube',w:'arch',m:'mars',t:'There\'s a lava tube nearby. Moving underground blocks radiation, but takes 5 sols.',
+  L:{t:'Stay up top',e:{R:-5}},R:{t:'Move in',d:5,e:{R:18,P:-7,M:-5,C:-4}},f:'Mars has no global magnetic field and thin air, so surface radiation is high.'},
+ {id:'r_eva',w:'rook',m:'mars',t:'Can I go on a geology walk? We need samples… but radiation is high today.',
+  L:{t:'Stay inside',e:{M:-5}},R:{t:'Go explore',e:{M:10,R:-8},sci:1},f:'Radiation adds up over a career, so planners track every minute spent outside.'},
+ {id:'r_devil',w:'ops',m:'mars',t:'A dust devil is heading for the base! It might clean the panels or rip off the antenna.',
+  L:{t:'Stow gear',e:{P:-4,C:-2}},R:{t:'Let it pass',ch:{p:.55,win:{P:15},lose:{C:-12,P:-3},wm:'PANELS SWEPT CLEAN',lm:'ANTENNA HIT'}},f:'Dust devils helped the Spirit and Opportunity rovers by blowing dust off their panels.'},
+ {id:'r_print',w:'eng',m:'mars',t:'Earth is months away. Building a 3D-printing workshop for our own parts would take 4 sols.',
+  L:{t:'Rely on Earth',e:{C:-3,M:-2}},R:{t:'Build it',d:4,e:{P:-10,M:-3},later:{in:3,e:{P:12,H:5},msg:'WORKSHOP ONLINE'}},f:'Earth–Mars launch windows open only about every 26 months.'}
+];
+const BYID={};CARDS.forEach(c=>BYID[c.id]=c);
+
+const MODES={
+ moon:{name:'ARTEMIS BASE',planet:'the Moon',unit:'day',units:'days',U:'DAY',goal:84,goalName:'CREW ROTATION',supEvery:14,supOff:10,
+  supply:{F:10,W:8,P:6},supMsg:'LANDER ARRIVED',
+  start:{P:72,F:58,W:55,R:60,M:70,C:75,H:72},drain:{P:.6,F:1,W:.95,R:.3,M:.45,C:.25},
+  intro:'Welcome to Artemis Base, Commander. Every choice costs resources and time. Hold on until Day 84 for crew rotation. Drag me left or right.',
+  introF:'The lunar south pole is a top target for bases: sunlit peaks plus ice hidden in shadowed craters.'},
+ mars:{name:'ARES OUTPOST',planet:'Mars',unit:'sol',units:'sols',U:'SOL',goal:100,goalName:'RETURN WINDOW',supEvery:30,supOff:24,
+  supply:{F:18,W:12,P:10,H:6},supMsg:'SUPPLY SHIP LANDED',
+  start:{P:70,F:60,W:60,R:55,M:70,C:64,H:72},drain:{P:.45,F:.9,W:.7,R:.32,M:.48,C:.35},
+  intro:'Welcome to Ares Outpost, Commander. Earth is 20 light-minutes away, so you\'re on your own. Hold out until Sol 100, when the return window opens.',
+  introF:'A day on Mars is called a "sol." It lasts 24 hours and 39 minutes.'}
+};
+const DIFF={cadet:{mult:.65,hints:1},commander:{mult:1,hints:0},veteran:{mult:1.4,hints:0}};
+const DEATH={
+ P:['POWER FAILURE',{moon:'The batteries ran dry and the heaters died. Real lunar bases need huge energy reserves to survive two-week nights.',mars:'The batteries ran dry. On Mars, dust storms can block sunlight for weeks, so reserves are everything.'}],
+ F:['OUT OF FOOD','The pantry is empty. Bases far from Earth must grow food locally because resupply is slow and expensive.'],
+ W:['OUT OF WATER','Water means drinking, oxygen, farming and shielding. That\'s why finding ice matters so much.'],
+ R:['RADIATION SICKNESS','Shielding failed. Without Earth\'s magnetic field and thick atmosphere, protection has to be built.'],
+ M:['CREW MUTINY','Morale collapsed and the crew voted to go home. Mental health is as critical as physical health.'],
+ C:['LOST CONTACT','Mission Control lost the signal and called off the mission. Reliable comms keep crews safe.'],
+ H:['COLONY LOST','Too many crew members got sick or hurt to keep the base running. Health is the ultimate resource.']
+};
+const TIPS={
+ P:'Power is low. Skip power-hungry projects and look for energy gains.',
+ F:'Food is low. Greenhouse choices help, even if they cost power.',
+ W:'Water is low. Ice expeditions and recycler repairs are your friends.',
+ R:'Shielding is weak. Dig in or shelter from flares.',
+ M:'Morale is sagging. Rest, treats and calls home keep people going.',
+ C:'Comms are shaky. Relays and antennas reconnect you with Earth.',
+ H:'Crew health is dropping. Medical care, oxygen and exercise matter now.'
+};
+const ACH=[
+ {id:'d14',n:'2 WEEKS IN'},{id:'d42',n:'6 WEEKS IN'},{id:'phase',n:'WEATHERED IT'},{id:'sup',n:'SPECIAL DELIVERY'},
+ {id:'sci',n:'CURIOUS MIND'},{id:'bal',n:'PERFECT BALANCE'},{id:'facts',n:'SPACE SCHOLAR'},{id:'win',n:'MISSION COMPLETE'},{id:'light',n:'LIGHT TRAVELER'},{id:'noreg',n:'NO REGRETS'}];
+
+/* ===================== DATA: CHAPTER 1 LOADOUT (rebalance here) ===================== */
+const CAP=10000;      // cargo capacity, kg
+const BUDGET=1000;    // $M
+const BASE_GEN=3;     // kW the lander makes on its own (fuel cells)
+const BASE_DRAW=3;    // kW the habitat itself uses
+const KW_DRAIN=.03;   // Power per day, per kW of surplus (+) or deficit (−)
+const SCI_PTS=10;     // science points per science choice, before instruments
+const OBJ_PTS=150;    // score bonus per science objective achieved
+const START_MIN=30,START_MAX=95; // starting stats are clamped here, so no run is dead on arrival
+const CB_DAYS=[5,14,25];         // when "you left X on Earth" callback cards can show up (max 3)
+const OBJS=[
+ {id:'ice',n:{moon:'Find water ice',mars:'Find buried ice'},c:'#4cc9f0'},
+ {id:'geo',n:{moon:'Study ancient geology',mars:'Search for ancient life'},c:'#ffd23f'},
+ {id:'isru',n:{moon:'Live off the land (ISRU)',mars:'Live off the land (ISRU)'},c:'#7ae582'}
+];
+const IICON={
+ solar:'<rect x="3" y="4" width="18" height="11" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M9 4v11M15 4v11M3 9.5h18M12 15v5M7 21h10" stroke="currentColor" stroke-width="2.2" fill="none"/>',
+ batt:'<rect x="2.5" y="7" width="16" height="10" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="18.5" y="10" width="3" height="4" fill="currentColor"/><rect x="5.5" y="10" width="3.5" height="4" fill="currentColor"/><rect x="11" y="10" width="3.5" height="4" fill="currentColor"/>',
+ rover:'<rect x="3" y="9" width="18" height="6" fill="currentColor"/><circle cx="7" cy="18" r="2.8" fill="currentColor"/><circle cx="17" cy="18" r="2.8" fill="currentColor"/><path d="M14 9V4h5" stroke="currentColor" stroke-width="2.4" fill="none"/>',
+ water:ICON.W,food:ICON.F,comms:ICON.C,rad:ICON.R,
+ instr:'<path d="M9 3h6M10 3v6l-5.5 11h15L14 9V3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M7 15h10l2 5H5z" fill="currentColor"/>',
+ spare:'<path d="M15 2.5a5.5 5.5 0 0 0-6 7.3L2.8 16l5.2 5.2 6.2-6.2a5.5 5.5 0 0 0 7.3-6l-3.3 3.3-3.6-1-1-3.6z" fill="currentColor"/>',
+ o2:'<rect x="6.5" y="7" width="11" height="15" rx="4.5" fill="currentColor"/><path d="M10 7V3.5h4V7M14 4.5h4" stroke="currentColor" stroke-width="2.4" fill="none"/>'
+};
+/* One row per requested item. pm()-style {moon,mars} values are allowed anywhere.
+   pack/skip = starting-stat shifts vs. the v2 baseline. fx = [ifPacked, ifSkipped] numbers the engine reads.
+   obj = science objectives this item helps (0–2). imp = how much a cut hurts (used to rank consequences). */
+const LOADOUT=[
+ {id:'solar',n:'Solar arrays',ic:'solar',c:'#ffd23f',kg:1600,usd:90,gen:6,obj:['isru'],imp:3,
+  gain:['+Power','Fast recharge'],cost:{moon:['Dead at night'],mars:['Weak in dust']},
+  pack:{P:3},skip:{P:-8},fx:{dayGain:[.8,.2],marsSun:[.15,-.15]},
+  hint:{moon:"Some ridges near the south pole get sunlight most of the month. Arrays there are gold, until the 14-day night.",mars:"Mars gets less than half the sunlight Earth does, and dust cuts it further."},
+  note:{moon:"Solar arrays are free power by day, but on the Moon they sit useless through 14-day nights.",mars:"Solar panels on Mars make less than half what they would on Earth, and dust storms dim them more."},
+  cut:{moon:"Weak daytime recharge. Power climbs back slowly after every night.",mars:"Thin sunlight and no extra arrays, so Power slides a little every sol."}},
+ {id:'batt',n:'Batteries',ic:'batt',c:'#c6ff3d',kg:2000,usd:110,obj:['ice'],imp:{moon:5,mars:3},
+  gain:{moon:['Night power'],mars:['Storm power']},cost:['Very heavy','Less science'],
+  pack:{P:4},skip:{P:-6},fx:{darkMul:[.65,1.2]},
+  hint:{moon:"Batteries are heavy, but lunar night is 14 days long.",mars:"Dust storms can hide the Sun for days or weeks. Batteries are what's left."},
+  note:{moon:"Bigger batteries keep you alive through the night, but every kg of battery is a kg of science left behind.",mars:"When dust blots out the Sun, batteries are all you have. A 2018 storm ended the Opportunity rover's mission."},
+  cut:{moon:"Every lunar night drains Power much faster.",mars:"Dust storms hit Power much harder."}},
+ {id:'rover',n:'Rover',ic:'rover',c:'#ff70a6',kg:1800,usd:260,draw:1.5,obj:['ice','geo'],imp:3,
+  gain:['Expeditions','Better odds'],cost:['Power draw'],
+  pack:{},skip:{},fx:{oddsBonus:[.1,0]},
+  hint:"A rover turns a 2-day hike into a 2-hour drive. Without one, the far sites are off the table.",
+  note:{moon:"Apollo's lunar rovers let crews explore kilometres from the lander instead of a short walk.",mars:"Perseverance has driven many kilometres across Jezero. Human crews will need wheels too."},
+  cut:{moon:"Far craters are out of reach, and ice hunts go on foot.",mars:"The big canyon is out of reach, and ice hunts go on foot."}},
+ {id:'water',n:'Water',ic:'water',c:'#4cc9f0',kg:1500,usd:30,obj:[],imp:3,
+  gain:['+Water'],cost:['Heavy'],
+  pack:{W:8},skip:{W:-14},fx:{},
+  hint:"Water is heavy, but it's drinking water, oxygen and radiation shielding all in one.",
+  note:{moon:"Shipping water is expensive. That's why ice at the lunar poles is such a big deal.",mars:"Every litre from Earth costs a fortune to launch. Mars has ice underground, if you can find it."},
+  cut:"Starting Water is low. The recycler and ice hunts matter more now."},
+ {id:'food',n:'Food',ic:'food',c:'#7ae582',kg:1200,usd:40,obj:['isru'],imp:{moon:2,mars:5},
+  gain:['+Food','Seed stock'],cost:['Heavy'],
+  pack:{F:8},skip:{moon:{F:-12},mars:{F:-18}},fx:{},
+  hint:{moon:"A lander comes every 14 days, so food is a bit easier to restock on the Moon.",mars:"The next supply ship is a month out. Food you skip now is food you won't have."},
+  note:{moon:"Packed food is heavy, and the seed stock inside is what lets a base start growing its own.",mars:"Mars crews will need to grow food, because shipping it all from Earth takes months."},
+  cut:{moon:"Starting Food is low. Count on the greenhouse and landers.",mars:"Starting Food is low, and the next ship is a month away."}},
+ {id:'comms',n:'Comms gear',ic:'comms',c:'#ff9f1c',kg:800,usd:130,draw:1,obj:['geo'],imp:2,
+  gain:['+Comms','Slow drain'],cost:['Power draw'],
+  pack:{C:6},skip:{C:-10},fx:{cMul:[.6,1.3]},
+  hint:{moon:"At the pole, Earth sits low on the horizon, so ridges can block the signal.",mars:"Messages take minutes to reach Earth, so a strong link matters even more."},
+  note:"Science only counts once it reaches Earth. Comms gear turns discoveries into results.",
+  cut:"Comms start weaker and drain faster."},
+ {id:'instr',n:'Science instruments',ic:'instr',c:'#9be7ff',kg:1400,usd:280,draw:2,obj:['ice','geo'],imp:2,
+  gain:['×2 Science'],cost:['Power hungry','Heavy'],
+  pack:{},skip:{},fx:{sciMul:[2,1]},
+  hint:"Science is why you're going. But instruments feed no one, and they need power.",
+  note:"Science instruments are the reason the mission exists, but they don't keep anyone alive.",
+  cut:"Every science find is worth half as much."},
+ {id:'spare',n:'Spare parts',ic:'spare',c:'#f1ede4',kg:900,usd:60,obj:['isru'],imp:{moon:2,mars:5},
+  gain:['1 free fix'],cost:['No instant use'],
+  pack:{},skip:{},fx:{saves:[1,0]},
+  hint:{moon:"Spare parts do nothing… until something breaks. Then they're everything.",mars:"On Mars, help is months away. One spare part can save the whole mission."},
+  note:{moon:"Spare parts do nothing on Day 1. They matter on the day something breaks.",mars:"The ISS keeps a stockpile of spares. A Mars crew will have to fix almost everything themselves."},
+  cut:{moon:"No safety net. The first breakdown hits at full force.",mars:"No safety net, and Earth can't send a part for weeks."}},
+ {id:'rad',n:'Radiation protection',ic:'rad',c:'#b388ff',kg:1300,usd:80,obj:['geo'],imp:3,
+  gain:['+Shielding','Flares ½'],cost:['Heavy'],
+  pack:{R:8},skip:{R:-10},fx:{radMul:[.5,1]},
+  hint:{moon:"The Moon has no air and no magnetic field to stop a solar flare.",mars:"Mars has thin air and no global magnetic field. Flares hit hard."},
+  note:"Shielding is dead weight until a solar flare arrives. Then it's the most important kg you carried.",
+  cut:"Shielding starts low, and flares hit at full strength."},
+ {id:'o2',n:'Extra oxygen',ic:'o2',c:'#5fa8ff',kg:1000,usd:40,obj:[],imp:2,
+  gain:['Health buffer','O₂ scares ½'],cost:['Heavy'],
+  pack:{H:6},skip:{H:-6},fx:{o2Mul:[.5,1]},
+  hint:"Recyclers make most of the air. A backup tank buys time when they hiccup.",
+  note:"Life support recycles most of the air. Spare oxygen buys time when it fails.",
+  cut:"Thin air margin. Life-support scares hit Crew Health harder."}
+];
+/* "You left X on Earth" callback cards (scheduled for the most impactful cuts) */
+const LOADOUT_CB={
+ solar:{w:'eng',t:"We left the extra solar arrays on Earth, and the panels we have can't keep up. Run the base in low-power mode for 2 {Ds}?",
+  L:{t:'Push through',e:{P:-8}},R:{t:'Low-power mode',d:2,e:{P:7,M:-6}},f:'Power budgets are planned before launch. Running short means switching things off.'},
+ batt:{w:'ops',t:{moon:"No big battery bank means every lunar night is a sprint. Shut the labs down early to save charge?",mars:"No big battery bank, so every dusty sol is a gamble. Shut the labs down to save charge?"},
+  L:{t:'Keep labs open',e:{P:-9,M:2}},R:{t:'Shut them down',e:{P:8,M:-7}},f:'Space bases put non-essential systems to sleep to save power.'},
+ water:{w:'ls',t:"We didn't pack extra water. The recycler has to run flat-out from now on. Push it, or ration?",
+  L:{t:'Ration',e:{W:4,M:-6,H:-2}},R:{t:'Run it hard',e:{W:9,P:-8}},f:'Water recyclers trade power for water. Nothing is free.'},
+ food:{w:'cook',t:{moon:"The food crates stayed on Earth. Half rations until the next lander?",mars:"The food crates stayed on Earth, and the ship is weeks out. Half rations?"},
+  L:{t:'Full meals',e:{F:-8,M:2}},R:{t:'Half rations',e:{F:7,M:-8,H:-3}},f:'Astronauts need plenty of calories, especially when working outside in suits.'},
+ comms:{w:'com',t:"Without the comms kit we're on the backup antenna. Earth can barely hear us. Boost the signal with lab power?",
+  L:{t:'Stay quiet',e:{C:-7}},R:{t:'Boost it',e:{C:10,P:-8}},f:'A backup antenna is slower but keeps a crew connected.'},
+ instr:{w:'sci',t:"We left the big instruments on Earth. All I've got is a hand lens and a notebook. Improvise a spectrometer?",
+  L:{t:'Basic science',e:{M:-4}},R:{t:'Improvise',d:2,e:{P:-5,M:4},sci:.5},f:'Astronauts are trained geologists. Even simple tools can spot interesting rocks.'},
+ spare:{w:'eng',t:"No spare parts aboard, and the airlock pump just cracked. Tape it, or 3D-print a fix?",
+  L:{t:'Tape it',ch:{p:.5,win:{M:2},lose:{H:-8,P:-4},wm:'TAPE HELD',lm:'PUMP FAILED'}},R:{t:'Print a fix',d:2,e:{P:-8}},f:'Duct tape has saved real missions. Apollo 17 fixed a rover fender with it.'},
+ rad:{w:'med',t:"We skipped the extra shielding, and the crew's dosimeters are creeping up. Cut outdoor work?",
+  L:{t:'Keep working',e:{R:-8,H:-3}},R:{t:'Indoors only',e:{R:5,M:-6}},f:'Dosimeters track every astronaut\'s radiation dose for their whole career.'},
+ o2:{w:'ls',t:"No backup oxygen tanks. A scrubber hiccup has everyone light-headed. Burn power to clear the air?",
+  L:{t:'Wait it out',e:{H:-9}},R:{t:'Clear the air',e:{H:6,P:-7}},f:'CO₂ scrubbers pull carbon dioxide out of the air so crews can breathe.'}
+};
+/* Rover-dependent cards. With a rover: odds go up. Without: 'foot' = weaker on-foot version, 'callback' = out-of-reach card, 'cut' = removed. */
+const ROVER_CARDS={
+ icerover:{mode:'foot',t:{moon:"No rover, so it's a 2-day hike to the ice crater, hauling sleds. Slow, cold and risky. Go anyway?",mars:"No rover, so the ice field is a long haul on foot. Go anyway?"},dp:-.2,winX:.5,e:{H:-3}},
+ r_heli:{mode:'foot',t:"No rover to carry the helicopter's ground station, so it can only scout within walking range. Fly anyway?",dp:-.15,winX:.5,e:{}},
+ m_psr:{mode:'callback',cb:{w:'sci',t:"You left the rover on Earth. That ancient-ice crater is out of reach. Settle for a scan from the nearest rim?",
+  L:{t:'Let it go',e:{M:-4}},R:{t:'Rim scan',e:{P:-3,H:-2},sci:.5},f:'Some polar craters haven\'t seen sunlight in billions of years.'}},
+ r_valles:{mode:'callback',cb:{w:'sci',t:"You left the rover on Earth. Valles Marineris is out of reach. Study it from orbital photos instead?",
+  L:{t:'Let it go',e:{M:-4}},R:{t:'Use photos',e:{C:-4},sci:.5},f:'Valles Marineris is about as long as the USA is wide.'}},
+ m_far:{mode:'cut'}
+};
+const RAD_CARDS=new Set(['solarstorm','panels','r_eva','r_valles','cosmic','cb_rad']);
+const O2_CARDS=new Set(['oxygen','r_moxie','m_o2','meteor','cb_o2']);
+const FIX=new Set(['ROVER DAMAGED','CRACK SPREAD','RECYCLER FAILED','GEAR FROZE','ROVER BROKE DOWN','TANK LEAKED','ANTENNA HIT','HELICOPTER LOST','PUMP FAILED']);
+const SCI_OBJ={icerover:'ice',m_psr:'ice',ice2:'ice',r_drill:'ice',r_heli:'ice',m_far:'geo',r_valles:'geo',r_eva:'geo',dataset:'geo',potato:'isru',m_o2:'isru',r_moxie:'isru',cb_instr:'geo'};
+const RES_ITEM={P:'batt',F:'food',W:'water',R:'rad',C:'comms',H:'o2'}; // which cut "explains" each death
+/* ===================== ENGINE ===================== */
+const FAST=new URLSearchParams(location.search).has('fast');
+const T=ms=>FAST?0:ms;
+const wait=ms=>new Promise(r=>setTimeout(r,T(ms)));
+const $=s=>document.querySelector(s);
+const card=$('#card');
+let S=null,mode='moon',diff='commander',busy=false,callsign='';
+const pm=x=>(x&&typeof x==='object'&&('moon' in x||'mars' in x))?x[mode]:x;
+const clamp=v=>Math.max(0,Math.min(100,v));
+const pad=n=>String(n).padStart(3,'0');
+
+/* ---------- portraits ---------- */
+function portrait(c){
+ const K='stroke="#000" stroke-width="4" stroke-linejoin="round"';
+ if(c.kind==='ai')return `<svg viewBox="0 0 120 120"><path d="M16 122 Q20 96 40 92 H80 Q100 96 104 122Z" fill="#2a2a2e" ${K}/><rect x="52" y="78" width="16" height="16" fill="#444" ${K}/><rect x="24" y="22" width="72" height="60" fill="#151518" ${K}/><rect x="31" y="29" width="58" height="46" fill="#0b0b0d"/><rect x="42" y="42" width="11" height="11" fill="${c.c}"><animate attributeName="height" values="11;2;11" dur="3.2s" repeatCount="indefinite"/></rect><rect x="67" y="42" width="11" height="11" fill="${c.c}"/><rect x="46" y="60" width="28" height="4" fill="${c.c}"/><path d="M60 22V10" ${K}/><circle cx="60" cy="9" r="4" fill="${c.c}" stroke="#000" stroke-width="3"/></svg>`;
+ if(c.kind==='earth')return `<svg viewBox="0 0 120 120"><circle cx="60" cy="66" r="44" fill="#3c7dff" ${K}/><path d="M34 50q10-14 24-8t6 16q-8 6-18 2t-12-10zM66 80q14-6 22 2t-4 16q-12 2-16-6t-2-12z" fill="#5bd17a" stroke="#000" stroke-width="3"/><path d="M60 22a44 44 0 0 1 0 88" fill="rgba(0,0,0,.25)"/><rect x="74" y="12" width="34" height="14" fill="#000"/><text x="91" y="23" font-family="monospace" font-size="10" fill="#9be7ff" text-anchor="middle">LIVE</text></svg>`;
+ let back='',hair='',hat='',extra='';
+ switch(c.hs){
+  case 'long':back=`<rect x="32" y="34" width="56" height="58" rx="16" fill="${c.hair}" ${K}/>`;hair=`<path d="M37 54Q36 26 60 26Q84 26 83 54Q74 40 60 40Q46 40 37 54Z" fill="${c.hair}" ${K}/>`;break;
+  case 'short':hair=`<path d="M37 50Q35 24 60 24Q85 24 83 50L78 40Q60 33 42 40Z" fill="${c.hair}" ${K}/>`;break;
+  case 'bun':back=`<circle cx="60" cy="20" r="11" fill="${c.hair}" ${K}/>`;hair=`<path d="M37 50Q36 26 60 26Q84 26 83 50Q72 38 60 38Q48 38 37 50Z" fill="${c.hair}" ${K}/>`;break;
+  case 'curly':hair=`<g fill="${c.hair}" stroke="#000" stroke-width="3"><circle cx="42" cy="36" r="9"/><circle cx="54" cy="28" r="10"/><circle cx="68" cy="28" r="10"/><circle cx="79" cy="37" r="9"/></g>`;break;
+  case 'cap':hair=`<path d="M37 46Q37 22 60 22Q83 22 83 46Z" fill="${c.c}" ${K}/><path d="M60 44H96" stroke="#000" stroke-width="6"/><path d="M62 44H94" stroke="${c.c}" stroke-width="2"/>`;break;
+ }
+ if(c.hat==='hard')hat=`<path d="M33 46Q33 16 60 16Q87 16 87 46Z" fill="#ffd23f" ${K}/><rect x="27" y="42" width="66" height="8" fill="#ffd23f" ${K}/><rect x="56" y="18" width="8" height="26" fill="#e0b000"/>`;
+ if(c.hat==='chef')hat=`<path d="M40 38Q28 16 44 14Q50 2 62 9Q74 1 78 15Q94 15 80 38Z" fill="#fff" ${K}/>`;
+ if(c.glasses)extra+=`<g fill="rgba(255,255,255,.25)" stroke="#000" stroke-width="3"><rect x="42" y="48" width="16" height="13"/><rect x="62" y="48" width="16" height="13"/></g><path d="M58 54H62" stroke="#000" stroke-width="3"/>`;
+ if(c.headset)extra+=`<path d="M35 58Q33 20 60 20Q87 20 85 58" fill="none" stroke="#000" stroke-width="5"/><rect x="29" y="50" width="10" height="16" fill="${c.c}" stroke="#000" stroke-width="3"/><path d="M36 66Q40 76 52 73" stroke="#000" stroke-width="3" fill="none"/>`;
+ return `<svg viewBox="0 0 120 120">${back}
+ <path d="M14 122Q16 92 44 87H76Q104 92 106 122Z" fill="#ece8dd" ${K}/>
+ <path d="M44 87L60 106L76 87" fill="none" stroke="${c.c}" stroke-width="6"/><path d="M44 87L60 106L76 87" fill="none" stroke="#000" stroke-width="2"/>
+ <rect x="80" y="100" width="13" height="10" fill="${c.c}" stroke="#000" stroke-width="3"/>
+ <rect x="52" y="74" width="16" height="16" fill="${c.skin}" ${K}/>
+ <rect x="38" y="30" width="44" height="50" rx="19" fill="${c.skin}" ${K}/>
+ ${hair}${hat}
+ <rect x="47" y="51" width="6" height="7" fill="#000"/><rect x="67" y="51" width="6" height="7" fill="#000"/>
+ <rect x="42" y="61" width="7" height="3" fill="#ff7b8a" opacity=".55"/><rect x="71" y="61" width="7" height="3" fill="#ff7b8a" opacity=".55"/>
+ <path d="M53 68Q60 73 67 68" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>${extra}</svg>`;
+}
+
+/* ---------- scene ---------- */
+(function(){const st=$('#stars');for(let i=0;i<90;i++){const s=document.createElement('i');s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*80}%;animation-delay:${(Math.random()*2.6).toFixed(2)}s;opacity:${(.3+Math.random()*.7).toFixed(2)}`;if(Math.random()<.15){s.style.width=s.style.height='3px';}st.appendChild(s);}})();
+function theme(m){document.body.classList.remove('t-moon','t-mars','night','storm');if(m)document.body.classList.add('t-'+m);}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));}
+
+/* ---------- landing/select ---------- */
+$('#toSelect').addEventListener('click',()=>{callsign=($('#cs').value||'').trim().toUpperCase().slice(0,12)||'COMMANDER';theme(mode);show('select');});
+$('#cs').addEventListener('keydown',e=>{if(e.key==='Enter')$('#toSelect').click();});
+$('#back').addEventListener('click',()=>{theme(null);show('landing');});
+document.querySelectorAll('.world').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.m;document.querySelectorAll('.world').forEach(o=>o.classList.toggle('sel',o===b));theme(mode);}));
+document.querySelectorAll('#diff button').forEach(b=>b.addEventListener('click',()=>{diff=b.dataset.d;document.querySelectorAll('#diff button').forEach(o=>o.classList.toggle('sel',o===b));}));
+$('#launch').addEventListener('click',openBrief);
+
+/* ---------- resources UI ---------- */
+const RE={};
+(function(){const g=$('#resGrid');RES.forEach(r=>{const d=document.createElement('div');d.className='res';d.style.setProperty('--rc',r.c);d.title=r.n;
+ d.innerHTML=`<i class="dot"></i><div class="ri"><svg viewBox="0 0 24 24">${ICON[r.k]}</svg></div><div class="rn">${r.n}</div><div class="rv">0</div><div class="bar"><div class="ghost"></div><div class="fill"></div></div>`;
+ g.appendChild(d);RE[r.k]={el:d,v:d.querySelector('.rv'),ghost:d.querySelector('.ghost'),dot:d.querySelector('.dot'),shown:0};});})();
+function countTo(o,to){const from=o.shown;o.shown=to;if(FAST){o.v.textContent=Math.round(to);return;}const t0=performance.now();
+ (function f(t){const p=Math.min(1,(t-t0)/450);o.v.textContent=Math.round(from+(to-from)*p);if(p<1)requestAnimationFrame(f);})(t0);}
+function drawRes(k,big){
+ const o=RE[k],v=S.v[k],old=o.shown;
+ if(v<old){o.ghost.classList.remove('up');o.el.style.setProperty('--g',old);void o.ghost.offsetWidth;o.el.style.setProperty('--v',v);requestAnimationFrame(()=>o.el.style.setProperty('--g',v));}
+ else{o.ghost.classList.add('up');o.el.style.setProperty('--g',v);requestAnimationFrame(()=>o.el.style.setProperty('--v',v));setTimeout(()=>o.ghost.classList.remove('up'),T(700));}
+ countTo(o,v);
+ o.el.classList.toggle('low',v<35&&v>=20);o.el.classList.toggle('crit',v<20);
+ if(big&&Math.round(v)!==Math.round(old)){const up=v>old;o.el.classList.remove('hit-up','hit-dn');void o.el.offsetWidth;o.el.classList.add(up?'hit-up':'hit-dn');
+  setTimeout(()=>o.el.classList.remove('hit-up','hit-dn'),T(600));
+  const p=document.createElement('span');p.className='pop '+(up?'up':'dn');p.textContent=(up?'+':'−')+Math.abs(Math.round(v-old));o.el.appendChild(p);setTimeout(()=>p.remove(),T(1500));}
+}
+function drawAll(big){RES.forEach(r=>drawRes(r.k,big));const crit=RES.some(r=>S.v[r.k]<25);$('#aria').classList.toggle('alert',crit);}
+function apply(e,big=true){const ch={};Object.entries(e||{}).forEach(([k,v])=>{if(!v)return;S.v[k]=clamp(S.v[k]+v);ch[k]=1;});Object.keys(ch).forEach(k=>drawRes(k,big));$('#aria').classList.toggle('alert',RES.some(r=>S.v[r.k]<25));}
+
+/* ---------- time helpers ---------- */
+const M=()=>MODES[mode];
+const cyc=d=>(d-1)%28;
+const isNight=d=>mode==='moon'&&cyc(d)>=14;
+function supplyIn(){const m=M();for(let i=1;i<=m.supEvery;i++)if((S.day+i)%m.supEvery===m.supOff)return i;return m.supEvery;}
+function txt(s){const m=M();s=pm(s)||'';const ni=14-cyc(S.day);
+ return s.replace(/\{Ds\}/g,m.units).replace(/\{D\}/g,m.unit).replace(/\{P\}/g,m.planet).replace(/\{nightIn\}/g,ni>0?ni:'a few');}
+function drawTime(){
+ const m=M(),n=$('#tNum');$('#tUnit').textContent=m.U;n.textContent=pad(S.day);n.classList.remove('flip');void n.offsetWidth;n.classList.add('flip');
+ const a=$('#chipA'),b=$('#chipB'),c=$('#chipC');const toGoal=m.goal-S.day;
+ if(mode==='moon'){const cy=cyc(S.day),night=cy>=14;a.textContent=night?`☾ DAWN IN ${28-cy}`:`☀ NIGHT IN ${14-cy}`;a.classList.toggle('hot',!night&&14-cy<=4||night);
+  document.body.classList.toggle('night',night);c.textContent=`LANDER IN ${supplyIn()}`;}
+ else{a.textContent=S.storm>0?`▒ STORM ${S.storm} SOLS`:`SHIP IN ${supplyIn()}`;a.classList.toggle('hot',S.storm>0);c.textContent=`DELAY ~${4+((S.day*7)%18)} MIN`;}
+ b.textContent=`${m.goalName} IN ${Math.max(0,toGoal)}`;
+ $('#goalTxt').textContent=`${m.goalName} · ${m.U} ${m.goal}`;$('#gfill').style.width=Math.min(100,S.day/m.goal*100)+'%';
+ // strip
+ const st=$('#strip');let html='';
+ if(mode==='moon'){const base=S.day-cyc(S.day);st.style.gridTemplateColumns='repeat(28,1fr)';
+  for(let i=0;i<28;i++){const d=base+i;let cl=i>=14?'dark':'lit';if(d<S.day)cl+=' past';if(d===S.day)cl+=' now';if(d%m.supEvery===m.supOff)cl+=' sup';html+=`<i class="${cl}"></i>`;}}
+ else{const n=24;st.style.gridTemplateColumns=`repeat(${n},1fr)`;for(let i=0;i<n;i++){const d=S.day+i-3;let cl='lit';if(d<S.day)cl+=' past';if(d===S.day)cl+=' now';if(i>=3&&i-3<S.storm)cl+=' storm';if(d%m.supEvery===m.supOff)cl+=' sup';html+=`<i class="${cl}"></i>`;}}
+ st.innerHTML=html;
+}
+
+/* ---------- stickers ---------- */
+let stq=Promise.resolve();
+function sticker(main,sub,kind){stq=stq.then(()=>new Promise(res=>{const el=$('#sticker');el.className='sticker';el.innerHTML=main+(sub?`<small>${sub}</small>`:'');void el.offsetWidth;el.className='sticker show '+(kind||'');setTimeout(()=>{el.className='sticker';res();},T(1300));}));return stq;}
+
+/* ---------- CHAPTER 1: loadout state ---------- */
+let PK=new Set(LOADOUT.map(i=>i.id)); // starts as the science team's full wish list (over capacity on purpose)
+let LN=[];                            // loadout learning moments, newest first
+const ITEM={};LOADOUT.forEach(i=>ITEM[i.id]=i);
+const OBJ={};OBJS.forEach(o=>OBJ[o.id]=o);
+const REQ=LOADOUT.reduce((a,i)=>a+i.kg,0);
+const has=id=>PK.has(id);
+const fmt=n=>Math.round(n).toLocaleString('en-US');
+const fk=n=>String(Math.round(n*10)/10);
+const clone=o=>JSON.parse(JSON.stringify(o));
+function totals(){let kg=0,usd=0,gen=BASE_GEN,draw=BASE_DRAW;LOADOUT.forEach(i=>{if(!has(i.id))return;kg+=i.kg;usd+=i.usd;gen+=i.gen||0;draw+=i.draw||0;});return{kg,usd,gen,draw,free:CAP-kg};}
+function objState(){return OBJS.map(o=>{const need=LOADOUT.filter(i=>i.obj.includes(o.id)),got=need.filter(i=>has(i.id)).length;return{id:o.id,n:pm(o.n),c:o.c,need:need.length,got,full:got===need.length};});}
+function fxOf(){const g=(id,k,d)=>{const f=(ITEM[id].fx||{})[k];return f===undefined?d:f[has(id)?0:1];},t=totals();
+ return{dayGain:g('solar','dayGain',.5),marsSun:g('solar','marsSun',0),darkMul:g('batt','darkMul',1),odds:g('rover','oddsBonus',0),cMul:g('comms','cMul',1),
+  sciMul:g('instr','sciMul',1),saves:g('spare','saves',0),radMul:g('rad','radMul',1),o2Mul:g('o2','o2Mul',1),net:t.gen-t.draw,rover:has('rover')};}
+function startVals(){const v={...M().start},d={};
+ LOADOUT.forEach(i=>Object.entries(pm(has(i.id)?i.pack:i.skip)||{}).forEach(([k,x])=>d[k]=(d[k]||0)+x));
+ Object.keys(v).forEach(k=>v[k]=Math.max(START_MIN,Math.min(START_MAX,v[k]+(d[k]||0))));return v;}
+function bubble(el,html){if(el.classList.contains('on')&&el._h===html){el.classList.remove('on');return;}
+ el._h=html;el.innerHTML=html;el.classList.remove('on');void el.offsetWidth;el.classList.add('on');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),7000);}
+/* ---------- CHAPTER 1: briefing ---------- */
+function openBrief(){theme(mode);
+ $('#brTxt').innerHTML=mode==='moon'
+  ?"Commander, your first lunar mission has been approved. Unfortunately, the rocket can't carry everything the science team asked for. <b>Your first job: decide what stays on Earth.</b>"
+  :"Commander, your first Mars mission has been approved. Unfortunately, the rocket can't carry everything the science team asked for, and resupply is a month away. <b>Your first job: decide what stays on Earth.</b>";
+ $('#brCons').innerHTML=[`CARGO ${fmt(CAP)} KG`,`REQUESTED ${fmt(REQ)} KG`,`BUDGET $${fmt(BUDGET)}M`,`${OBJS.length} SCIENCE GOALS`].map(x=>`<span>${x}</span>`).join('');
+ show('brief');setTimeout(()=>$('#toLoad').focus(),60);}
+/* ---------- CHAPTER 1: cargo loadout ---------- */
+function openLoad(){theme(mode);buildLoad();updLoad();show('load');$('#load').scrollTop=0;$('#ldBubble').classList.remove('on');}
+function buildLoad(){
+ $('#mCap').textContent=fmt(CAP);$('#mCapLine').style.left=(CAP/REQ*100)+'%';
+ $('#objs').innerHTML='<span class="lbl">SCIENCE GOALS //</span>'+OBJS.map(o=>`<span class="obj" data-o="${o.id}" style="--oc:${o.c}"><span class="pips"></span>${pm(o.n)}</span>`).join('');
+ $('#items').innerHTML=LOADOUT.map(it=>`<div class="it"><button type="button" class="it-b" data-i="${it.id}" aria-pressed="${has(it.id)}" style="--ic:${it.c}" aria-label="${it.n}, ${fmt(it.kg)} kilograms. Packed?">
+  <span class="it-top"><span class="it-ic"><svg viewBox="0 0 24 24" aria-hidden="true">${IICON[it.ic]}</svg></span><span class="it-n">${it.n}</span></span>
+  <span class="it-row"><span class="it-kg">${fmt(it.kg)} KG</span><span class="it-ob" title="Science goals it helps">${it.obj.map(o=>`<i style="--oc:${OBJ[o].c}"></i>`).join('')}</span></span>
+  <span class="pills">${pm(it.gain).map(g=>`<span class="pl g">${g}</span>`).join('')}${pm(it.cost).map(g=>`<span class="pl r">${g}</span>`).join('')}</span></button>
+  <button type="button" class="it-q" data-q="${it.id}" aria-label="Ask ARIA about ${it.n}">?</button></div>`).join('');
+ renderLN(false);}
+function updLoad(){
+ const t=totals(),over=t.kg-CAP,ob=t.usd>BUDGET,net=t.gen-t.draw;
+ $('#mKg').textContent=fmt(t.kg);$('#mFill').style.width=Math.min(100,t.kg/REQ*100)+'%';
+ const mb=$('#mBar');mb.setAttribute('aria-valuemax',REQ);mb.setAttribute('aria-valuenow',t.kg);mb.setAttribute('aria-valuetext',`${fmt(t.kg)} of ${fmt(CAP)} kilograms`);
+ $('#meters').classList.toggle('over',over>0);
+ $('#mMsg').textContent=over>0?`OVER BY ${fmt(over)} KG`:`${fmt(-over)} KG FREE`;
+ $('#bTxt').textContent=`$${fmt(t.usd)}M / $${fmt(BUDGET)}M`;$('#bFill').style.width=Math.min(100,t.usd/BUDGET*100)+'%';$('#bMini').classList.toggle('bad',ob);
+ $('#pTxt').textContent=`${fk(t.gen)} vs ${fk(t.draw)} kW (${net>=0?'+':'−'}${fk(Math.abs(net))})`;
+ $('#pFill').style.width=Math.min(100,t.draw/t.gen*100)+'%';$('#pMini').classList.toggle('bad',net<0);$('#pMini').classList.toggle('ok',net>=0);
+ objState().forEach(o=>{const el=$(`.obj[data-o="${o.id}"]`);if(!el)return;el.classList.toggle('full',o.full);el.classList.toggle('part',!o.full&&o.got>0);el.title=`${o.got}/${o.need} key items packed`;
+  el.querySelector('.pips').innerHTML=Array.from({length:o.need},(_,i)=>`<i class="${i<o.got?'on':''}"></i>`).join('');});
+ document.querySelectorAll('.it-b').forEach(b=>b.setAttribute('aria-pressed',String(has(b.dataset.i))));
+ const go=$('#toSum');go.disabled=over>0||ob;go.textContent=over>0?`Cut ${fmt(over)} kg`:ob?'Over budget':'Review launch ▶';}
+function toggleItem(id){if(!ITEM[id])return;if(has(id))PK.delete(id);else PK.add(id);addLN(pm(ITEM[id].note));updLoad();
+ const b=$(`.it-b[data-i="${id}"]`);if(b&&has(id)&&totals().kg>CAP){b.classList.remove('flash');void b.offsetWidth;b.classList.add('flash');}}
+function addLN(t){if(!t||LN[0]===t)return;LN=[t,...LN.filter(x=>x!==t)].slice(0,4);renderLN(true);}
+function renderLN(nw){const l=$('#ldNotes');if(!LN.length){l.innerHTML='<li>Tap an item to pack or unpack it. Every cut teaches something.</li>';return;}
+ l.innerHTML=LN.map((t,i)=>`<li class="${i===0&&nw?'new':''}">${t}</li>`).join('');}
+let hintN=0;
+function ldHint(){const t=totals(),over=t.kg-CAP,os=objState(),net=t.gen-t.draw;
+ if(over>0){const heavy=LOADOUT.filter(i=>has(i.id)).sort((a,b)=>b.kg-a.kg).slice(0,4);const h=heavy[hintN++%Math.max(1,heavy.length)];
+  return `You're ${fmt(over)} kg over. Something has to stay on Earth.`+(h?` ${pm(h.hint)}`:'');}
+ if(t.usd>BUDGET)return 'We\'re over budget. The rover and the science instruments are the priciest things on the list.';
+ if(mode==='moon'&&!has('batt'))return 'No batteries? Lunar night is 14 days long. Solar alone won\'t get you through it.';
+ if(mode==='mars'&&!has('food'))return 'Skipping food on Mars is a big bet. The next ship is a month away.';
+ if(mode==='mars'&&!has('batt'))return 'No batteries means dust storms will hit Power hard.';
+ if(net<0)return 'The base will draw more power than it makes. Expect Power to slide a little every '+M().unit+'.';
+ if(!os.some(o=>o.full))return 'No science goal is fully equipped. Mission Control will ask why we went.';
+ return `Launchable, with ${fmt(t.free)} kg to spare. There's no perfect manifest, only trade-offs.`;}
+function itemHint(id){const it=ITEM[id];if(!it)return;
+ let h=`<b>ARIA // ${it.n.toUpperCase()}</b>${pm(it.hint)}`;
+ if(it.obj.length)h+=` Helps: ${it.obj.map(o=>pm(OBJ[o].n)).join(', ')}.`;
+ if(it.gen)h+=` Makes ${it.gen} kW.`;if(it.draw)h+=` Draws ${it.draw} kW.`;
+ bubble($('#ldBubble'),h);}
+/* ---------- CHAPTER 1: launch summary ---------- */
+function openSummary(){const t=totals();if(t.kg>CAP||t.usd>BUDGET)return;
+ const pk=LOADOUT.filter(i=>has(i.id)),lf=LOADOUT.filter(i=>!has(i.id)),net=t.gen-t.draw;
+ const top=lf.slice().sort((a,b)=>pm(b.imp)-pm(a.imp)||b.kg-a.kg).slice(0,3);
+ const os=objState();
+ $('#sumBox').innerHTML=`<span class="stampbig">GO FOR LAUNCH</span>
+ <span class="ch-lbl">CHAPTER 1 // LAUNCH SUMMARY // ${M().name}</span>
+ <h2>MANIFEST<br>LOCKED.</h2>
+ <dl class="sum-l"><dt>PACKED</dt><dd>${pk.map(i=>i.n).join(' · ')||'Nothing. Bold.'}</dd><dt class="lft">LEFT ON EARTH</dt><dd>${lf.map(i=>i.n).join(' · ')||'Nothing'}</dd></dl>
+ <div class="sec"><h3>WHAT THAT MEANS</h3><ul class="cq">${top.length?top.map(i=>`<li><b>NO ${i.n.toUpperCase()}</b>${pm(i.cut)}</li>`).join(''):'<li class="ok"><b>NOTHING CUT</b>Somehow, everything fit.</li>'}</ul></div>
+ <div class="sec"><h3>SCIENCE GOALS</h3><div class="achs">${os.map(o=>`<span class="${o.full?'got':o.got?'half':'no'}">${o.full?'✔ ':''}${o.n}</span>`).join('')}</div></div>
+ <p>${fmt(t.free)} kg unused${t.free>=1500?' (LIGHT TRAVELER)':''} · $${fmt(t.usd)}M spent · power ${net>=0?'+':'−'}${fk(Math.abs(net))} kW</p>
+ <div class="row"><button class="btn alt" id="reLoad" type="button">◀ Repack</button><button class="btn big" id="goLaunch" type="button">LAUNCH ▲</button></div>`;
+ show('summary');$('#summary').scrollTop=0;
+ $('#reLoad').addEventListener('click',openLoad);$('#goLaunch').addEventListener('click',liftoff);setTimeout(()=>$('#goLaunch').focus(),60);}
+let launching=false;
+async function liftoff(){if(launching)return;launching=true;const L=$('#liftoff'),cd=$('#cd');
+ L.classList.remove('go');L.classList.add('on');
+ for(const n of ['3','2','1']){cd.textContent=n;await wait(420);}
+ cd.textContent='LIFTOFF ▲';L.classList.add('go');await wait(1150);
+ L.classList.remove('on','go');launching=false;start();
+ sticker('TOUCHDOWN',`${M().name}, ${M().U} 1. Good luck, Commander.`,'good');}
+$('#toLoad').addEventListener('click',openLoad);
+$('#ldBack').addEventListener('click',()=>{theme(mode);show('select');});
+$('#toSum').addEventListener('click',openSummary);
+$('#ldAria').addEventListener('click',()=>bubble($('#ldBubble'),'<b>ARIA //</b>'+ldHint()));
+$('#items').addEventListener('click',e=>{const q=e.target.closest('.it-q');if(q){itemHint(q.dataset.q);return;}const b=e.target.closest('.it-b');if(b)toggleItem(b.dataset.i);});
+/* ---------- loadout effects in the card game ---------- */
+function buildDeck(){
+ S.byId={};CARDS.forEach(c=>{const a=adapt(c);if(a)S.byId[c.id]=a;});
+ S.deck=Object.values(S.byId).filter(c=>c.m==='b'||c.m===mode);
+ LOADOUT.filter(i=>!has(i.id)&&LOADOUT_CB[i.id]).sort((a,b)=>pm(b.imp)-pm(a.imp)).slice(0,CB_DAYS.length).forEach((it,i)=>{
+  const id='cb_'+it.id;S.byId[id]={...LOADOUT_CB[it.id],id,m:'cb',tag:'YOUR LOADOUT'};S.queue.push({day:CB_DAYS[i]+Math.floor(Math.random()*3),id});});}
+function adapt(c){const rc=ROVER_CARDS[c.id];if(!rc)return c;
+ if(S.fx.rover){const x=clone(c);['L','R'].forEach(s=>{const o=pm(x[s]);if(o&&o.ch)o.ch.p=Math.min(.9,o.ch.p+S.fx.odds);});return x;}
+ if(rc.mode==='cut')return null;
+ if(rc.mode==='callback')return{...clone(rc.cb),id:c.id,m:c.m,tag:'OUT OF REACH',once:1,out:1};
+ const x=clone(c);x.t=rc.t;x.tag='ON FOOT';x.foot=1;
+ ['L','R'].forEach(s=>{const o=pm(x[s]);if(!o||!o.ch)return;o.ch.p=Math.max(.2,o.ch.p+rc.dp);
+  Object.keys(o.ch.win).forEach(k=>{o.ch.win[k]=Math.round(o.ch.win[k]*rc.winX);});
+  const e={...(o.e||{})};Object.entries(rc.e||{}).forEach(([k,v])=>e[k]=(e[k]||0)+v);o.e=e;});
+ return x;}
+function modEff(e,id,track){const f=S.fx;
+ if(f.radMul<1&&RAD_CARDS.has(id))['R','H'].forEach(k=>{if(e[k]<0){const n=Math.round(e[k]*f.radMul);if(track)S.lo.radSaved+=n-e[k];e[k]=n;}});
+ if(f.o2Mul<1&&O2_CARDS.has(id)&&e.H<0){const n=Math.round(e.H*f.o2Mul);if(track)S.lo.o2Saved+=n-e.H;e.H=n;}
+ return e;}
+function useSpare(label){S.spares--;S.usedSpare=true;S.lo.saved=label;
+ sticker('SPARE PARTS SAVED THE DAY',`${label.charAt(0)+label.slice(1).toLowerCase()}? Not today.`,'good');}
+function addSci(n,id,gl){S.sci++;const bad=gl==='lose'||gl==='saved';let p=SCI_PTS*n*S.fx.sciMul;if(bad)p/=2;S.sciPts+=Math.round(p);
+ const ob=SCI_OBJ[id];if(ob&&!bad)S.objHits[ob]=(S.objHits[ob]||0)+1;drawSci(true);
+ if(!S.once.has('sci')){S.once.add('sci');S.fx.sciMul>1?sticker('SCIENCE ×2','Your instruments doubled the data.','good'):sticker('HALF THE DATA','The big instruments stayed on Earth.','bad');}}
+function drawSci(b){$('#sciN').textContent=S.sciPts;if(b){const e=$('#sciB');e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump');}}
+function loCallouts(id,raw){const hurt=k=>(raw[k]||0)<0;
+ if(RAD_CARDS.has(id)&&(hurt('R')||hurt('H'))&&!S.once.has('rad')){S.once.add('rad');
+  S.fx.radMul<1?sticker('SHIELDING PAID OFF','Radiation protection halved that hit.','good'):sticker('NO EXTRA SHIELDING','You left radiation protection on Earth.','bad');}
+ if(O2_CARDS.has(id)&&hurt('H')&&!S.once.has('o2')){S.once.add('o2');
+  S.fx.o2Mul<1?sticker('BACKUP O₂ KICKED IN','Extra oxygen softened the blow.','good'):sticker('NO BACKUP OXYGEN','The spare tanks stayed on Earth.','bad');}}
+function battCall(){if(S.once.has('dark'))return;S.once.add('dark');
+ S.fx.darkMul<1?sticker('BATTERIES ONLINE',`You packed them. ${mode==='moon'?'Night':'Storm'} drain cut by a third.`,'good')
+  :sticker('NO BIG BATTERIES','They stayed on Earth. This one will bite.','bad');}
+function loLines(k){const L=[],lo=S.lo,u=M().units,P=id=>S.packed.includes(id);
+ if(k&&RES_ITEM[k]&&!P(RES_ITEM[k]))L.push(`You left the ${ITEM[RES_ITEM[k]].n.toLowerCase()} on Earth, and ${RES.find(r=>r.k===k).n.toLowerCase()} is what ran out.`);
+ if(lo.saved)L.push(`Spare parts turned "${lo.saved.toLowerCase()}" into a non-event.`);
+ if(lo.radSaved)L.push(`Radiation protection blocked ${lo.radSaved} points of damage.`);
+ if(lo.o2Saved)L.push(`Extra oxygen saved ${lo.o2Saved} points of Crew Health.`);
+ if(!P('rover')&&(lo.foot||lo.out))L.push(`No rover: ${lo.foot} trip${lo.foot===1?'':'s'} on foot, ${lo.out} site${lo.out===1?'':'s'} out of reach.`);
+ if(lo.dark)L.push(P('batt')?`Batteries carried you through ${lo.dark} dark ${u}.`:`Without big batteries, ${lo.dark} dark ${u} hit Power hard.`);
+ if(P('instr')&&S.sciPts)L.push(`Instruments doubled your science to ${S.sciPts} points.`);
+ if(!L.length)L.push(S.free>=1500?`You flew light, with ${fmt(S.free)} kg unused.`:'Your loadout held up. No single cut decided this run.');
+ return L.slice(0,2);}
+
+/* ---------- start ---------- */
+function start(){
+ const m=M();
+ S={v:startVals(),day:1,pending:[],queue:[],recent:[],facts:[],sci:0,sciPts:0,objHits:{},n:0,storm:0,ach:new Set(),phase:false,over:false,nightQ:-1,
+  fx:fxOf(),packed:[...PK],free:totals().free,usedSpare:false,once:new Set(),lo:{foot:0,out:0,radSaved:0,o2Saved:0,dark:0,saved:''}};
+ S.spares=S.fx.saves;S.objFull=objState().filter(o=>o.full).map(o=>o.id);
+ theme(mode);show('game');busy=false;
+ RES.forEach(r=>{RE[r.k].shown=0;});drawAll(false);drawTime();drawSci(false);
+ $('#baseName').textContent=m.name;
+ $('#nlist').innerHTML=LN.length?`<li>${LN[0]}</li>`:'<li class="ph">Your first decision unlocks a note.</li>';
+ buildDeck();
+ S.cur={id:'intro',w:'aria',t:m.intro,L:{t:'Let\'s go',d:0},R:{t:'Ready',d:0},f:m.introF,tag:'BRIEFING'};
+ renderCard();
+}
+
+/* ---------- card ---------- */
+function opt(side){return pm(S.cur[side]);}
+function days(o){const d=pm(o.d);return d===undefined?1:d;}
+function renderCard(){
+ const c=S.cur,ch=CH[c.w];
+ const tag=c.tag||(c.m==='f'?'FOLLOW-UP':c.m==='b'?'COLONY':mode==='moon'?'LUNAR':'MARTIAN');
+ const L=opt('L'),R=opt('R');
+ card.innerHTML=`<div class="c-art" style="--c:${ch.c}"><div class="c-meta"><span>FILE ${pad(S.n)}</span><span class="tg">${tag}</span></div><div class="c-face">${portrait(ch)}</div><div class="c-plate">${ch.n}<small>${ch.r}</small></div></div>
+ <div class="c-body"><p class="c-text">${txt(c.t)}</p>${S.n<2?'<span class="c-hint">◀ DRAG ▶</span>':''}</div>
+ <div class="stamp sl">${L.t}</div><div class="stamp sr">${R.t}</div>`;
+ card.style.transition='none';card.style.transform='';card.style.opacity='1';
+ card.classList.remove('enter');void card.offsetWidth;card.classList.add('enter');
+ [['L',L],['R',R]].forEach(([s,o])=>{$('#b'+s+'t').textContent=o.t;const d=days(o),el=$('#b'+s+'d');
+  el.textContent=d===0?'NO TIME':`T+${d} ${(d===1?M().unit:M().units).toUpperCase()}`;el.classList.toggle('long',d>=2);});
+}
+function effects(o){const m=modEff({...(o.e||{})},S.cur.id,false),q={};
+ if(o.ch)[o.ch.win,o.ch.lose].forEach(x=>Object.keys(x).forEach(k=>{if(!(k in m))q[k]=1;}));
+ if(o.later)Object.keys(o.later.e).forEach(k=>{if(!(k in m))q[k]=1;});return{m,q};}
+function preview(side,s){
+ const sl=card.querySelector('.sl'),sr=card.querySelector('.sr');
+ $('#bL').classList.toggle('hl',side==='L');$('#bR').classList.toggle('hl',side==='R');
+ if(!side){RES.forEach(r=>RE[r.k].dot.className='dot');if(sl){sl.style.opacity=0;sr.style.opacity=0;}$('#tPrev').classList.remove('on');return;}
+ if(sl){sl.style.opacity=side==='L'?Math.min(1,s*1.3):0;sr.style.opacity=side==='R'?Math.min(1,s*1.3):0;}
+ const o=opt(side),{m,q}=effects(o),h=DIFF[diff].hints;
+ RES.forEach(r=>{let c='dot';const v=m[r.k];if(v){c+=' on'+(Math.abs(v)>=10?' big':'');if(h)c+=v>0?' up':' dn';}else if(q[r.k])c+=' on q';RE[r.k].dot.className=c;});
+ const d=days(o),tp=$('#tPrev');if(d>0){tp.textContent=`+${d} ${(d===1?M().unit:M().units).toUpperCase()}`;tp.classList.add('on');}else tp.classList.remove('on');
+}
+
+/* ---------- input ---------- */
+let drag=null;const TH=()=>Math.min(110,card.offsetWidth*.28);
+card.addEventListener('pointerdown',e=>{if(busy||!S||S.over)return;drag={x:e.clientX,y:e.clientY,dx:0};try{card.setPointerCapture(e.pointerId);}catch(_){}card.style.transition='none';});
+card.addEventListener('pointermove',e=>{if(!drag)return;drag.dx=e.clientX-drag.x;const dy=(e.clientY-drag.y)*.12;
+ card.style.transform=`translate(${drag.dx}px,${dy}px) rotate(${drag.dx/14}deg)`;if(Math.abs(drag.dx)<14)preview(null);else preview(drag.dx<0?'L':'R',Math.abs(drag.dx)/TH());});
+function endDrag(){if(!drag)return;const dx=drag.dx;drag=null;if(Math.abs(dx)>TH())choose(dx<0?'L':'R');else{card.style.transition='transform .3s cubic-bezier(.2,1,.3,1.3)';card.style.transform='';preview(null);}}
+card.addEventListener('pointerup',endDrag);card.addEventListener('pointercancel',endDrag);
+['L','R'].forEach(s=>{const b=$('#b'+s);b.addEventListener('click',()=>choose(s));
+ b.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!busy&&S&&!S.over)preview(s,1);});b.addEventListener('pointerleave',()=>{if(!busy&&!drag)preview(null);});
+ b.addEventListener('focus',()=>{if(!busy&&S&&!S.over)preview(s,1);});b.addEventListener('blur',()=>{if(!busy)preview(null);});});
+document.addEventListener('keydown',e=>{if(!$('#game').classList.contains('on'))return;if(e.key==='ArrowLeft'||e.key==='a')choose('L');if(e.key==='ArrowRight'||e.key==='d')choose('R');});
+$('#aria').addEventListener('click',()=>{const b=$('#bubble');if(b.classList.contains('on')){b.classList.remove('on');return;}
+ const low=RES.slice().sort((a,c)=>S.v[a.k]-S.v[c.k])[0];let t;
+ if(S.v[low.k]<40)t=TIPS[low.k];else if(isNight(S.day))t='It\'s lunar night, so the solar panels are dead. Every multi-day project burns stored power.'+(S.fx.darkMul<1?' Good thing we packed the big batteries.':' And the big batteries are back on Earth.');
+ else if(S.storm>0)t='The dust storm is eating power and comms every sol. Quick choices help.'+(S.fx.darkMul<1?' The batteries are buying us time.':'');
+ else t='All systems nominal. Remember that long projects cost more than resources: every extra '+M().unit+' drains supplies.';
+ const c=S.cur;const r=c&&(opt('R').ch||opt('L').ch);if(r&&DIFF[diff].hints)t+=` This one's a gamble, about ${Math.round(r.p*100)}% odds.`;
+ b.innerHTML='<b>ARIA //</b>'+t;b.classList.add('on');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('on'),6000);});
+
+/* ---------- turn ---------- */
+async function choose(side){
+ if(busy||!S||S.over)return;busy=true;$('#bubble').classList.remove('on');
+ const c=S.cur,o=opt(side);preview(side,1);
+ const dir=side==='L'?-1:1;card.style.transition='transform .32s ease-in,opacity .32s';
+ card.style.transform=`translate(${dir*130}%,60px) rotate(${dir*24}deg)`;card.style.opacity='0';
+ await wait(300);preview(null);
+ // immediate effects
+ const eff={...(o.e||{})};let res=null,gl='';
+ if(o.ch){const win=Math.random()<o.ch.p;
+  if(!win&&FIX.has(o.ch.lm)&&S.spares>0){useSpare(o.ch.lm);gl='saved';}
+  else{Object.entries(win?o.ch.win:o.ch.lose).forEach(([k,v])=>eff[k]=(eff[k]||0)+v);res=[win?o.ch.wm:o.ch.lm,win?'good':'bad'];gl=win?'win':'lose';
+   if(win&&o.ch.winNext)S.queue.push({day:S.day+3,id:o.ch.winNext});}}
+ const raw={...eff};modEff(eff,c.id,true);
+ apply(eff);
+ if(res)sticker(res[0],'',res[1]);
+ loCallouts(c.id,raw);
+ if(c.foot)S.lo.foot++;if(c.out)S.lo.out++;
+ if(o.later)S.pending.push({day:S.day+o.later.in+days(o)-1,e:o.later.e,msg:o.later.msg});
+ if(o.next)S.queue.push({day:S.day+o.next.in,id:o.next.id});
+ if(o.sci)addSci(o.sci,c.id,gl);
+ const f=txt(c.f);if(f&&!S.facts.includes(f)){S.facts.unshift(f);const li=document.createElement('li');li.className='new';li.textContent=f;const nl=$('#nlist');nl.querySelectorAll('.ph').forEach(x=>x.remove());nl.prepend(li);while(nl.children.length>4)nl.lastChild.remove();}
+ S.n++;
+ if(dead())return;
+ // time passes
+ const d=days(o);
+ if(d>0){await wait(res?700:420);
+  if(d>=3)sticker(`${d} ${M().units} pass…`,'','time');
+  for(let i=0;i<d;i++){tick();if(S.over)return;await wait(d>=3?240:320);}}
+ checkAch();
+ if(S.day>=M().goal){win();return;}
+ if(Math.random()<.08&&S.day>4)randomEvent();
+ if(dead())return;
+ S.cur=pick();renderCard();busy=false;
+}
+function tick(){
+ const m=M(),mult=DIFF[diff].mult,f=S.fx;S.day++;
+ const e={};Object.entries(m.drain).forEach(([k,v])=>e[k]=-v*mult*(k==='C'?f.cMul:1));
+ e.P+=Math.max(-.15,Math.min(.15,f.net*KW_DRAIN)); // power balance from the loadout
+ if(mode==='moon'){const cy=cyc(S.day);if(cy>=14){e.P-=1.7*mult*f.darkMul;S.lo.dark++;}else e.P+=f.dayGain;
+  if(cy===14){sticker('LUNAR NIGHT','14 days. No sun. No solar power.','time');battCall();}
+  if(cy===0){sticker('SUNRISE','Solar panels back online.','good');S.phase=true;}
+  if(cy>=10&&cy<=12&&S.nightQ!==Math.floor((S.day-1)/28)){S.nightQ=Math.floor((S.day-1)/28);S.queue.unshift({day:S.day,id:'m_night'});}}
+ else{if(S.storm>0){e.P-=1.4*mult*f.darkMul;e.C-=.6*mult;S.storm--;S.lo.dark++;if(!S.storm){sticker('STORM CLEARED','Panels recharging.','good');S.phase=true;document.body.classList.remove('storm');}}
+  else if(S.day>8&&Math.random()<.06){S.storm=4+Math.floor(Math.random()*4);sticker('DUST STORM',`Sunlight blocked for ~${S.storm} sols.`,'bad');battCall();document.body.classList.add('storm');S.queue.unshift({day:S.day,id:'r_storm'});}
+  else e.P+=f.marsSun;}
+ RES.forEach(r=>{if(r.k!=='H'&&S.v[r.k]<20)e.H=(e.H||0)-.8;});
+ Object.entries(e).forEach(([k,v])=>S.v[k]=clamp(S.v[k]+v));drawAll(false);
+ if(S.day%m.supEvery===m.supOff){apply(m.supply);sticker(m.supMsg,'Fresh supplies from Earth.','good');S.ach.add('sup');}
+ const due=S.pending.filter(p=>p.day<=S.day);S.pending=S.pending.filter(p=>p.day>S.day);
+ due.forEach(p=>{if(FIX.has(p.msg)&&S.spares>0){useSpare(p.msg);return;}const good=Object.values(p.e).reduce((a,b)=>a+b,0)>=0;apply(p.e);sticker(p.msg,'An earlier decision just landed.',good?'good':'bad');});
+ drawTime();dead();
+}
+function randomEvent(){
+ const ev=mode==='moon'?[[{C:5},'RELAY SAT ONLINE','good'],[{H:-5,P:-3},'THERMAL SPIKE','bad'],[{R:-5},'COSMIC RAY BURST','bad'],[{M:5},'EARTHRISE VIEW','good']]
+  :[[{P:6},'WIND CLEANED PANELS','good'],[{C:-6},'SIGNAL DROPOUT','bad'],[{W:6},'FROST HARVEST','good'],[{M:-5},'CABIN FEVER','bad']];
+ const x=ev[Math.floor(Math.random()*ev.length)],e={...x[0]};if(x[1]==='COSMIC RAY BURST'){const raw={...e};modEff(e,'cosmic',true);loCallouts('cosmic',raw);}apply(e);sticker(x[1],'',x[2]);
+}
+function pick(){
+ const i=S.queue.findIndex(q=>q.day<=S.day);
+ if(i>=0){const q=S.queue.splice(i,1)[0],qc=S.byId[q.id];if(qc&&(qc.m!=='mars'||mode==='mars')&&(qc.m!=='moon'||mode==='moon')){mem(q.id);return qc;}}
+ let pool=S.deck.filter(c=>c.m!=='f'&&!S.recent.includes(c.id)&&c.id!=='m_night'&&c.id!=='r_storm');
+ if(!pool.length)pool=S.deck.filter(c=>c.m!=='f');
+ const low=RES.slice().sort((a,b)=>S.v[a.k]-S.v[b.k])[0].k;
+ const helps=pool.filter(c=>['L','R'].some(s=>((pm(c[s]).e||{})[low]||0)>0));
+ const src=(helps.length&&Math.random()<.35)?helps:pool;const c=src[Math.floor(Math.random()*src.length)];
+ if(c.once)S.deck=S.deck.filter(x=>x!==c);
+ mem(c.id);return c;
+}
+function mem(id){S.recent.push(id);while(S.recent.length>Math.min(18,S.deck.length-8))S.recent.shift();}
+function checkAch(){if(S.day>=14)S.ach.add('d14');if(S.day>=42)S.ach.add('d42');if(S.phase)S.ach.add('phase');if(S.sci>=5)S.ach.add('sci');if(S.facts.length>=12)S.ach.add('facts');if(S.day>12&&RES.every(r=>S.v[r.k]>=50))S.ach.add('bal');if(S.free>=1500)S.ach.add('light');}
+
+/* ---------- end ---------- */
+function dead(){if(S.over)return true;const d=RES.find(r=>S.v[r.k]<=0);if(!d)return false;S.over=true;busy=true;setTimeout(()=>end(d.k),T(1100));return true;}
+function win(){S.over=true;busy=true;S.ach.add('win');if(!S.usedSpare)S.ach.add('noreg');sticker(M().goalName+'!','You made it.','good');setTimeout(()=>end(null),T(1500));}
+function lb(){try{return JSON.parse(localStorage.getItem('cmdr_lb2')||'[]');}catch(_){return[];}}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function end(k){
+ checkAch();const m=M();
+ const objs=OBJS.map(o=>{const eq=S.objFull.includes(o.id),hit=(S.objHits[o.id]||0)>0;return{n:pm(o.n),eq,ok:eq&&hit};});
+ const objOk=objs.filter(o=>o.ok).length,sciScore=S.sciPts+objOk*OBJ_PTS;
+ const pk=LOADOUT.filter(i=>S.packed.includes(i.id)),lf=LOADOUT.filter(i=>!S.packed.includes(i.id));
+ const score=S.day*100+S.facts.length*20+S.ach.size*200+(k?0:2000)+sciScore;
+ const me={n:callsign||'COMMANDER',s:score,d:S.day,m:mode,t:Date.now()};
+ let l=lb();l.push(me);l.sort((a,b)=>b.s-a.s);l=l.slice(0,5);try{localStorage.setItem('cmdr_lb2',JSON.stringify(l));}catch(_){}
+ const title=k?DEATH[k][0]:m.goalName+' REACHED';
+ const body=k?pm(DEATH[k][1]):(mode==='moon'?'Three full lunar cycles. A fresh crew lands to take over, and your base is ready for them.':'The return window is open. Your crew heads home after 100 sols on the Red Planet.');
+ $('#rep').innerHTML=`<span class="stampbig ${k?'':'win'}">${k?'TERMINATED':'COMPLETE'}</span>
+ <span class="lbl">MISSION REPORT // ${m.name} // ${esc(callsign)}</span>
+ <h2>${title}</h2><p>${body}</p>
+ <div class="stats s4"><div class="st"><b>${S.day}</b><small>${m.units.toUpperCase()} SURVIVED</small></div><div class="st"><b>${score.toLocaleString()}</b><small>SCORE</small></div><div class="st"><b>${sciScore}</b><small>SCIENCE</small></div><div class="st"><b>${S.facts.length}</b><small>NOTES LOGGED</small></div></div>
+ <div class="sec"><h3>YOUR LOADOUT // ✔ PACKED · ✕ LEFT ON EARTH</h3><div class="lo-l">${pk.map(i=>`<span class="pk">✔ ${i.n}</span>`).join('')}</div>${lf.length?`<div class="lo-l">${lf.map(i=>`<span class="lf">✕ ${i.n}</span>`).join('')}</div>`:''}
+  <ul class="learned" style="margin-top:10px">${loLines(k).map(l=>`<li>${l}</li>`).join('')}</ul></div>
+ <div class="sec"><h3>SCIENCE OBJECTIVES // ${S.sciPts} PTS${objOk?` + ${objOk*OBJ_PTS} BONUS`:''}</h3><div class="achs">${objs.map(o=>`<span class="${o.ok?'got':o.eq?'half':'no'}">${o.ok?'✔ ':''}${o.n}${o.ok?'':o.eq?' · no data yet':' · not equipped'}</span>`).join('')}</div></div>
+ <div class="sec"><h3>BADGES</h3><div class="achs">${ACH.map(a=>`<span class="${S.ach.has(a.id)?'got':'no'}">${a.n}</span>`).join('')}</div></div>
+ ${S.facts.length?`<div class="sec"><h3>YOU LEARNED</h3><ul class="learned">${S.facts.slice(0,3).map(f=>`<li>${f}</li>`).join('')}</ul></div>`:''}
+ <div class="sec"><h3>TOP COMMANDERS // THIS DEVICE</h3><ol class="lb">${l.map((e,i)=>`<li class="${e.t===me.t?'me':''}"><span>${i+1}. [${e.m==='moon'?'MOON':'MARS'}] ${esc(e.n)}</span><span>${e.s.toLocaleString()}</span></li>`).join('')}</ol></div>
+ <div class="row"><button class="btn alt" id="chg" type="button">Switch rock</button><button class="btn" id="again" type="button">Fly again ▲</button></div>`;
+ document.body.classList.remove('night','storm');show('over');
+ $('#again').addEventListener('click',openLoad);$('#chg').addEventListener('click',()=>{theme(mode);show('select');});
+}
+window.__g={get S(){return S},choose,start,setMode:m=>{mode=m},setDiff:d=>{diff=d},
+ LOADOUT,
+ get loadout(){return{packed:[...PK],left:LOADOUT.filter(i=>!has(i.id)).map(i=>i.id),totals:totals(),objectives:objState(),fx:fxOf(),notes:LN.slice()};},
+ pack:(id,on)=>{if(!ITEM[id])return[...PK];((on===undefined)?!has(id):on)?PK.add(id):PK.delete(id);if($('#load').classList.contains('on'))updLoad();return[...PK];},
+ setLoadout:ids=>{PK=new Set((ids||[]).filter(i=>ITEM[i]));if($('#load').classList.contains('on'))updLoad();return[...PK];},
+ openBrief,openLoad,openSummary,liftoff,
+ quickStart:ids=>{if(ids)PK=new Set(ids.filter(i=>ITEM[i]));start();}};
+})();
+</script>
+</body>
+</html>
