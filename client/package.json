@@ -1,0 +1,39 @@
+{
+  "name": "@commander/client",
+  "version": "1.0.0",
+  "private": true,
+  "description": "React + Vite + Tailwind v4 client for COMMANDER with swappable themes.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@commander/engine": "*",
+    "@fontsource/archivo-black": "^5.0.0",
+    "@fontsource/inter": "^5.0.0",
+    "@fontsource/jetbrains-mono": "^5.0.0",
+    "@fontsource/orbitron": "^5.0.0",
+    "@fontsource/silkscreen": "^5.0.0",
+    "@fontsource/space-grotesk": "^5.0.0",
+    "@fontsource/space-mono": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "jsdom": "^26.0.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^7.0.0",
+    "vitest": "^3.2.0"
+  }
+}

@@ -1,0 +1,173 @@
+/*
+ * Tailwind entry. Maps the runtime design tokens (`--t-*`, defined per theme in
+ * themes/<id>/tokens.css) into Tailwind's theme so utilities such as `bg-surface`, `text-ink`,
+ * `border-bw`, `shadow-panel` and `font-display` work in every theme. `inline` makes utilities
+ * reference the variables directly, so a world or theme class can override them on any element.
+ */
+@import 'tailwindcss';
+@import './motion.css';
+
+@source '../';
+
+@theme {
+  --breakpoint-desk: 980px;
+}
+
+@custom-variant short (@media (max-height: 720px) and (max-width: 979px));
+@custom-variant tiny (@media (max-width: 370px));
+
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--t-bg);
+  --color-surface: var(--t-surface);
+  --color-surface-2: var(--t-surface-2);
+  --color-well: var(--t-well);
+  --color-ink: var(--t-ink);
+  --color-muted: var(--t-muted);
+  --color-copy: var(--t-copy);
+  --color-placeholder: var(--t-placeholder);
+  --color-line: var(--t-line);
+  --color-edge: var(--t-edge);
+  --color-on-accent: var(--t-on-accent);
+  --color-on-ink: var(--t-on-ink);
+  --color-on-ink-soft: var(--t-on-ink-soft);
+  --color-accent: var(--t-accent);
+  --color-accent-2: var(--t-accent-2);
+  --color-good: var(--t-good);
+  --color-bad: var(--t-bad);
+  --color-warn: var(--t-warn);
+  --color-aria: var(--t-aria);
+  --color-cell: var(--t-cell);
+  --color-cell-lit: var(--t-cell-lit);
+  --color-cell-dark: var(--t-cell-dark);
+  --color-cell-storm: var(--t-cell-storm);
+  --color-art-shade: var(--t-art-shade);
+  --color-veil-night: var(--t-veil-night);
+  --color-veil-storm: var(--t-veil-storm-tint);
+  /* set inline per element from content data (character colour, resource colour) */
+  --color-speaker: var(--c);
+  --color-resource: var(--rc);
+
+  --font-*: initial;
+  --font-display: var(--t-font-display);
+  --font-mono: var(--t-font-mono);
+  --font-pixel: var(--t-font-pixel);
+  --font-body: var(--t-font-body);
+
+  --radius-*: initial;
+  --radius-box: var(--t-radius);
+  --radius-pill: var(--t-radius-round);
+
+  --shadow-*: initial;
+  --shadow-panel: var(--t-shadow-panel);
+  --shadow-notes: var(--t-shadow-notes);
+  --shadow-hard: var(--t-shadow-hard);
+  --shadow-hard-hover: var(--t-shadow-hard-hover);
+  --shadow-hard-press: var(--t-shadow-hard-press);
+  --shadow-hard-xs: var(--t-shadow-hard-xs);
+  --shadow-option: var(--t-shadow-option);
+  --shadow-option-hover: var(--t-shadow-option-hover);
+  --shadow-option-press: var(--t-shadow-option-press);
+  --shadow-line: var(--t-shadow-line);
+  --shadow-line-sm: var(--t-shadow-line-sm);
+  --shadow-accent-sm: var(--t-shadow-accent-sm);
+  --shadow-world-selected: var(--t-shadow-world-selected);
+  --shadow-edge-sm: var(--t-shadow-edge-sm);
+  --shadow-edge: var(--t-shadow-edge);
+  --shadow-edge-md: var(--t-shadow-edge-md);
+  --shadow-edge-lg: var(--t-shadow-edge-lg);
+  --shadow-edge-xl: var(--t-shadow-edge-xl);
+
+  --animate-*: initial;
+  --animate-twinkle: t-twinkle var(--t-dur-twinkle) steps(2) infinite;
+  --animate-storm: t-storm var(--t-dur-storm) linear infinite;
+  --animate-ticker: t-ticker var(--t-dur-ticker) linear infinite;
+  --animate-flip: t-flip var(--t-dur-flip) steps(2);
+  --animate-alert: t-alert var(--t-dur-alert) steps(2) infinite;
+  --animate-crit: t-crit var(--t-dur-crit) steps(2) infinite;
+  --animate-shake: t-shake var(--t-dur-shake);
+  --animate-pop: t-pop var(--t-dur-float) var(--t-ease-float) forwards;
+  --animate-deal: t-deal var(--t-dur-deal) var(--t-ease-deal);
+  --animate-sticker: t-sticker var(--t-dur-sticker) var(--t-ease-sticker) forwards;
+  --animate-bubble: t-bubble var(--t-dur-bubble);
+  --animate-type: t-type var(--t-dur-type) steps(6);
+  --animate-blink: t-blink var(--t-dur-blink) ease-in-out infinite;
+}
+
+/* Border widths come from tokens; style/colour still use Tailwind's border-* utilities. */
+@utility border-bw {
+  border-width: var(--t-bw);
+}
+@utility border-bw-sm {
+  border-width: var(--t-bw-sm);
+}
+@utility border-bw-lg {
+  border-width: var(--t-bw-lg);
+}
+@utility border-bw-hair {
+  border-width: var(--t-bw-hair);
+}
+@utility border-t-bw {
+  border-top-width: var(--t-bw);
+}
+@utility border-b-bw {
+  border-bottom-width: var(--t-bw);
+}
+@utility outline-bw-sm {
+  outline-width: var(--t-bw-sm);
+  outline-style: solid;
+}
+@utility border-b-bw-sm {
+  border-bottom-width: var(--t-bw-sm);
+}
+@utility border-t-bw-sm {
+  border-top-width: var(--t-bw-sm);
+}
+@utility border-l-bw-sm {
+  border-left-width: var(--t-bw-sm);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background: var(--t-bg);
+    color: var(--t-ink);
+    font-family: var(--t-font-body);
+    overflow: hidden;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  input {
+    user-select: text;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  :focus-visible {
+    outline: var(--t-focus-outline);
+    outline-offset: var(--t-focus-offset);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

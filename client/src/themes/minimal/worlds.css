@@ -1,0 +1,57 @@
+/*
+ * minimal per-world accents. Apply on <html> (the active world) or on any element to scope one
+ * world there (the world cards). Each class re-declares every world-dependent token: accent,
+ * planet / satellite / disc artwork and the tokens derived from the accent. Light first, dark in
+ * the media query below.
+ */
+.theme-minimal.world-minimal-moon,
+.theme-minimal .world-minimal-moon {
+  --t-accent: #0e7490;
+  --t-accent-2: #6366f1;
+  --t-glow: rgba(14, 116, 144, 0.14);
+  --t-shadow-world-selected: 0 0 0 3px var(--t-glow), 0 10px 30px -18px var(--t-sh-b);
+  --t-planet-bg: radial-gradient(circle at 30% 28%, #f1f1ee, #d6d6d2);
+  --t-sat-bg: radial-gradient(circle at 35% 30%, #f0f6fb, #bcd3e6);
+  --t-disc-bg: radial-gradient(circle at 35% 30%, #fafaf8, #cfcfca);
+  --t-sat-size: clamp(34px, 6vmin, 64px);
+  --t-sat-top: 14%;
+  --t-sat-left: 9%;
+  --t-moonlet-opacity: 0;
+}
+
+.theme-minimal.world-minimal-mars,
+.theme-minimal .world-minimal-mars {
+  --t-accent: #c2410c;
+  --t-accent-2: #b45309;
+  --t-glow: rgba(194, 65, 12, 0.14);
+  --t-shadow-world-selected: 0 0 0 3px var(--t-glow), 0 10px 30px -18px var(--t-sh-b);
+  --t-planet-bg: radial-gradient(circle at 30% 28%, #fdddc8, #f1ae86);
+  --t-sat-bg: radial-gradient(circle at 35% 30%, #e7e1da, #b9b0a6);
+  --t-disc-bg: radial-gradient(circle at 35% 30%, #fed7bd, #ee9a6e);
+  --t-sat-size: clamp(18px, 3.4vmin, 34px);
+  --t-sat-top: 18%;
+  --t-sat-left: 13%;
+  --t-moonlet-opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .theme-minimal.world-minimal-moon,
+  .theme-minimal .world-minimal-moon {
+    --t-accent: #22d3ee;
+    --t-accent-2: #818cf8;
+    --t-glow: rgba(34, 211, 238, 0.16);
+    --t-planet-bg: radial-gradient(circle at 30% 28%, #2b2d3d, #16171f);
+    --t-sat-bg: radial-gradient(circle at 35% 30%, #1e4a63, #12293a);
+    --t-disc-bg: radial-gradient(circle at 35% 30%, #3a3c46, #1d1e25);
+  }
+
+  .theme-minimal.world-minimal-mars,
+  .theme-minimal .world-minimal-mars {
+    --t-accent: #fb923c;
+    --t-accent-2: #fbbf24;
+    --t-glow: rgba(251, 146, 60, 0.16);
+    --t-planet-bg: radial-gradient(circle at 30% 28%, #4a2418, #231410);
+    --t-sat-bg: radial-gradient(circle at 35% 30%, #4a443d, #2a2622);
+    --t-disc-bg: radial-gradient(circle at 35% 30%, #6b3220, #351a12);
+  }
+}

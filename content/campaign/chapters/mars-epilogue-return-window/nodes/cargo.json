@@ -1,0 +1,52 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "return.cargo.samples",
+      "speaker": "sci",
+      "tag": "CARGO",
+      "text": "Dr. Okafor has rock cores to bring home. Pack them all, or save weight for crew comfort?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["landedAtDelta", "packedScience"]
+          },
+          "text": "Our extra science kit filled dozens of delta rock cores. Pack them all, or save weight for crew comfort?"
+        },
+        {
+          "when": {
+            "flags": ["landedAtDelta"]
+          },
+          "text": "The delta cores may hold signs of ancient life. Pack them all, or save weight for crew comfort?"
+        },
+        {
+          "when": {
+            "flags": ["landedOnPlains"]
+          },
+          "text": "We only have a few plains rocks, but they are still the first from Mars. Pack them, or save weight for comfort?"
+        }
+      ],
+      "fact": "Perseverance is collecting sample tubes of Mars rock for a future mission to bring them to Earth.",
+      "left": {
+        "label": "Pack the samples",
+        "days": 1,
+        "effects": {
+          "M": 4
+        },
+        "sci": true,
+        "setFlags": ["samplesLoaded"],
+        "goto": "return.crew.farewell"
+      },
+      "right": {
+        "label": "Save weight",
+        "days": 1,
+        "effects": {
+          "H": 3,
+          "M": 2
+        },
+        "setFlags": ["samplesLeft"],
+        "goto": "return.crew.farewell"
+      }
+    }
+  ]
+}

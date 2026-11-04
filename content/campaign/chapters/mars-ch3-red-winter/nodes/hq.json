@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "redwinter.hq.report",
+      "speaker": "hq",
+      "tag": "EARTH LINK",
+      "text": "Earth asks for a status update. Every message takes 20 minutes, so be clear. How honest are we?",
+      "fact": "Mars crews would send messages that arrive minutes later, and answers take just as long.",
+      "left": {
+        "label": "Full honest report",
+        "days": 1,
+        "effects": {
+          "C": 4,
+          "M": -3
+        },
+        "setFlags": ["honestReport"],
+        "goto": "$interludes"
+      },
+      "right": {
+        "label": "Short upbeat note",
+        "days": 1,
+        "effects": {
+          "M": 3,
+          "C": -2
+        },
+        "setFlags": ["upbeatReport"],
+        "goto": "$interludes"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "edl.site.choose",
+      "speaker": "sci",
+      "tag": "LANDING SITE",
+      "text": "Time to pick a landing site! Jezero's ancient river delta is exciting. The flat plains are much safer.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["tiredArrival"]
+          },
+          "text": "We are tired, and it is time to pick a site. Jezero's delta is exciting, but the flat plains are safer."
+        }
+      ],
+      "fact": "NASA sent Perseverance to Jezero Crater because its delta was once a lake where tiny life could have lived.",
+      "left": {
+        "label": "Jezero delta",
+        "days": 1,
+        "effects": {
+          "M": 2
+        },
+        "sci": true,
+        "setFlags": ["targetDelta"],
+        "goto": "edl.comms.plan"
+      },
+      "right": {
+        "label": "Flat plains",
+        "days": 1,
+        "effects": {
+          "P": 3
+        },
+        "setFlags": ["targetPlains"],
+        "goto": "edl.comms.plan"
+      }
+    }
+  ]
+}

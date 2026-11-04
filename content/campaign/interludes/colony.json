@@ -1,0 +1,744 @@
+{
+  "$schema": "../../schema/interludes.schema.json",
+  "interludes": [
+    {
+      "id": "greenhouse",
+      "speaker": "eng",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "Expanding the greenhouse by 25% takes 3 {Ds} of crew work, and the grow lights will drain power for good.",
+      "fact": "Grow lights are one of the biggest power users on any space base.",
+      "left": {
+        "label": "Not now",
+        "effects": {
+          "F": -4,
+          "P": 3
+        }
+      },
+      "right": {
+        "label": "Expand it",
+        "days": 3,
+        "effects": {
+          "F": 12,
+          "P": -10
+        },
+        "next": {
+          "id": "greenhouse2",
+          "in": 4
+        }
+      }
+    },
+    {
+      "id": "icerover",
+      "speaker": "sci",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "Radar spotted possible ice in a crater a 2-day drive south. Send the rover?",
+        "mars": "Radar shows ice under a dune field, a 4-sol drive away. Send the rover?"
+      },
+      "fact": "Water ice gives drinking water, breathable oxygen, and even rocket fuel.",
+      "left": {
+        "label": "Too risky",
+        "effects": {
+          "M": -3
+        }
+      },
+      "right": {
+        "label": "Send rover",
+        "days": {
+          "moon": 2,
+          "mars": 4
+        },
+        "effects": {
+          "P": -5
+        },
+        "gamble": {
+          "p": 0.6,
+          "win": {
+            "W": 18,
+            "M": 5
+          },
+          "lose": {
+            "H": -5,
+            "P": -6
+          },
+          "winText": "ICE FOUND!",
+          "loseText": "ROVER DAMAGED",
+          "winNext": "ice2"
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "solarstorm",
+      "speaker": "ops",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "Solar flare alert! Radiation hits in hours. Shelter everyone for 2 days?",
+        "mars": "Solar flare alert! Mars has no magnetic field to deflect it. Shelter for 2 sols?"
+      },
+      "fact": "Astronauts shelter behind water tanks during flares, because water blocks radiation well.",
+      "left": {
+        "label": "Keep working",
+        "effects": {
+          "P": 3
+        },
+        "gamble": {
+          "p": 0.5,
+          "win": {
+            "M": 4
+          },
+          "lose": {
+            "R": -14,
+            "H": -8
+          },
+          "winText": "FLARE MISSED US",
+          "loseText": "RADIATION SPIKE"
+        }
+      },
+      "right": {
+        "label": "Take shelter",
+        "days": 2,
+        "effects": {
+          "R": 7,
+          "M": -7
+        }
+      }
+    },
+    {
+      "id": "relay",
+      "speaker": "com",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "A ridge blocks our view of Earth. A relay satellite would fix it. 2 days to set up.",
+        "mars": "Messages to Earth take up to 22 minutes. A bigger antenna would help. 3 sols to build."
+      },
+      "fact": {
+        "moon": "Radio reaches the Moon in about 1.3 seconds, as long as nothing blocks the view.",
+        "mars": "Radio takes 3 to 22 minutes to cross between Earth and Mars, depending on orbits."
+      },
+      "left": {
+        "label": "Not now",
+        "effects": {
+          "C": -6
+        }
+      },
+      "right": {
+        "label": "Build it",
+        "days": {
+          "moon": 2,
+          "mars": 3
+        },
+        "effects": {
+          "C": 15,
+          "P": -8
+        }
+      }
+    },
+    {
+      "id": "restday",
+      "speaker": "med",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "The crew is running on fumes. I'm prescribing 2 {Ds} of rest.",
+      "fact": "Tired crews make mistakes. NASA plans astronaut sleep and time off carefully.",
+      "left": {
+        "label": "Keep schedule",
+        "effects": {
+          "M": -10,
+          "H": -4,
+          "P": 2
+        }
+      },
+      "right": {
+        "label": "Rest",
+        "days": 2,
+        "effects": {
+          "M": 12,
+          "H": 6
+        }
+      }
+    },
+    {
+      "id": "filter",
+      "speaker": "ls",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "The water recycler filter is clogging. Swapping it takes most of a {D}.",
+      "fact": "The ISS recycles about 98% of its water, sweat and urine included.",
+      "left": {
+        "label": "Delay it",
+        "effects": {
+          "P": 2
+        },
+        "later": {
+          "in": 3,
+          "effects": {
+            "W": -14,
+            "H": -3
+          },
+          "message": "RECYCLER FAILED"
+        }
+      },
+      "right": {
+        "label": "Swap it",
+        "days": 2,
+        "effects": {
+          "P": -4,
+          "W": 8
+        }
+      }
+    },
+    {
+      "id": "shield",
+      "speaker": "arch",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "Let's bury the habitat under regolith for radiation shielding. The diggers need 4 days.",
+        "mars": "Let's pile Martian soil over the habitat to block radiation. It's 4 sols of digging."
+      },
+      "fact": "A couple of metres of packed soil can block much of the radiation from space.",
+      "left": {
+        "label": "Skip it",
+        "effects": {
+          "R": -6
+        }
+      },
+      "right": {
+        "label": "Start digging",
+        "days": 4,
+        "effects": {
+          "R": 16,
+          "P": -8,
+          "M": -3
+        }
+      }
+    },
+    {
+      "id": "salad",
+      "speaker": "cook",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "Fresh salad night! The crew would love it, but it eats into the harvest.",
+      "fact": "In 2015, ISS astronauts ate lettuce grown in orbit in NASA's Veggie chamber.",
+      "left": {
+        "label": "Ration it",
+        "effects": {
+          "M": -6,
+          "F": 2
+        }
+      },
+      "right": {
+        "label": "Salad night",
+        "effects": {
+          "M": 11,
+          "F": -8
+        }
+      }
+    },
+    {
+      "id": "broadcast",
+      "speaker": "hq",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "Schools on Earth want a live lesson from the Moon. With a 1.3-second delay, it'll feel almost real-time!",
+        "mars": "Schools on Earth want a lesson from Mars. With a 12-minute delay it can't be live, so we'd record a Q&A."
+      },
+      "fact": {
+        "moon": "Apollo TV broadcasts reached Earth with just over a second of delay.",
+        "mars": "A Mars crew can't chat live with Earth. Every reply takes minutes."
+      },
+      "left": {
+        "label": "Decline",
+        "effects": {
+          "M": -3,
+          "C": 2
+        }
+      },
+      "right": {
+        "label": "Do it",
+        "effects": {
+          "M": 12,
+          "C": -6,
+          "P": -3
+        }
+      }
+    },
+    {
+      "id": "potato",
+      "speaker": "bot",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "I want to test a tough new potato strain. It's 3 {Ds} to plant, and it could boom… or bust.",
+      "fact": "Potatoes are a top space crop: lots of calories from very little space.",
+      "left": {
+        "label": "Proven crops",
+        "effects": {
+          "M": -2
+        }
+      },
+      "right": {
+        "label": "Plant it",
+        "days": 3,
+        "effects": {
+          "P": -3
+        },
+        "gamble": {
+          "p": 0.65,
+          "win": {
+            "F": 16
+          },
+          "lose": {
+            "F": -8
+          },
+          "winText": "BUMPER HARVEST",
+          "loseText": "CROP BLIGHT"
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "oxygen",
+      "speaker": "ls",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "Oxygen reserves are thin. I can push the electrolysis unit, which splits water into oxygen.",
+      "fact": "Electrolysis splits H₂O into hydrogen and oxygen. The ISS makes its air this way.",
+      "left": {
+        "label": "Hold steady",
+        "effects": {
+          "H": -6
+        }
+      },
+      "right": {
+        "label": "Make oxygen",
+        "effects": {
+          "H": 10,
+          "W": -8,
+          "P": -7
+        }
+      }
+    },
+    {
+      "id": "vr",
+      "speaker": "psy",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "The crew keeps staring at Earth through the window. A VR \"beach day\" might help.",
+        "mars": "Earth is just a bright dot in the Martian sky now. The crew is homesick. VR beach day?"
+      },
+      "fact": {
+        "moon": "From the Moon, Earth looks nearly four times wider than the Moon does from Earth.",
+        "mars": "From Mars, Earth looks like a bright evening star, too small to see continents."
+      },
+      "left": {
+        "label": "No time",
+        "effects": {
+          "M": -7
+        }
+      },
+      "right": {
+        "label": "Beach day",
+        "effects": {
+          "M": 14,
+          "P": -6
+        }
+      }
+    },
+    {
+      "id": "panels",
+      "speaker": "eng",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "Clingy moondust is coating the solar panels. Someone has to suit up and brush it off.",
+        "mars": "Red dust is choking the solar panels. Suit up and clean them?"
+      },
+      "fact": "Every spacewalk adds radiation dose and risk, so each one is planned in detail.",
+      "left": {
+        "label": "Leave it",
+        "effects": {
+          "P": -9
+        }
+      },
+      "right": {
+        "label": "Spacewalk",
+        "effects": {
+          "P": 14,
+          "R": -5,
+          "H": -3
+        }
+      }
+    },
+    {
+      "id": "cargo",
+      "speaker": "hq",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "A lander leaves Earth soon, just a few days' flight away. Room for one priority: food or spare parts?",
+        "mars": "The next cargo ship is months out and lands in about 8 sols. Food or spare parts?"
+      },
+      "fact": {
+        "moon": "Earth to the Moon takes about 3 days. Close enough for regular resupply.",
+        "mars": "Earth to Mars takes 6 to 9 months, so cargo must be planned far ahead."
+      },
+      "left": {
+        "moon": {
+          "label": "Pack food",
+          "effects": {
+            "F": 14,
+            "C": -2
+          }
+        },
+        "mars": {
+          "label": "Pack food",
+          "effects": {
+            "M": -2
+          },
+          "later": {
+            "in": 8,
+            "effects": {
+              "F": 22
+            },
+            "message": "FOOD CARGO LANDED"
+          }
+        }
+      },
+      "right": {
+        "moon": {
+          "label": "Pack parts",
+          "effects": {
+            "P": 10,
+            "C": 6,
+            "F": -4
+          }
+        },
+        "mars": {
+          "label": "Pack parts",
+          "effects": {
+            "M": -2
+          },
+          "later": {
+            "in": 8,
+            "effects": {
+              "P": 14,
+              "C": 10
+            },
+            "message": "PARTS CARGO LANDED"
+          }
+        }
+      }
+    },
+    {
+      "id": "compost",
+      "speaker": "bot",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "We could compost waste into fertilizer. Great for crops… the habitat will smell for days.",
+      "fact": "Turning waste back into food and air is called \"closing the loop.\" It's key far from Earth.",
+      "left": {
+        "label": "No thanks",
+        "effects": {
+          "F": -3
+        }
+      },
+      "right": {
+        "label": "Compost",
+        "effects": {
+          "F": 9,
+          "M": -6
+        }
+      }
+    },
+    {
+      "id": "doubleshift",
+      "speaker": "rook",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "Commander! I volunteer for a double shift to finish the battery repairs today!",
+      "fact": "On real missions, safety beats speed. Overwork raises injury risk.",
+      "left": {
+        "label": "Go rest",
+        "effects": {
+          "P": -3,
+          "M": 3
+        }
+      },
+      "right": {
+        "label": "Approved",
+        "effects": {
+          "P": 10,
+          "H": -7
+        }
+      }
+    },
+    {
+      "id": "battery",
+      "speaker": "eng",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "A battery bank upgrade takes 3 {Ds}. It hurts now but pays off big.",
+      "fact": {
+        "moon": "Batteries must carry a lunar base through 14 days of darkness. That's a LOT of storage.",
+        "mars": "Batteries store solar power for the Martian night and for dusty days."
+      },
+      "left": {
+        "label": "Not now",
+        "effects": {
+          "P": -4
+        }
+      },
+      "right": {
+        "label": "Upgrade",
+        "days": 3,
+        "effects": {
+          "P": -6,
+          "M": -4,
+          "F": -3
+        },
+        "later": {
+          "in": 2,
+          "effects": {
+            "P": 20
+          },
+          "message": "BATTERIES UPGRADED"
+        }
+      }
+    },
+    {
+      "id": "exercise",
+      "speaker": "med",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "In one-sixth gravity, the crew's bones and muscles are weakening. Make 2 hours of exercise mandatory?",
+        "mars": "In Mars's 38% gravity, the crew's bones are weakening. Mandatory workouts?"
+      },
+      "fact": "ISS astronauts exercise about 2 hours a day to protect bones and muscles.",
+      "left": {
+        "label": "Their choice",
+        "effects": {
+          "M": 4,
+          "H": -8
+        }
+      },
+      "right": {
+        "label": "Mandatory",
+        "effects": {
+          "H": 10,
+          "M": -5,
+          "F": -3
+        }
+      }
+    },
+    {
+      "id": "dataset",
+      "speaker": "sci",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "We have a huge science dataset for Earth. Sending it will hog the comms link for 2 {Ds}.",
+      "fact": "NASA's Deep Space Network has giant antennas in California, Spain and Australia.",
+      "left": {
+        "label": "Hold it",
+        "effects": {
+          "M": -5
+        }
+      },
+      "right": {
+        "label": "Transmit",
+        "days": 2,
+        "effects": {
+          "C": -10,
+          "M": 8
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "newcrew",
+      "speaker": "hq",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "Four new colonists are ready. It's only a 3-day flight to the Moon. Accept them?",
+        "mars": "Four colonists can join the next transfer, landing in about 8 sols. Accept them?"
+      },
+      "fact": "More people means more hands, but also more air, water and food every single day.",
+      "left": {
+        "label": "Not yet",
+        "effects": {
+          "M": -5
+        }
+      },
+      "right": {
+        "moon": {
+          "label": "Welcome",
+          "effects": {
+            "H": 14,
+            "F": -10,
+            "W": -8
+          },
+          "next": {
+            "id": "homesick",
+            "in": 3
+          }
+        },
+        "mars": {
+          "label": "Welcome",
+          "effects": {
+            "M": 4
+          },
+          "later": {
+            "in": 8,
+            "effects": {
+              "H": 16,
+              "F": -10,
+              "W": -8
+            },
+            "message": "NEW CREW LANDED"
+          },
+          "next": {
+            "id": "homesick",
+            "in": 10
+          }
+        }
+      }
+    },
+    {
+      "id": "meteor",
+      "speaker": "ops",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "A micrometeoroid pinged the hull. Tiny leak. Patch it now or keep an eye on it?",
+      "fact": "Micrometeoroids can travel many times faster than a bullet.",
+      "left": {
+        "label": "Monitor",
+        "gamble": {
+          "p": 0.5,
+          "win": {
+            "M": 2
+          },
+          "lose": {
+            "H": -10,
+            "P": -5
+          },
+          "winText": "LEAK HELD",
+          "loseText": "CRACK SPREAD"
+        }
+      },
+      "right": {
+        "label": "Patch now",
+        "effects": {
+          "P": -5,
+          "M": -2,
+          "H": 2
+        }
+      }
+    },
+    {
+      "id": "automate",
+      "speaker": "aria",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": "I can automate greenhouse watering, Commander. It saves crew time but uses extra computing power.",
+      "fact": "Robots and AI will handle many chores at future bases, freeing astronauts for science.",
+      "left": {
+        "label": "Keep manual",
+        "effects": {
+          "M": -4
+        }
+      },
+      "right": {
+        "label": "Automate",
+        "effects": {
+          "P": -6,
+          "M": 6,
+          "W": 4
+        }
+      }
+    },
+    {
+      "id": "birthday",
+      "speaker": "cook",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "It's Rookie Kim's birthday, the first one on the Moon! Bake a cake with the sugar reserve?",
+        "mars": "It's Rookie Kim's birthday! Earth birthday or Mars birthday? Either way… cake?"
+      },
+      "fact": {
+        "moon": "Food is a big morale boost. Astronauts help pick their menus before launch.",
+        "mars": "One Mars year lasts 687 Earth days, so Mars birthdays come almost half as often."
+      },
+      "left": {
+        "label": "Next year",
+        "effects": {
+          "M": -6
+        }
+      },
+      "right": {
+        "label": "Bake it",
+        "effects": {
+          "M": 10,
+          "F": -5
+        }
+      }
+    },
+    {
+      "id": "clock",
+      "speaker": "ops",
+      "pool": "colony",
+      "tag": "COLONY",
+      "text": {
+        "moon": "One lunar \"day\" lasts a whole Earth month. The crew's body clocks are confused. Install circadian lighting?",
+        "mars": "A sol is 39 minutes longer than an Earth day. Switch the crew to Mars time?"
+      },
+      "fact": {
+        "moon": "The Moon spins once every 29.5 Earth days, so a lunar day lasts about two Earth weeks.",
+        "mars": "Mars rover teams on Earth work on \"Mars time,\" shifting their schedule about 40 minutes a day."
+      },
+      "left": {
+        "moon": {
+          "label": "Leave it",
+          "effects": {
+            "M": -5,
+            "H": -4
+          }
+        },
+        "mars": {
+          "label": "Stay on Earth time",
+          "effects": {
+            "H": -5,
+            "C": 4
+          }
+        }
+      },
+      "right": {
+        "moon": {
+          "label": "Install",
+          "days": 2,
+          "effects": {
+            "M": 7,
+            "H": 7,
+            "P": -6
+          }
+        },
+        "mars": {
+          "label": "Mars time",
+          "effects": {
+            "H": 7,
+            "M": 5,
+            "C": -7
+          }
+        }
+      }
+    }
+  ]
+}

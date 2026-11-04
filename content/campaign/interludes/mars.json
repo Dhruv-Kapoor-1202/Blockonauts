@@ -1,0 +1,329 @@
+{
+  "$schema": "../../schema/interludes.schema.json",
+  "interludes": [
+    {
+      "id": "r_storm",
+      "speaker": "ops",
+      "pool": "injected",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "A dust storm is rolling in. Spend a sol tying down the solar panels first?",
+      "fact": "In 2018, a planet-wide dust storm ended NASA's Opportunity rover mission.",
+      "left": {
+        "label": "Hunker down",
+        "effects": {
+          "P": -12
+        }
+      },
+      "right": {
+        "label": "Secure panels",
+        "effects": {
+          "P": -3,
+          "H": -5,
+          "R": -3
+        }
+      }
+    },
+    {
+      "id": "r_delay",
+      "speaker": "hq",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "Earth wants to approve every major decision, even with a 20-minute delay each way. Agree?",
+      "fact": "With minutes of delay, Mars crews must handle emergencies on their own.",
+      "left": {
+        "label": "We decide",
+        "effects": {
+          "M": 8,
+          "C": -7
+        }
+      },
+      "right": {
+        "label": "Follow Earth",
+        "effects": {
+          "C": 8,
+          "M": -8
+        }
+      }
+    },
+    {
+      "id": "r_valles",
+      "speaker": "sci",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "Valles Marineris, a 4,000 km canyon! A 6-sol expedition could find a lot.",
+      "fact": "Valles Marineris is about as long as the USA is wide.",
+      "left": {
+        "label": "Too far",
+        "effects": {
+          "M": -4
+        }
+      },
+      "right": {
+        "label": "Launch",
+        "days": 6,
+        "effects": {
+          "P": -6,
+          "F": -4
+        },
+        "gamble": {
+          "p": 0.6,
+          "win": {
+            "M": 14,
+            "W": 12
+          },
+          "lose": {
+            "H": -10,
+            "R": -5
+          },
+          "winText": "HIDDEN ICE FOUND",
+          "loseText": "TEAM INJURED"
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "r_perch",
+      "speaker": "bot",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "Martian soil has toxic perchlorates. Washing it for farming takes 2 sols and lots of water.",
+      "fact": "Perchlorate salts in Martian soil are harmful to people, so soil must be cleaned first.",
+      "left": {
+        "label": "Hydroponics only",
+        "effects": {
+          "F": -6,
+          "P": -3
+        }
+      },
+      "right": {
+        "label": "Wash soil",
+        "days": 2,
+        "effects": {
+          "F": 13,
+          "W": -10
+        }
+      }
+    },
+    {
+      "id": "r_heli",
+      "speaker": "sci",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "Our scout helicopter can map ice sites ahead. It's fragile in the thin air, though.",
+      "fact": "NASA's Ingenuity helicopter made 72 flights on Mars.",
+      "left": {
+        "label": "Ground it",
+        "effects": {
+          "M": -2
+        }
+      },
+      "right": {
+        "label": "Fly",
+        "effects": {
+          "P": -4
+        },
+        "gamble": {
+          "p": 0.7,
+          "win": {
+            "W": 10,
+            "C": 4,
+            "M": 4
+          },
+          "lose": {
+            "C": -6,
+            "M": -4
+          },
+          "winText": "ICE SITE MAPPED",
+          "loseText": "HELICOPTER LOST"
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "r_moxie",
+      "speaker": "ls",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "We can make oxygen straight from the CO₂ air. The converter is power hungry.",
+      "fact": "NASA's MOXIE proved we can make oxygen from Mars's thin CO₂ air.",
+      "left": {
+        "label": "Use reserves",
+        "effects": {
+          "H": -5
+        }
+      },
+      "right": {
+        "label": "Run it",
+        "effects": {
+          "H": 10,
+          "P": -10
+        }
+      }
+    },
+    {
+      "id": "r_conj",
+      "speaker": "com",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "Solar conjunction is coming: the Sun will block all signals to Earth for 2 weeks. Spend 2 sols pre-loading plans?",
+      "fact": "Every 2 years or so, Mars slips behind the Sun and missions pause commands.",
+      "left": {
+        "label": "Wing it",
+        "effects": {
+          "C": -12,
+          "M": -3
+        }
+      },
+      "right": {
+        "label": "Prepare",
+        "days": 2,
+        "effects": {
+          "C": 8,
+          "P": -4,
+          "M": -3
+        }
+      }
+    },
+    {
+      "id": "r_drill",
+      "speaker": "eng",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "Radar shows ice 2 metres below us. Drilling a well takes 3 sols.",
+      "fact": "Orbiters have spotted water ice just below the surface across much of Mars.",
+      "left": {
+        "label": "Not now",
+        "effects": {
+          "W": -4
+        }
+      },
+      "right": {
+        "label": "Drill",
+        "days": 3,
+        "effects": {
+          "W": 16,
+          "P": -10
+        }
+      }
+    },
+    {
+      "id": "r_tube",
+      "speaker": "arch",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "There's a lava tube nearby. Moving underground blocks radiation, but takes 5 sols.",
+      "fact": "Mars has no global magnetic field and thin air, so surface radiation is high.",
+      "left": {
+        "label": "Stay up top",
+        "effects": {
+          "R": -5
+        }
+      },
+      "right": {
+        "label": "Move in",
+        "days": 5,
+        "effects": {
+          "R": 18,
+          "P": -7,
+          "M": -5,
+          "C": -4
+        }
+      }
+    },
+    {
+      "id": "r_eva",
+      "speaker": "rook",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "Can I go on a geology walk? We need samples… but radiation is high today.",
+      "fact": "Radiation adds up over a career, so planners track every minute spent outside.",
+      "left": {
+        "label": "Stay inside",
+        "effects": {
+          "M": -5
+        }
+      },
+      "right": {
+        "label": "Go explore",
+        "effects": {
+          "M": 10,
+          "R": -8
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "r_devil",
+      "speaker": "ops",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "A dust devil is heading for the base! It might clean the panels or rip off the antenna.",
+      "fact": "Dust devils helped the Spirit and Opportunity rovers by blowing dust off their panels.",
+      "left": {
+        "label": "Stow gear",
+        "effects": {
+          "P": -4,
+          "C": -2
+        }
+      },
+      "right": {
+        "label": "Let it pass",
+        "gamble": {
+          "p": 0.55,
+          "win": {
+            "P": 15
+          },
+          "lose": {
+            "C": -12,
+            "P": -3
+          },
+          "winText": "PANELS SWEPT CLEAN",
+          "loseText": "ANTENNA HIT"
+        }
+      }
+    },
+    {
+      "id": "r_print",
+      "speaker": "eng",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "text": "Earth is months away. Building a 3D-printing workshop for our own parts would take 4 sols.",
+      "fact": "Earth–Mars launch windows open only about every 26 months.",
+      "left": {
+        "label": "Rely on Earth",
+        "effects": {
+          "C": -3,
+          "M": -2
+        }
+      },
+      "right": {
+        "label": "Build it",
+        "days": 4,
+        "effects": {
+          "P": -10,
+          "M": -3
+        },
+        "later": {
+          "in": 3,
+          "effects": {
+            "P": 12,
+            "H": 5
+          },
+          "message": "WORKSHOP ONLINE"
+        }
+      }
+    }
+  ]
+}

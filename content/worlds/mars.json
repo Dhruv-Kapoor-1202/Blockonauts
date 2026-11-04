@@ -1,0 +1,44 @@
+{
+  "$schema": "../schema/world.schema.json",
+  "id": "mars",
+  "strategy": "dust",
+  "name": "ARES OUTPOST",
+  "title": "MARS",
+  "location": "JEZERO CRATER",
+  "planet": "Mars",
+  "unit": "sol",
+  "units": "sols",
+  "unitLabel": "SOL",
+  "goalDay": 100,
+  "goalName": "RETURN WINDOW",
+  "supply": {
+    "every": 30,
+    "offset": 24,
+    "resources": { "F": 18, "W": 12, "P": 10, "H": 6 },
+    "message": "SUPPLY SHIP LANDED",
+    "chipLabel": "SHIP"
+  },
+  "startResources": { "P": 70, "F": 60, "W": 60, "R": 55, "M": 70, "C": 64, "H": 72 },
+  "drain": { "P": 0.45, "F": 0.9, "W": 0.7, "R": 0.32, "M": 0.48, "C": 0.35 },
+  "spec": [
+    { "label": "Day", "value": "1 sol = 24h 39m" },
+    { "label": "Signal", "value": "3–22 min to Earth" },
+    { "label": "Resupply", "value": "Ship every 30 sols" },
+    { "label": "Hazard", "value": "Dust storms, isolation" },
+    { "label": "Goal", "value": "Reach Sol 100" }
+  ],
+  "params": {
+    "stormStartsAfterDay": 8,
+    "stormChance": 0.06,
+    "stormMinLength": 4,
+    "stormLengthSpread": 4,
+    "stormPowerDrain": 1.4,
+    "stormCommsDrain": 0.6,
+    "stormCard": "r_storm",
+    "timelineWindow": 24,
+    "timelineLookBehind": 3,
+    "commsDelay": { "base": 4, "step": 7, "modulo": 18 },
+    "stormMessage": { "title": "DUST STORM", "subtitle": "Sunlight blocked for ~{n} sols." },
+    "clearMessage": { "title": "STORM CLEARED", "subtitle": "Panels recharging." }
+  }
+}

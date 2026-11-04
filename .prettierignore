@@ -1,0 +1,9 @@
+node_modules
+dist
+coverage
+reference
+Demo
+docs/graphs
+content/schema
+package-lock.json
+server/data

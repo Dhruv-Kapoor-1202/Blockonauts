@@ -1,0 +1,22 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "moon-ch3-long-night",
+  "title": "Long Night",
+  "worlds": ["moon"],
+  "goal": "Keep the base alive until the crew rotation on Day 84.",
+  "startNode": "longnight.briefing",
+  "clock": { "startDay": 1, "simulate": true },
+  "endings": {
+    "longnight.complete": {
+      "outcome": "advance",
+      "title": "DAY 84: CREW ROTATION",
+      "text": "You kept Artemis Base running through the long lunar night. The rotation lander is on its way!"
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "BASE SYSTEMS FAILED" },
+  "interludes": {
+    "pools": ["colony", "moon", "followup", "injected"],
+    "every": [2, 4],
+    "goalEnding": "longnight.complete"
+  }
+}

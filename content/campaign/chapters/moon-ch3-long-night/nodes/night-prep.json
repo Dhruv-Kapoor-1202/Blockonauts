@@ -1,0 +1,90 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "longnight.nightprep",
+      "speaker": "ops",
+      "tag": "NIGHT",
+      "text": "The 14-day lunar night is coming. No Sun, and -170°C outside. How do we prepare?",
+      "variants": [
+        {
+          "when": { "flags": ["groundArray"] },
+          "text": "The 14-day lunar night is coming. Our small ground panels will be useless in the dark. How do we prepare?"
+        },
+        {
+          "when": { "flags": ["towerArray"] },
+          "text": "The 14-day lunar night is coming. Even the tall array can't catch sunlight that isn't there. How do we prepare?"
+        }
+      ],
+      "fact": "A lunar night lasts about 14 Earth days, and the surface can drop below -170°C.",
+      "left": {
+        "label": "Charge batteries",
+        "days": 2,
+        "effects": { "P": 8, "M": -2 },
+        "setFlags": ["batteriesFull"],
+        "goto": "longnight.crisis"
+      },
+      "right": {
+        "label": "Insulate habitat",
+        "days": 2,
+        "effects": { "P": -3, "H": 4 },
+        "setFlags": ["insulated"],
+        "goto": "longnight.crisis"
+      }
+    },
+    {
+      "id": "longnight.crisis",
+      "speaker": "eng",
+      "tag": "CRISIS",
+      "text": "Alarm! A seal in the water recycler is failing. If it blows, we lose water.",
+      "variants": [
+        {
+          "when": { "flags": ["skippedLeakTest"] },
+          "text": "Alarm! A seal in the water recycler is failing, the same kind we never tested before launch."
+        },
+        {
+          "when": { "flags": ["damagedHull"] },
+          "text": "Alarm! A seal in the water recycler is failing. After the rough launch, we're not surprised."
+        }
+      ],
+      "fact": "The space station recycles about 90% of its water, including astronaut sweat and breath moisture.",
+      "left": {
+        "label": "Replace the seal",
+        "days": 1,
+        "effects": { "P": -2 },
+        "goto": [
+          { "when": { "flags": ["packedSpares"] }, "to": "longnight.morale" },
+          { "to": "longnight.scramble" }
+        ]
+      },
+      "right": {
+        "label": "Bypass recycler",
+        "days": 1,
+        "effects": { "W": -8, "P": 2 },
+        "setFlags": ["bypassedRecycler"],
+        "goto": "longnight.morale"
+      }
+    },
+    {
+      "id": "longnight.scramble",
+      "speaker": "arch",
+      "tag": "CRISIS",
+      "text": "We have no spare seal. We could print one from moondust, or borrow one from the rover.",
+      "fact": "Engineers are testing ways to melt lunar soil into bricks and parts with sunlight or lasers, a kind of moondust 3D printing.",
+      "left": {
+        "label": "Print from dust",
+        "days": 2,
+        "effects": { "P": -7, "M": 2 },
+        "sci": true,
+        "goto": "longnight.morale"
+      },
+      "right": {
+        "label": "Borrow from rover",
+        "days": 1,
+        "effects": { "C": -4, "M": -2 },
+        "setFlags": ["roverCannibalized"],
+        "goto": "longnight.morale"
+      }
+    }
+  ]
+}

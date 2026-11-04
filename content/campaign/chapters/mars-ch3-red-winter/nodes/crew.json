@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "redwinter.crew.morale",
+      "speaker": "psy",
+      "tag": "MORALE",
+      "text": "The storm left everyone feeling trapped inside. Time to lift spirits.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["hardLanding"]
+          },
+          "text": "Since the rough landing, everyone has been jumpy. Time to lift spirits."
+        },
+        {
+          "when": {
+            "flags": ["calledHome"]
+          },
+          "text": "Those calls home helped on the trip. Now the storm has everyone feeling trapped, so let's lift spirits."
+        }
+      ],
+      "fact": "Crews on long missions use celebrations and quiet time to stay mentally healthy. Isolation is a real challenge.",
+      "left": {
+        "label": "Mars-day party",
+        "days": 1,
+        "effects": {
+          "M": 5,
+          "F": -3
+        },
+        "setFlags": ["partyHeld"],
+        "goto": "redwinter.hq.report"
+      },
+      "right": {
+        "label": "Quiet downtime",
+        "days": 1,
+        "effects": {
+          "M": 2,
+          "H": 3
+        },
+        "setFlags": ["quietTime"],
+        "goto": "redwinter.hq.report"
+      }
+    }
+  ]
+}

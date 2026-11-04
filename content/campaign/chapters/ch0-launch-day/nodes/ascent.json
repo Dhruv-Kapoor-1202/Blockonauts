@@ -1,0 +1,62 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "launch.ascent.alarm",
+      "speaker": "eng",
+      "tag": "ASCENT",
+      "text": "T+60 seconds: pressure alarm in the oxidizer line! The leak is real.",
+      "variants": [
+        {
+          "when": { "flags": ["ignoredFrost"] },
+          "text": "T+60 seconds: pressure alarm! That frosty fuel line was a real leak."
+        }
+      ],
+      "fact": "Crew capsules like Orion have a launch abort tower that can yank the crew away from a failing rocket in a split second.",
+      "left": {
+        "label": "Throttle down",
+        "days": 0,
+        "gamble": {
+          "p": 0.5,
+          "win": { "H": -2 },
+          "lose": { "R": -6 },
+          "winText": "HOLDING TOGETHER",
+          "loseText": "LINE RUPTURED",
+          "winGoto": "launch.damaged",
+          "loseGoto": "launch.explosion"
+        }
+      },
+      "right": {
+        "label": "Fire abort tower",
+        "days": 0,
+        "goto": "launch.abort"
+      }
+    },
+    {
+      "id": "launch.ascent.fatigue",
+      "speaker": "ops",
+      "tag": "ASCENT",
+      "text": "T+90 seconds: your sleepy crew misses a checklist call and the ship wobbles.",
+      "fact": "Checklists exist because tired people make mistakes. Astronauts train for years to catch each other's slips.",
+      "left": {
+        "label": "Hand-fly a fix",
+        "days": 0,
+        "gamble": {
+          "p": 0.6,
+          "win": { "M": 4 },
+          "lose": { "R": -4 },
+          "winText": "STEADY HANDS",
+          "loseText": "ROUGH CORRECTION",
+          "winGoto": "launch.liftoff",
+          "loseGoto": "launch.damaged"
+        }
+      },
+      "right": {
+        "label": "Let autopilot fix it",
+        "days": 0,
+        "effects": { "R": -3 },
+        "goto": "launch.damaged"
+      }
+    }
+  ]
+}

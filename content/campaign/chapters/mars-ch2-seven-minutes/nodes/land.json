@@ -1,0 +1,66 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "edl.land.skycrane",
+      "speaker": "eng",
+      "tag": "SKY CRANE",
+      "text": "Sky crane! The descent stage hovers above us and lowers the lander on cables.",
+      "fact": "Curiosity and Perseverance were lowered to the ground on nylon cords by a rocket-powered sky crane.",
+      "left": {
+        "label": "Cut on contact",
+        "days": 0,
+        "gamble": {
+          "p": 0.75,
+          "win": {
+            "M": 4
+          },
+          "lose": {
+            "P": -6,
+            "H": -4
+          },
+          "winText": "SOFT TOUCHDOWN",
+          "loseText": "LANDER TIPPED",
+          "winGoto": "edl.comms.wait",
+          "loseGoto": "edl.land.rough"
+        },
+        "setFlags": ["quickCut"]
+      },
+      "right": {
+        "label": "Confirm, then cut",
+        "days": 1,
+        "effects": {
+          "P": -2
+        },
+        "setFlags": ["carefulTouchdown"],
+        "goto": "edl.comms.wait"
+      }
+    },
+    {
+      "id": "edl.land.rough",
+      "speaker": "ops",
+      "tag": "LANDING",
+      "text": "The lander tipped as it landed. One leg is bent and a solar panel is cracked.",
+      "fact": "Landing legs are built to crumple a little on purpose, absorbing the shock of touchdown.",
+      "left": {
+        "label": "Repair first",
+        "days": 2,
+        "effects": {
+          "P": -4,
+          "M": -2
+        },
+        "setFlags": ["repairedLander"],
+        "goto": "edl.comms.wait"
+      },
+      "right": {
+        "label": "Move in as is",
+        "days": 0,
+        "effects": {
+          "M": 2
+        },
+        "setFlags": ["hardLanding"],
+        "goto": "edl.comms.wait"
+      }
+    }
+  ]
+}

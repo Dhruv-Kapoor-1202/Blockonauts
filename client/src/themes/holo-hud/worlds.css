@@ -1,0 +1,66 @@
+/*
+ * holo-hud per-world accents. Apply on <html> (the active world) or on any element to scope one
+ * world there (the world cards). Each class re-declares every world-dependent token: the neon
+ * accent pair, the glows derived from it, the scene wash and the planet / satellite / disc tints.
+ * The block without a world class holds the defaults used before a world is chosen.
+ */
+.theme-holo {
+  --t-planet-bg: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--t-accent) 22%, transparent),
+    color-mix(in srgb, var(--t-accent) 5%, transparent) 62%,
+    transparent 74%
+  );
+  --t-disc-bg: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--t-accent) 30%, transparent),
+    transparent 72%
+  );
+  --t-sat-bg: radial-gradient(circle at 35% 30%, rgba(25, 227, 255, 0.35), rgba(2, 10, 22, 0.8));
+  --t-sat-size: clamp(30px, 6vmin, 60px);
+  --t-sat-top: 12%;
+  --t-sat-left: 9%;
+  --t-moonlet-opacity: 0;
+}
+
+.theme-holo.world-holo-moon,
+.theme-holo .world-holo-moon {
+  --t-accent: #19e3ff;
+  --t-accent-2: #ff2bd6;
+  --t-glow-a: color-mix(in srgb, var(--t-accent) 40%, transparent);
+  --t-shadow-world-selected: 0 0 0 1px var(--t-accent), 0 0 28px -4px var(--t-glow-a);
+  --t-disc-bg: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--t-accent) 30%, transparent),
+    transparent 72%
+  );
+  --t-scene-bg:
+    radial-gradient(60% 50% at 82% 10%, rgba(255, 43, 214, 0.12), transparent 70%),
+    radial-gradient(70% 60% at 15% 90%, rgba(25, 227, 255, 0.12), transparent 70%), #02060f;
+  --t-sat-bg: radial-gradient(circle at 35% 30%, rgba(255, 43, 214, 0.4), rgba(2, 10, 22, 0.8));
+  --t-sat-size: clamp(30px, 6vmin, 60px);
+  --t-sat-top: 12%;
+  --t-sat-left: 9%;
+  --t-moonlet-opacity: 0;
+}
+
+.theme-holo.world-holo-mars,
+.theme-holo .world-holo-mars {
+  --t-accent: #ff6a3d;
+  --t-accent-2: #ffcf3d;
+  --t-glow-a: color-mix(in srgb, var(--t-accent) 40%, transparent);
+  --t-shadow-world-selected: 0 0 0 1px var(--t-accent), 0 0 28px -4px var(--t-glow-a);
+  --t-disc-bg: radial-gradient(
+    circle at 35% 30%,
+    color-mix(in srgb, var(--t-accent) 30%, transparent),
+    transparent 72%
+  );
+  --t-scene-bg:
+    radial-gradient(60% 50% at 82% 10%, rgba(255, 207, 61, 0.1), transparent 70%),
+    radial-gradient(70% 60% at 15% 90%, rgba(255, 70, 40, 0.14), transparent 70%), #080304;
+  --t-sat-bg: radial-gradient(circle at 35% 30%, rgba(255, 207, 61, 0.4), rgba(20, 6, 4, 0.8));
+  --t-sat-size: clamp(16px, 3.2vmin, 32px);
+  --t-sat-top: 16%;
+  --t-sat-left: 12%;
+  --t-moonlet-opacity: 1;
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "./schema/resources.schema.json",
+  "resources": [
+    { "key": "P", "name": "POWER", "color": "#ffd23f", "icon": "bolt" },
+    { "key": "F", "name": "FOOD", "color": "#7ae582", "icon": "leaf" },
+    { "key": "W", "name": "WATER", "color": "#4cc9f0", "icon": "drop" },
+    { "key": "R", "name": "SHIELDING", "color": "#b388ff", "icon": "shield" },
+    { "key": "M", "name": "MORALE", "color": "#ff70a6", "icon": "face" },
+    { "key": "C", "name": "COMMS", "color": "#ff9f1c", "icon": "antenna" },
+    { "key": "H", "name": "CREW HEALTH", "color": "#f1ede4", "icon": "person" }
+  ]
+}

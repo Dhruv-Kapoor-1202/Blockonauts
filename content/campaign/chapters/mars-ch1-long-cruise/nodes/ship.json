@@ -1,0 +1,106 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "cruise.ship.depart",
+      "speaker": "ops",
+      "tag": "TRANSIT",
+      "text": "The burn is done. Mars is about seven months away. How should we run the crew's days?",
+      "fact": "Spacecraft take about 7 months to reach Mars, flying a long curve instead of a straight line. Perseverance took 203 days.",
+      "left": {
+        "label": "Strict schedule",
+        "days": 1,
+        "effects": {
+          "M": -3,
+          "H": 3
+        },
+        "setFlags": ["strictRoutine"],
+        "goto": [
+          {
+            "when": {
+              "anyFlags": ["damagedHull", "skippedLeakTest"]
+            },
+            "to": "cruise.ship.leak"
+          },
+          {
+            "to": "cruise.nav.comms"
+          }
+        ]
+      },
+      "right": {
+        "label": "Flexible days",
+        "days": 1,
+        "effects": {
+          "M": 4,
+          "H": -2
+        },
+        "setFlags": ["flexibleRoutine"],
+        "goto": [
+          {
+            "when": {
+              "anyFlags": ["damagedHull", "skippedLeakTest"]
+            },
+            "to": "cruise.ship.leak"
+          },
+          {
+            "to": "cruise.nav.comms"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cruise.ship.leak",
+      "speaker": "eng",
+      "tag": "TRANSIT",
+      "text": "Cabin pressure is creeping down. There is a slow leak somewhere in the lab module.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["damagedHull"]
+          },
+          "text": "The hull we limped up with is whistling again. A seam is leaking air."
+        },
+        {
+          "when": {
+            "flags": ["skippedLeakTest"]
+          },
+          "text": "Pressure is dropping. That leak test we skipped on launch day would have caught this."
+        }
+      ],
+      "fact": "In 2018 a tiny hole in a docked Soyuz capsule caused a slow air leak on the ISS. The crew patched it.",
+      "left": {
+        "label": "Patch outside",
+        "days": 3,
+        "effects": {
+          "P": -3,
+          "R": -2
+        },
+        "gamble": {
+          "p": 0.7,
+          "win": {
+            "M": 4,
+            "H": 2
+          },
+          "lose": {
+            "H": -8,
+            "R": -4
+          },
+          "winText": "HULL SEALED",
+          "loseText": "RUSHED PATCH"
+        },
+        "setFlags": ["hullPatched"],
+        "goto": "cruise.nav.comms"
+      },
+      "right": {
+        "label": "Seal the module",
+        "days": 1,
+        "effects": {
+          "F": -6,
+          "M": -4
+        },
+        "setFlags": ["moduleSealed"],
+        "goto": "cruise.nav.comms"
+      }
+    }
+  ]
+}

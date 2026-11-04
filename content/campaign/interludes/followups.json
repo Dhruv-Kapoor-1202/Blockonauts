@@ -1,0 +1,89 @@
+{
+  "$schema": "../../schema/interludes.schema.json",
+  "interludes": [
+    {
+      "id": "greenhouse2",
+      "speaker": "bot",
+      "pool": "followup",
+      "tag": "FOLLOW-UP",
+      "followUp": true,
+      "text": "The new greenhouse wing is thriving! Harvest now, or wait 4 {Ds} for full-size crops?",
+      "fact": "Plants recycle air too: they take in CO₂ and release oxygen.",
+      "left": {
+        "label": "Harvest now",
+        "effects": {
+          "F": 10
+        }
+      },
+      "right": {
+        "label": "Wait",
+        "effects": {
+          "P": -3
+        },
+        "later": {
+          "in": 4,
+          "effects": {
+            "F": 18,
+            "M": 4
+          },
+          "message": "FULL HARVEST"
+        }
+      }
+    },
+    {
+      "id": "ice2",
+      "speaker": "sci",
+      "pool": "followup",
+      "tag": "FOLLOW-UP",
+      "followUp": true,
+      "text": "There's more ice deeper down. A permanent drill takes 3 {Ds} to install.",
+      "fact": "Using local materials is called ISRU: In-Situ Resource Utilization.",
+      "left": {
+        "label": "Enough",
+        "effects": {
+          "M": -2
+        }
+      },
+      "right": {
+        "label": "Install drill",
+        "days": 3,
+        "effects": {
+          "P": -10,
+          "W": 8
+        },
+        "later": {
+          "in": 2,
+          "effects": {
+            "W": 12
+          },
+          "message": "DRILL ONLINE"
+        }
+      }
+    },
+    {
+      "id": "homesick",
+      "speaker": "psy",
+      "pool": "followup",
+      "tag": "FOLLOW-UP",
+      "followUp": true,
+      "text": "The new colonists are homesick. Schedule extra video calls home?",
+      "fact": {
+        "moon": "From the Moon, video calls home have barely a second of delay.",
+        "mars": "From Mars, \"calls\" are recorded messages. Replies take many minutes."
+      },
+      "left": {
+        "label": "They'll adapt",
+        "effects": {
+          "M": -8
+        }
+      },
+      "right": {
+        "label": "Extra calls",
+        "effects": {
+          "M": 10,
+          "C": -8
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "ch0-launch-day",
+  "title": "Launch Day",
+  "worlds": ["moon", "mars"],
+  "goal": "Load the ship correctly and lift off.",
+  "startNode": "launch.briefing",
+  "clock": { "startDay": -3, "unitOverride": "day" },
+  "endings": {
+    "launch.liftoff": {
+      "outcome": "advance",
+      "title": "LIFTOFF!",
+      "text": "The engines roar, the tower falls away and the ship climbs smoothly into the sky. Everything is working.",
+      "setFlags": ["cleanLaunch"],
+      "carryEffects": { "M": 2 }
+    },
+    "launch.damaged": {
+      "outcome": "advance",
+      "title": "LIFTOFF... BARELY",
+      "text": "You reach orbit, but the ship took a beating on the way up. The hull will need careful watching.",
+      "setFlags": ["damagedHull"],
+      "carryEffects": { "R": -8, "H": -2 }
+    },
+    "launch.scrubbed": {
+      "outcome": "retry",
+      "title": "LAUNCH SCRUBBED",
+      "text": "You called a no-go and the countdown stopped. Safe, but the crew has to start the day all over again.",
+      "lesson": "Scrubbing a launch is never a failure. Rockets get delayed all the time to stay safe. Just use the time to fix real problems."
+    },
+    "launch.abort": {
+      "outcome": "retry",
+      "title": "ABORT! CREW SAFE",
+      "text": "The abort tower yanked the capsule away from the failing rocket. The crew is fine, but the rocket is lost.",
+      "lesson": "A skipped leak test can force an abort. Check the plumbing on the ground, not in the sky."
+    },
+    "launch.explosion": {
+      "outcome": "retry",
+      "title": "VEHICLE LOST",
+      "text": "The leaking fuel line let go and the rocket was destroyed in a fireball. The crew had to start over.",
+      "lesson": "Leak checks exist for a reason. A tiny leak on the ground can become a huge problem at liftoff."
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "SYSTEMS COLLAPSED" },
+  "interludes": null
+}

@@ -1,0 +1,39 @@
+{
+  "name": "commander",
+  "version": "1.0.0",
+  "private": true,
+  "description": "COMMANDER: a chapter-based branching space-colony survival game.",
+  "type": "module",
+  "workspaces": [
+    "packages/engine",
+    "server",
+    "client"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "postinstall": "npm run build -w @commander/engine",
+    "dev": "concurrently -k -n engine,server,client -c gray,blue,magenta \"npm run dev -w @commander/engine\" \"npm run dev -w @commander/server\" \"npm run dev -w @commander/client\"",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "build": "npm run build -w @commander/engine && npm run build -w @commander/server && npm run build -w @commander/client",
+    "content:validate": "tsx --tsconfig scripts/tsconfig.json scripts/content-validate.ts",
+    "content:graph": "tsx --tsconfig scripts/tsconfig.json scripts/content-graph.ts",
+    "content:schema": "tsx --tsconfig scripts/tsconfig.json scripts/content-schema.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "concurrently": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "~5.9.0",
+    "typescript-eslint": "^8.40.0",
+    "zod": "^4.0.0"
+  }
+}

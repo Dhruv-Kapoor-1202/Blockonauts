@@ -1,0 +1,101 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "touchdown.legs",
+      "speaker": "eng",
+      "tag": "LANDING",
+      "text": "Touchdown in 10 seconds! The ground slopes about 9 degrees, near our landing legs' limit.",
+      "variants": [
+        {
+          "when": { "flags": ["packedSpares"] },
+          "text": "Touchdown in 10 seconds! The ground slopes about 9 degrees, but we packed spare footpads."
+        }
+      ],
+      "fact": "Landers are built for gentle slopes. Apollo's lander was designed to touch down on slopes of up to about 12 degrees.",
+      "left": {
+        "label": "Land now",
+        "days": 0,
+        "gamble": {
+          "p": 0.65,
+          "win": { "M": 2 },
+          "lose": { "R": -3 },
+          "winText": "SOFT LANDING",
+          "loseText": "LEG SLIPPED",
+          "winGoto": "touchdown.contact",
+          "loseGoto": [
+            { "when": { "flags": ["packedSpares"] }, "to": "touchdown.contact" },
+            { "to": "touchdown.tilt" }
+          ]
+        }
+      },
+      "right": {
+        "label": "Reposition",
+        "days": 0,
+        "effects": { "P": -6 },
+        "setFlags": ["repositioned"],
+        "goto": "touchdown.contact"
+      }
+    },
+    {
+      "id": "touchdown.tilt",
+      "speaker": "eng",
+      "tag": "LANDING",
+      "text": "The lander has tilted about 10 degrees. It's stable, but the ramp and solar panels will be awkward.",
+      "fact": "In 2024 the Odysseus lander tipped onto its side near the Moon's south pole, but it kept working for days.",
+      "left": {
+        "label": "Level with jacks",
+        "days": 1,
+        "effects": { "P": -5 },
+        "goto": "touchdown.contact"
+      },
+      "right": {
+        "label": "Leave it tilted",
+        "days": 0,
+        "effects": { "M": 2 },
+        "setFlags": ["tiltedLander"],
+        "goto": "touchdown.contact"
+      }
+    },
+    {
+      "id": "touchdown.contact",
+      "speaker": "aria",
+      "tag": "LANDING",
+      "text": "CONTACT LIGHT! Engines off. We are on the Moon, Commander.",
+      "variants": [
+        {
+          "when": { "flags": ["lowGainAntenna"] },
+          "text": "CONTACT LIGHT! Engines off. We are on the Moon, Commander. Earth's reply is faint and crackly."
+        },
+        {
+          "when": { "flags": ["commsChecked"] },
+          "text": "CONTACT LIGHT! Engines off. We are on the Moon, and Earth's cheers come through crystal clear."
+        },
+        {
+          "when": { "flags": ["commsSkipped"] },
+          "text": "CONTACT LIGHT! Engines off. We are on the Moon. Earth's cheers arrive in crackly bursts."
+        }
+      ],
+      "fact": "In 1969 Apollo 11 radioed: Houston, Tranquility Base here. The Eagle has landed.",
+      "left": {
+        "label": "Shut down engines",
+        "days": 0,
+        "effects": { "M": 2 },
+        "goto": [
+          { "when": { "flags": ["targetRidge"] }, "to": "touchdown.ridge" },
+          { "to": "touchdown.craterEdge" }
+        ]
+      },
+      "right": {
+        "label": "Check the legs",
+        "days": 1,
+        "effects": { "M": 2, "P": -1 },
+        "setFlags": ["legsChecked"],
+        "goto": [
+          { "when": { "flags": ["targetRidge"] }, "to": "touchdown.ridge" },
+          { "to": "touchdown.craterEdge" }
+        ]
+      }
+    }
+  ]
+}

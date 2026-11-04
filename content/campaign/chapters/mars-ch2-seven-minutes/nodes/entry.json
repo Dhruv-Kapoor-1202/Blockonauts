@@ -1,0 +1,101 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "edl.entry.bank",
+      "speaker": "ops",
+      "tag": "ENTRY",
+      "text": "Entry! We hit the thin air at 20,000 km/h. Steer the capsule, or hold it steady?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["tiredArrival"]
+          },
+          "text": "Entry at 20,000 km/h, and everyone is exhausted. Steer the capsule, or hold it steady?"
+        },
+        {
+          "when": {
+            "flags": ["exerciseRoutine"]
+          },
+          "text": "Entry at 20,000 km/h! Our workouts help the crew handle the heavy g-forces. Steer, or hold steady?"
+        }
+      ],
+      "fact": "Perseverance hit Mars's atmosphere at about 20,000 km/h. Guided entry let it steer toward its target.",
+      "left": {
+        "label": "Guided entry",
+        "days": 0,
+        "effects": {
+          "P": -3
+        },
+        "setFlags": ["guidedEntry"],
+        "goto": [
+          {
+            "when": {
+              "flags": ["damagedHull"],
+              "anyFlags": ["ignoredCrack", "skippedShieldCheck"]
+            },
+            "to": "edl.entry.hotspot"
+          },
+          {
+            "to": "edl.chute.deploy"
+          }
+        ]
+      },
+      "right": {
+        "label": "Ballistic entry",
+        "days": 0,
+        "effects": {
+          "P": 1
+        },
+        "setFlags": ["ballisticEntry"],
+        "goto": [
+          {
+            "when": {
+              "flags": ["damagedHull"],
+              "anyFlags": ["ignoredCrack", "skippedShieldCheck"]
+            },
+            "to": "edl.entry.hotspot"
+          },
+          {
+            "to": "edl.chute.deploy"
+          }
+        ]
+      }
+    },
+    {
+      "id": "edl.entry.hotspot",
+      "speaker": "eng",
+      "tag": "ENTRY",
+      "text": "Hot spot! A sensor on the damaged side is climbing past safe temperatures.",
+      "fact": "Heat shields ablate, which means they burn away on purpose, carrying the heat away from the crew.",
+      "left": {
+        "label": "Roll to cool",
+        "days": 0,
+        "gamble": {
+          "p": 0.55,
+          "win": {
+            "M": 4
+          },
+          "lose": {
+            "H": -6,
+            "R": -8
+          },
+          "winText": "SHIELD HELD",
+          "loseText": "SHIELD BREACHED",
+          "winGoto": "edl.chute.deploy",
+          "loseGoto": "edl.burnthrough"
+        }
+      },
+      "right": {
+        "label": "Steeper entry",
+        "days": 0,
+        "effects": {
+          "P": -4,
+          "H": -4
+        },
+        "setFlags": ["steepEntry"],
+        "goto": "edl.chute.deploy"
+      }
+    }
+  ]
+}

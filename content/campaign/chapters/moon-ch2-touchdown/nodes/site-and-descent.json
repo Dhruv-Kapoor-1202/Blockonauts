@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "touchdown.site",
+      "speaker": "sci",
+      "tag": "DESCENT",
+      "text": "Two landing sites: a sunlit ridge with near-constant sun, or the shadowed edge of a crater next to ancient ice. Where to?",
+      "variants": [
+        {
+          "when": { "flags": ["packedScience"] },
+          "text": "Dr. Okafor hugs her science rack: the shadowed crater edge is right beside ancient ice! Or take the sunlit ridge?"
+        }
+      ],
+      "fact": "The Moon's south pole has peaks lit almost all the time and craters that haven't seen sunlight for billions of years, where ice may hide.",
+      "left": {
+        "label": "Sunlit ridge",
+        "days": 0,
+        "effects": { "P": 3 },
+        "setFlags": ["targetRidge"],
+        "goto": "touchdown.approach"
+      },
+      "right": {
+        "label": "Crater edge",
+        "days": 0,
+        "setFlags": ["targetCrater"],
+        "sci": true,
+        "goto": "touchdown.approach"
+      }
+    },
+    {
+      "id": "touchdown.approach",
+      "speaker": "ops",
+      "tag": "DESCENT",
+      "text": "Time to fire the descent engine. A gentle descent leaves time to hover. A steep one saves fuel.",
+      "variants": [
+        {
+          "when": { "flags": ["roughArrival"] },
+          "text": "Time to fire the descent engine. The rough orbit burn used extra fuel, so margins are thin."
+        },
+        {
+          "when": { "flags": ["stableOrbit"] },
+          "text": "Time to fire the descent engine. Our tidy orbit left a comfortable fuel margin."
+        }
+      ],
+      "fact": "A lander must slow from about 1.6 km per second to a gentle stop, so fuel is the biggest part of its weight.",
+      "left": {
+        "label": "Steep descent",
+        "days": 0,
+        "effects": { "P": 2 },
+        "setFlags": ["steepDescent"],
+        "goto": "touchdown.hazard"
+      },
+      "right": {
+        "label": "Gentle descent",
+        "days": 0,
+        "effects": { "P": -6 },
+        "setFlags": ["gentleDescent"],
+        "goto": [
+          { "when": { "flags": ["roughArrival"] }, "to": "touchdown.fuelLow" },
+          { "to": "touchdown.hazard" }
+        ]
+      }
+    },
+    {
+      "id": "touchdown.fuelLow",
+      "speaker": "eng",
+      "tag": "FUEL",
+      "text": "Fuel warning! At this rate we have under a minute of hover time.",
+      "variants": [
+        {
+          "when": { "flags": ["packedScience"] },
+          "text": "Fuel warning! Under a minute of hover time. Dropping the heavy science rack would help, but Dr. Okafor won't like it."
+        }
+      ],
+      "fact": "Apollo 11 landed with only about 25 seconds of fuel to spare. Dumping weight is an old trick for stretching fuel.",
+      "left": {
+        "label": "Dump cargo",
+        "days": 0,
+        "effects": { "F": -6, "M": -3 },
+        "setFlags": ["dumpedCargo"],
+        "goto": "touchdown.hazard"
+      },
+      "right": {
+        "label": "Go steep",
+        "days": 0,
+        "effects": { "M": -1 },
+        "setFlags": ["steepDescent"],
+        "clearFlags": ["gentleDescent"],
+        "goto": "touchdown.hazard"
+      }
+    }
+  ]
+}

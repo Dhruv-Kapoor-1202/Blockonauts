@@ -1,0 +1,113 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "touchdown.hazard",
+      "speaker": "aria",
+      "tag": "HAZARD",
+      "text": "Hazard cameras spot a boulder field right below us. Autopilot can pick a clear spot, or you can fly it yourself.",
+      "variants": [
+        {
+          "when": { "flags": ["targetCrater"] },
+          "text": "Long crater shadows hide boulders on the camera feed. Autopilot can pick a clear spot, or you can fly it."
+        },
+        {
+          "when": { "flags": ["targetRidge"] },
+          "text": "The ridge top is strewn with boulders. Autopilot can pick a clear spot, or you can fly it yourself."
+        }
+      ],
+      "fact": "Landers use lidar, which is laser radar, to map boulders and slopes during descent and steer away from danger.",
+      "left": {
+        "label": "Autopilot",
+        "days": 0,
+        "setFlags": ["autoLanding"],
+        "goto": "touchdown.dust"
+      },
+      "right": {
+        "label": "Manual control",
+        "days": 0,
+        "effects": { "M": 2 },
+        "setFlags": ["manualLanding"],
+        "goto": "touchdown.manual"
+      }
+    },
+    {
+      "id": "touchdown.manual",
+      "speaker": "rook",
+      "tag": "HAZARD",
+      "text": "You have the controls! Rookie Kim calls out the altitude: 100 meters... 80...",
+      "variants": [
+        {
+          "when": { "flags": ["crewExhausted"] },
+          "text": "Your hands feel heavy after the rushed launch. Rookie Kim calls: 100 meters... 80..."
+        },
+        {
+          "when": { "flags": ["crewRested"] },
+          "text": "Rested and steady, you take the stick. Rookie Kim calls: 100 meters... 80..."
+        }
+      ],
+      "fact": "Apollo 11's commander Neil Armstrong flew the final minutes by hand to dodge a crater full of boulders.",
+      "left": {
+        "label": "Slide to flat spot",
+        "days": 0,
+        "gamble": {
+          "p": 0.65,
+          "win": { "M": 3 },
+          "lose": { "P": -5 },
+          "winText": "SMOOTH HANDS",
+          "loseText": "TOO LATE",
+          "winGoto": "touchdown.dust",
+          "loseGoto": "touchdown.abort"
+        }
+      },
+      "right": {
+        "label": "Hand back to autopilot",
+        "days": 0,
+        "setFlags": ["handedBack"],
+        "goto": "touchdown.dust"
+      }
+    },
+    {
+      "id": "touchdown.dust",
+      "speaker": "sci",
+      "tag": "DUST",
+      "text": "At 20 meters the engine blasts up a blinding cloud of moondust.",
+      "variants": [
+        {
+          "when": { "flags": ["steepDescent"] },
+          "text": "At 20 meters the engine blasts up a blinding cloud of moondust. We have fuel to hover."
+        },
+        {
+          "when": { "flags": ["gentleDescent"] },
+          "text": "At 20 meters the engine blasts up a blinding cloud of moondust. Hover fuel is getting low."
+        }
+      ],
+      "fact": "Moondust has no wind or water to smooth it, so its grains stay sharp. On Apollo landings it hid the ground at about 30 meters.",
+      "left": {
+        "label": "Descend on radar",
+        "days": 0,
+        "gamble": {
+          "p": 0.7,
+          "win": { "M": 2 },
+          "lose": { "P": -4 },
+          "winText": "RADAR TRUE",
+          "loseText": "BLIND LANDING",
+          "winGoto": "touchdown.legs",
+          "loseGoto": "touchdown.crash"
+        }
+      },
+      "right": {
+        "label": "Hover until clear",
+        "days": 0,
+        "effects": { "P": -5 },
+        "goto": [
+          {
+            "when": { "flags": ["gentleDescent", "roughArrival"], "notFlags": ["dumpedCargo"] },
+            "to": "touchdown.abort"
+          },
+          { "to": "touchdown.legs" }
+        ]
+      }
+    }
+  ]
+}

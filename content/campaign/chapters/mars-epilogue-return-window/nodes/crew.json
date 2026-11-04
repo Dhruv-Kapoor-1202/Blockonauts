@@ -1,0 +1,53 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "return.crew.farewell",
+      "speaker": "psy",
+      "tag": "FAREWELL",
+      "text": "One crewmate loves Mars and asks to stay behind to keep the outpost running. What do we say?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["partyHeld"]
+          },
+          "text": "That Mars-day party made this place feel like home. One crewmate asks to stay and keep the outpost running."
+        }
+      ],
+      "fact": "Earth and Mars line up well only every 26 months, so early crews would spend about 500 days on Mars.",
+      "left": {
+        "label": "Everyone goes home",
+        "days": 1,
+        "effects": {
+          "M": 4
+        },
+        "goto": [
+          {
+            "when": {
+              "flags": ["samplesLoaded"]
+            },
+            "to": "return.samples"
+          },
+          {
+            "when": {
+              "flags": ["leftGearBehind"]
+            },
+            "to": "return.scrape"
+          },
+          {
+            "to": "return.home"
+          }
+        ]
+      },
+      "right": {
+        "label": "Let them stay",
+        "days": 2,
+        "effects": {
+          "M": 3
+        },
+        "setFlags": ["volunteerStays"],
+        "goto": "return.keeper"
+      }
+    }
+  ]
+}

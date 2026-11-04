@@ -1,0 +1,70 @@
+{
+  "$schema": "./schema/facts-and-tips.schema.json",
+  "deaths": {
+    "P": {
+      "title": "POWER FAILURE",
+      "text": {
+        "moon": "The batteries ran dry and the heaters died. Real lunar bases need huge energy reserves to survive two-week nights.",
+        "mars": "The batteries ran dry. On Mars, dust storms can block sunlight for weeks, so reserves are everything."
+      }
+    },
+    "F": {
+      "title": "OUT OF FOOD",
+      "text": "The pantry is empty. Bases far from Earth must grow food locally because resupply is slow and expensive."
+    },
+    "W": {
+      "title": "OUT OF WATER",
+      "text": "Water means drinking, oxygen, farming and shielding. That's why finding ice matters so much."
+    },
+    "R": {
+      "title": "RADIATION SICKNESS",
+      "text": "Shielding failed. Without Earth's magnetic field and thick atmosphere, protection has to be built."
+    },
+    "M": {
+      "title": "CREW MUTINY",
+      "text": "Morale collapsed and the crew voted to go home. Mental health is as critical as physical health."
+    },
+    "C": {
+      "title": "LOST CONTACT",
+      "text": "Mission Control lost the signal and called off the mission. Reliable comms keep crews safe."
+    },
+    "H": {
+      "title": "COLONY LOST",
+      "text": "Too many crew members got sick or hurt to keep the base running. Health is the ultimate resource."
+    }
+  },
+  "tips": {
+    "P": "Power is low. Skip power-hungry projects and look for energy gains.",
+    "F": "Food is low. Greenhouse choices help, even if they cost power.",
+    "W": "Water is low. Ice expeditions and recycler repairs are your friends.",
+    "R": "Shielding is weak. Dig in or shelter from flares.",
+    "M": "Morale is sagging. Rest, treats and calls home keep people going.",
+    "C": "Comms are shaky. Relays and antennas reconnect you with Earth.",
+    "H": "Crew health is dropping. Medical care, oxygen and exercise matter now."
+  },
+  "aria": {
+    "night": "It's lunar night, so the solar panels are dead. Every multi-day project burns stored power.",
+    "storm": "The dust storm is eating power and comms every sol. Quick choices help.",
+    "nominal": "All systems nominal. Remember that long projects cost more than resources: every extra {D} drains supplies.",
+    "gambleHint": "This one's a gamble, about {pct}% odds."
+  },
+  "randomEvents": {
+    "moon": [
+      { "effects": { "C": 5 }, "title": "RELAY SAT ONLINE", "tone": "good" },
+      { "effects": { "H": -5, "P": -3 }, "title": "THERMAL SPIKE", "tone": "bad" },
+      { "effects": { "R": -5 }, "title": "COSMIC RAY BURST", "tone": "bad" },
+      { "effects": { "M": 5 }, "title": "EARTHRISE VIEW", "tone": "good" }
+    ],
+    "mars": [
+      { "effects": { "P": 6 }, "title": "WIND CLEANED PANELS", "tone": "good" },
+      { "effects": { "C": -6 }, "title": "SIGNAL DROPOUT", "tone": "bad" },
+      { "effects": { "W": 6 }, "title": "FROST HARVEST", "tone": "good" },
+      { "effects": { "M": -5 }, "title": "CABIN FEVER", "tone": "bad" }
+    ]
+  },
+  "ticker": "◀ SWIPE LEFT TO DECLINE ✦ SWIPE RIGHT TO APPROVE ▶ ✦ EVERY CHOICE COSTS TIME ✦ LUNAR NIGHTS LAST 14 DAYS ✦ MARS IS 20 LIGHT-MINUTES AWAY ✦ NO CHOICE IS FREE ✦ KEEP ALL 7 SYSTEMS ABOVE ZERO ✦",
+  "messages": {
+    "laterLanded": "An earlier decision just landed.",
+    "supplySubtitle": "Fresh supplies from Earth."
+  }
+}

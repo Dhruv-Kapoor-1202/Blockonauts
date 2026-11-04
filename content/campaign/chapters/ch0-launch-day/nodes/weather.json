@@ -1,0 +1,31 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "launch.weather.forecast",
+      "speaker": "ops",
+      "tag": "WEATHER",
+      "text": "High winds aloft and lightning in the area. Hold a day for calmer skies, or take the launch window?",
+      "fact": "NASA won't launch if lightning is within about 18 km of the pad, because a strike could damage the rocket.",
+      "left": {
+        "label": "Hold a day",
+        "days": 1,
+        "effects": { "P": -3, "M": -2 },
+        "setFlags": ["waitedForWeather"],
+        "goto": "launch.crew.fatigue"
+      },
+      "right": {
+        "label": "Take the window",
+        "days": 0,
+        "gamble": {
+          "p": 0.7,
+          "win": { "M": 3 },
+          "lose": { "R": -5 },
+          "winText": "CLEAR WINDOW",
+          "loseText": "WIND SHEAR"
+        },
+        "goto": "launch.crew.fatigue"
+      }
+    }
+  ]
+}

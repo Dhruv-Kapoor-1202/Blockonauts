@@ -1,0 +1,58 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "longnight.morale",
+      "speaker": "psy",
+      "tag": "MORALE",
+      "text": "Halfway there. The crew is homesick, and Earth is just a bright blue dot.",
+      "variants": [
+        {
+          "when": { "flags": ["movieNight"] },
+          "text": "Halfway there. The crew is homesick and wants another movie night like the one on the way here."
+        },
+        {
+          "when": { "flags": ["lowGainAntenna"] },
+          "text": "Halfway there. The crew is homesick, and our weak antenna makes calls to Earth crackly."
+        }
+      ],
+      "fact": "Astronauts on long missions get homesick. Calls with family, hobbies and surprise packages from Earth help.",
+      "left": {
+        "label": "Movie night",
+        "days": 1,
+        "effects": { "M": 9, "F": -3 },
+        "setFlags": ["baseMovieNight"],
+        "goto": "longnight.finalpush"
+      },
+      "right": {
+        "label": "Family calls",
+        "days": 1,
+        "effects": { "M": 7, "C": -3 },
+        "setFlags": ["familyCalls"],
+        "goto": "longnight.finalpush"
+      }
+    },
+    {
+      "id": "longnight.finalpush",
+      "speaker": "hq",
+      "tag": "ROTATION",
+      "text": "The rotation lander is scheduled for Day 84! Prep the base for the new crew, or squeeze in one more experiment?",
+      "fact": "On the space station, crews hand over in person at every rotation, just like handing over a home.",
+      "left": {
+        "label": "Prep handover",
+        "days": 1,
+        "effects": { "P": -2, "M": 2 },
+        "setFlags": ["handoverReady"],
+        "goto": "$interludes"
+      },
+      "right": {
+        "label": "More science",
+        "days": 2,
+        "effects": { "P": -5, "M": 4 },
+        "setFlags": ["extraExperiment"],
+        "sci": true,
+        "goto": "$interludes"
+      }
+    }
+  ]
+}

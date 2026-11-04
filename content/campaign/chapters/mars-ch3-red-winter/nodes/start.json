@@ -1,0 +1,28 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "redwinter.start.briefing",
+      "speaker": "aria",
+      "tag": "ARES OUTPOST",
+      "text": "Welcome to Ares Outpost, Commander. Earth is 20 light-minutes away, so you're on your own. Hold out until Sol 100, when the return window opens.",
+      "fact": "A day on Mars is called a \"sol.\" It lasts 24 hours and 39 minutes.",
+      "left": {
+        "label": "Check habitat",
+        "days": 1,
+        "effects": {
+          "M": 2
+        },
+        "goto": "redwinter.base.habitat"
+      },
+      "right": {
+        "label": "Check power",
+        "days": 1,
+        "effects": {
+          "P": 2
+        },
+        "goto": "redwinter.power.field"
+      }
+    }
+  ]
+}

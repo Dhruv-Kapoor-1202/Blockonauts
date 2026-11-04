@@ -1,0 +1,145 @@
+{
+  "$schema": "../../schema/interludes.schema.json",
+  "interludes": [
+    {
+      "id": "moonstory_feast",
+      "speaker": "cook",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "when": { "flags": ["packedExtraFood"], "notFlags": ["seenMoonFeast"] },
+      "setFlags": ["seenMoonFeast"],
+      "text": "Chef Marco found the extra food crate we packed on Earth. Stretch it out, or cook a big Moon feast?",
+      "fact": "Astronauts often eat tortillas instead of bread, because crumbs floating around can get into equipment.",
+      "left": {
+        "label": "Stretch it",
+        "effects": { "F": 12 }
+      },
+      "right": {
+        "label": "Big feast",
+        "days": 1,
+        "effects": { "M": 12, "F": 4 }
+      }
+    },
+    {
+      "id": "moonstory_spares",
+      "speaker": "eng",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "when": { "flags": ["packedSpares"], "notFlags": ["seenMoonSpares"] },
+      "setFlags": ["seenMoonSpares"],
+      "text": "The water pump is wheezing. We packed spare parts on Earth. Build a new pump now?",
+      "fact": "The space station keeps spare parts on board and sends more by cargo ship, because the nearest repair shop is 400 km down.",
+      "left": {
+        "label": "Save spares",
+        "effects": { "W": -4, "R": 2 }
+      },
+      "right": {
+        "label": "Rebuild pump",
+        "days": 1,
+        "effects": { "W": 8, "P": -2, "H": 3 }
+      }
+    },
+    {
+      "id": "moonstory_leak",
+      "speaker": "ls",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "when": { "anyFlags": ["skippedLeakTest", "damagedHull"], "notFlags": ["seenMoonLeak"] },
+      "setFlags": ["seenMoonLeak"],
+      "text": "Cabin pressure is dropping very slowly. Remember the hull trouble from launch? Hunt for the leak, or top up the air?",
+      "fact": "Space station crews have hunted tiny air leaks with ultrasonic detectors that hear the hiss we can't.",
+      "left": {
+        "label": "Top up air",
+        "effects": { "H": -3, "P": -2 },
+        "later": {
+          "in": 3,
+          "effects": { "H": -6 },
+          "message": "SLOW LEAK WORSENED"
+        }
+      },
+      "right": {
+        "label": "Hunt the leak",
+        "days": 2,
+        "effects": { "P": -4, "H": 5 },
+        "sci": true
+      }
+    },
+    {
+      "id": "moonstory_ridge",
+      "speaker": "arch",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "when": { "flags": ["landedOnRidge"], "notFlags": ["seenMoonRidge"] },
+      "setFlags": ["seenMoonRidge"],
+      "text": "Our ridge gets sunlight almost nonstop. Add extra solar panels to use every ray?",
+      "fact": "Some peaks near the lunar south pole are in sunlight for more than 80% of the year.",
+      "left": {
+        "label": "Keep as is",
+        "effects": { "P": 3 }
+      },
+      "right": {
+        "label": "Add panels",
+        "days": 2,
+        "effects": { "P": 12, "M": -2 }
+      }
+    },
+    {
+      "id": "moonstory_crater",
+      "speaker": "sci",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "when": { "flags": ["landedInCraterEdge"], "notFlags": ["seenMoonCrater"] },
+      "setFlags": ["seenMoonCrater"],
+      "text": "The ancient ice is steps from our front door. Drill a core sample?",
+      "variants": [
+        {
+          "when": { "flags": ["packedScience"] },
+          "text": "The ancient ice is steps from our door, and our extra science rack can analyze it. Drill a core sample?"
+        }
+      ],
+      "fact": "Ice in permanently shadowed craters can be billions of years old, like a frozen diary of the solar system.",
+      "left": {
+        "label": "Skip",
+        "effects": { "M": -2 }
+      },
+      "right": {
+        "label": "Drill",
+        "days": 1,
+        "effects": { "P": -5 },
+        "sci": true,
+        "gamble": {
+          "p": 0.8,
+          "win": { "W": 16, "M": 4 },
+          "lose": { "P": -6 },
+          "winText": "ANCIENT ICE",
+          "loseText": "DRILL JAMMED"
+        }
+      }
+    },
+    {
+      "id": "moonstory_radiation",
+      "speaker": "med",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "when": { "flags": ["skippedShelter"], "notFlags": ["seenMoonRadiation"] },
+      "setFlags": ["seenMoonRadiation"],
+      "text": "Dr. Silva wants a check-up for everyone who skipped the shelter during that solar flare. It takes a day.",
+      "fact": "Astronauts wear small badges that measure their radiation dose, so doctors can keep track.",
+      "left": {
+        "label": "Skip it",
+        "effects": { "H": -4 }
+      },
+      "right": {
+        "label": "Check-up",
+        "days": 1,
+        "effects": { "H": 6, "M": -2 }
+      }
+    }
+  ]
+}

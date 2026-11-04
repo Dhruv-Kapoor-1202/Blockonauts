@@ -1,0 +1,46 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "redwinter.base.habitat",
+      "speaker": "arch",
+      "tag": "HABITAT",
+      "text": "The habitat is up, but the walls are thin. Bury it in soil, or start the greenhouse?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["landedAtDelta"]
+          },
+          "text": "The delta gives us free building rocks! Pile them on the roof, or start the greenhouse?"
+        },
+        {
+          "when": {
+            "flags": ["landedOnPlains"]
+          },
+          "text": "Flat ground made setup easy, but there is no cliff to hide behind. Cover the roof, or start the greenhouse?"
+        }
+      ],
+      "fact": "Martian soil, called regolith, can be piled on habitats as radiation shielding, because Mars has very little atmosphere.",
+      "left": {
+        "label": "Cover with soil",
+        "days": 3,
+        "effects": {
+          "R": 10,
+          "P": -3
+        },
+        "setFlags": ["regolithShield"],
+        "goto": "redwinter.storm.warning"
+      },
+      "right": {
+        "label": "Greenhouse first",
+        "days": 2,
+        "effects": {
+          "F": 6,
+          "W": -4
+        },
+        "setFlags": ["greenhouseFirst"],
+        "goto": "redwinter.food.greenhouse"
+      }
+    }
+  ]
+}

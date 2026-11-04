@@ -1,0 +1,44 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "return.window.briefing",
+      "speaker": "hq",
+      "tag": "RETURN WINDOW",
+      "text": "The window is open! The ascent vehicle's tanks are filling with fuel made from Mars's own air.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["honestReport"]
+          },
+          "text": "The window is open! Our honest reports earned Earth's trust, so the launch plan is yours to decide."
+        },
+        {
+          "when": {
+            "flags": ["damagedHull"]
+          },
+          "text": "The window is open! The ascent vehicle is ready, though our patched ship made Earth nervous. The plan is yours."
+        }
+      ],
+      "fact": "Mars's air is about 95% carbon dioxide. NASA's MOXIE experiment on Perseverance made breathable oxygen from it.",
+      "left": {
+        "label": "Launch quickly",
+        "days": 1,
+        "effects": {
+          "M": 3
+        },
+        "setFlags": ["launchRush"],
+        "goto": "return.fuel.check"
+      },
+      "right": {
+        "label": "Final prep",
+        "days": 2,
+        "effects": {
+          "P": -3
+        },
+        "setFlags": ["finalPrep"],
+        "goto": "return.cargo.samples"
+      }
+    }
+  ]
+}

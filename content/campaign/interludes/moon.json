@@ -1,0 +1,304 @@
+{
+  "$schema": "../../schema/interludes.schema.json",
+  "interludes": [
+    {
+      "id": "m_night",
+      "speaker": "ops",
+      "pool": "injected",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "Lunar night falls in {nightIn} days: 14 days with zero sunlight. Ration heating now to stockpile power?",
+      "fact": "Lunar nights can drop below −170°C.",
+      "left": {
+        "label": "Stay warm",
+        "effects": {
+          "M": 4,
+          "P": -6
+        }
+      },
+      "right": {
+        "label": "Ration heat",
+        "effects": {
+          "P": 12,
+          "M": -7,
+          "H": -2
+        }
+      }
+    },
+    {
+      "id": "m_peak",
+      "speaker": "eng",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "A crater rim near the pole gets sunlight almost all month. Moving the solar farm there takes 4 days.",
+      "fact": "Some lunar south pole peaks are sunlit most of the time. It's a big reason Artemis targets the pole.",
+      "left": {
+        "label": "Stay put",
+        "effects": {
+          "P": -4
+        }
+      },
+      "right": {
+        "label": "Move it",
+        "days": 4,
+        "effects": {
+          "P": 18,
+          "C": -6,
+          "M": -3
+        }
+      }
+    },
+    {
+      "id": "m_psr",
+      "speaker": "sci",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "A crater that never sees sunlight holds ancient ice, but it's below −200°C down there. Go on a 2-day expedition?",
+      "fact": "Some polar craters haven't seen sunlight in billions of years.",
+      "left": {
+        "label": "Too cold",
+        "effects": {
+          "M": -3
+        }
+      },
+      "right": {
+        "label": "Go",
+        "days": 2,
+        "effects": {
+          "P": -6
+        },
+        "gamble": {
+          "p": 0.55,
+          "win": {
+            "W": 20,
+            "M": 6
+          },
+          "lose": {
+            "H": -9,
+            "P": -4
+          },
+          "winText": "ANCIENT ICE!",
+          "loseText": "GEAR FROZE"
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "m_far",
+      "speaker": "sci",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "A far-side expedition could reveal amazing geology. That's 3 days with no contact with Earth.",
+      "fact": "The far side never faces Earth, so you need a relay satellite to call home.",
+      "left": {
+        "label": "Stay in touch",
+        "effects": {
+          "M": -3
+        }
+      },
+      "right": {
+        "label": "Go far side",
+        "days": 3,
+        "effects": {
+          "C": -12
+        },
+        "gamble": {
+          "p": 0.7,
+          "win": {
+            "M": 12,
+            "H": 2
+          },
+          "lose": {
+            "H": -8
+          },
+          "winText": "BIG DISCOVERY",
+          "loseText": "ROVER BROKE DOWN"
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "m_thermal",
+      "speaker": "arch",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "Sunlit surfaces hit +120°C and shadows drop to −170°C. Add thermal blankets? 2 days of work.",
+      "fact": "With no air to hold heat, the Moon swings from scorching to freezing.",
+      "left": {
+        "label": "Skip",
+        "effects": {
+          "H": -5,
+          "P": -3
+        }
+      },
+      "right": {
+        "label": "Add blankets",
+        "days": 2,
+        "effects": {
+          "H": 6,
+          "P": 5,
+          "M": -4
+        }
+      }
+    },
+    {
+      "id": "m_dust",
+      "speaker": "med",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "Moondust is sharp like glass and it's getting into everyone's lungs. Install a dust airlock?",
+      "fact": "Apollo astronauts said moondust smelled like spent gunpowder.",
+      "left": {
+        "label": "Brush it off",
+        "effects": {
+          "H": -8
+        }
+      },
+      "right": {
+        "label": "Install",
+        "days": 2,
+        "effects": {
+          "H": 8,
+          "P": -6
+        }
+      }
+    },
+    {
+      "id": "m_artemis",
+      "speaker": "hq",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "An Artemis crew wants to visit for 3 days. Great for spirits, but more mouths to feed.",
+      "fact": "NASA's Artemis program aims for a long-term human presence on the Moon.",
+      "left": {
+        "label": "Decline",
+        "effects": {
+          "C": -5
+        }
+      },
+      "right": {
+        "label": "Host them",
+        "days": 3,
+        "effects": {
+          "M": 12,
+          "F": -8,
+          "W": -5,
+          "C": 5
+        }
+      }
+    },
+    {
+      "id": "m_pad",
+      "speaker": "arch",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "Rocket landings sandblast the base with dust. Bake a landing pad from regolith? That's 3 days.",
+      "fact": "Landing engines spray lunar dust at high speed. Hard pads protect nearby gear.",
+      "left": {
+        "label": "Not needed",
+        "effects": {
+          "H": -4,
+          "C": -4
+        }
+      },
+      "right": {
+        "label": "Build pad",
+        "days": 3,
+        "effects": {
+          "P": -9,
+          "H": 6,
+          "C": 6
+        }
+      }
+    },
+    {
+      "id": "m_quake",
+      "speaker": "ops",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "Seismometers picked up a moonquake. Inspect every structure? It takes 2 days.",
+      "fact": "Apollo seismometers recorded moonquakes. Some shallow ones lasted about 10 minutes.",
+      "left": {
+        "label": "Skip it",
+        "gamble": {
+          "p": 0.6,
+          "win": {
+            "M": 2
+          },
+          "lose": {
+            "H": -8,
+            "W": -6
+          },
+          "winText": "ALL CLEAR",
+          "loseText": "TANK LEAKED"
+        }
+      },
+      "right": {
+        "label": "Inspect",
+        "days": 2,
+        "effects": {
+          "P": -3,
+          "M": -4,
+          "H": 3
+        }
+      }
+    },
+    {
+      "id": "m_o2",
+      "speaker": "sci",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "Moon rock is about 40% oxygen by mass! Our reactor can bake it out if we feed it power.",
+      "fact": "Heating lunar soil to release oxygen is a key ISRU technology.",
+      "left": {
+        "label": "Too hungry",
+        "effects": {
+          "H": -3
+        }
+      },
+      "right": {
+        "label": "Run reactor",
+        "days": 2,
+        "effects": {
+          "P": -12,
+          "H": 10,
+          "M": 3
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "m_mast",
+      "speaker": "com",
+      "pool": "moon",
+      "tag": "LUNAR",
+      "worlds": ["moon"],
+      "text": "Earth sits low on the horizon here and hills block it. Build a taller mast? 2 days.",
+      "fact": "Radio needs a clear line of sight. Near the poles, Earth hugs the horizon.",
+      "left": {
+        "label": "Live with gaps",
+        "effects": {
+          "C": -8
+        }
+      },
+      "right": {
+        "label": "Build mast",
+        "days": 2,
+        "effects": {
+          "C": 14,
+          "P": -6,
+          "M": -2
+        }
+      }
+    }
+  ]
+}

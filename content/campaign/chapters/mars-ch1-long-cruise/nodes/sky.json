@@ -1,0 +1,110 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "cruise.sky.flare",
+      "speaker": "sci",
+      "tag": "RADIATION",
+      "text": "The Sun just flared! A solar particle storm will reach us in a couple of hours.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["slowComms"]
+          },
+          "text": "Our weak antenna missed Earth's flare alert. Alarms are screaming and we have minutes!"
+        },
+        {
+          "when": {
+            "flags": ["damagedHull"],
+            "notFlags": ["hullPatched"]
+          },
+          "text": "A solar storm is coming, and our damaged hull is thin where we need it most."
+        }
+      ],
+      "fact": "Solar particle events can send fast protons across space within hours. Crews would shelter in the best-shielded room.",
+      "left": {
+        "label": "Storm shelter",
+        "days": 2,
+        "effects": {
+          "M": -4,
+          "R": -2
+        },
+        "setFlags": ["usedShelter"],
+        "goto": "cruise.sky.shelter"
+      },
+      "right": {
+        "label": "Ride it out",
+        "days": 0,
+        "gamble": {
+          "p": 0.45,
+          "win": {
+            "M": 2
+          },
+          "lose": {
+            "R": -12,
+            "H": -12
+          },
+          "winText": "LUCKY MISS",
+          "loseText": "RADIATION HIT",
+          "winGoto": "cruise.crew.medical",
+          "loseGoto": [
+            {
+              "when": {
+                "anyFlags": ["slowComms"]
+              },
+              "to": "cruise.radiation"
+            },
+            {
+              "when": {
+                "flags": ["damagedHull"],
+                "notFlags": ["hullPatched"]
+              },
+              "to": "cruise.radiation"
+            },
+            {
+              "to": "cruise.crew.medical"
+            }
+          ]
+        },
+        "setFlags": ["skippedShelter"]
+      }
+    },
+    {
+      "id": "cruise.sky.shelter",
+      "speaker": "ls",
+      "tag": "RADIATION",
+      "text": "Everyone into the core! What should we stack around the shelter?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["packedExtraFood"]
+          },
+          "text": "Everyone into the core! The extra food crates we packed make a thick, tasty wall."
+        }
+      ],
+      "fact": "Water and supplies make good radiation shields. Spacecraft designers put them around the crew's storm shelter.",
+      "left": {
+        "label": "Water walls",
+        "days": 1,
+        "effects": {
+          "W": -8,
+          "R": 6,
+          "H": 2
+        },
+        "setFlags": ["waterWalls"],
+        "goto": "cruise.crew.medical"
+      },
+      "right": {
+        "label": "Cargo walls",
+        "days": 1,
+        "effects": {
+          "F": -4,
+          "R": 5,
+          "M": -2
+        },
+        "setFlags": ["cargoWalls"],
+        "goto": "cruise.crew.medical"
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "mars-epilogue-return-window",
+  "title": "Return Window",
+  "worlds": ["mars"],
+  "goal": "Decide how the first Mars crew goes home.",
+  "startNode": "return.window.briefing",
+  "endings": {
+    "return.home": {
+      "outcome": "missionEnd",
+      "result": "win",
+      "title": "HOME FOR DINNER",
+      "text": "The ascent vehicle leaves Mars and the whole crew heads home. After a long trip, there is pizza and a very big hug waiting."
+    },
+    "return.samples": {
+      "outcome": "missionEnd",
+      "result": "win",
+      "title": "ROCKS FROM MARS",
+      "text": "The crew carries home the first Martian rock cores. Scientists everywhere line up to peek at them."
+    },
+    "return.scrape": {
+      "outcome": "missionEnd",
+      "result": "win",
+      "title": "WE MADE IT (BARELY)",
+      "text": "The overloaded little rocket shakes the whole way, but it makes it. The crew is home, with plenty of stories and not much luggage."
+    },
+    "return.keeper": {
+      "outcome": "missionEnd",
+      "result": "win",
+      "title": "KEEPER OF ARES",
+      "text": "One brave volunteer stays to look after the outpost for the next crew. Earth waits, and Mars is no longer empty."
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "OUTPOST FAILED" },
+  "interludes": null
+}

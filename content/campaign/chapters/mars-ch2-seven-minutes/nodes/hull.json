@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "edl.hull.shield",
+      "speaker": "eng",
+      "tag": "HEAT SHIELD",
+      "text": "The heat shield will face 1,300 degrees Celsius soon. Should we inspect it with the hull camera?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["damagedHull"]
+          },
+          "text": "That launch damage worries me. The heat shield is right behind that spot. Inspect it?"
+        },
+        {
+          "when": {
+            "flags": ["packedSpares"]
+          },
+          "text": "The heat shield will face 1,300 degrees Celsius. We packed spares, so we can fix things. Inspect it?"
+        }
+      ],
+      "fact": "Perseverance's heat shield reached about 1,300 degrees Celsius. It burns away on purpose to carry heat off.",
+      "left": {
+        "label": "Inspect shield",
+        "days": 1,
+        "effects": {
+          "P": -2
+        },
+        "setFlags": ["shieldChecked"],
+        "goto": [
+          {
+            "when": {
+              "flags": ["damagedHull"]
+            },
+            "to": "edl.hull.crack"
+          },
+          {
+            "to": "edl.entry.bank"
+          }
+        ]
+      },
+      "right": {
+        "label": "Trust it",
+        "days": 0,
+        "effects": {
+          "M": 2
+        },
+        "setFlags": ["skippedShieldCheck"],
+        "goto": "edl.entry.bank"
+      }
+    },
+    {
+      "id": "edl.hull.crack",
+      "speaker": "eng",
+      "tag": "HEAT SHIELD",
+      "text": "The camera shows a hairline crack in the backshell, right where the launch damage was.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["packedSpares"]
+          },
+          "text": "The camera shows a hairline crack in the backshell. We have the spare plates to fix it."
+        }
+      ],
+      "fact": "Capsules have a heat shield on the front and a backshell on the back. Both protect the crew.",
+      "left": {
+        "label": "Patch it",
+        "days": 2,
+        "effects": {
+          "P": -3
+        },
+        "setFlags": ["shieldPatched"],
+        "goto": "edl.entry.bank"
+      },
+      "right": {
+        "label": "Ignore it",
+        "days": 0,
+        "effects": {
+          "M": 2
+        },
+        "setFlags": ["ignoredCrack"],
+        "goto": "edl.entry.bank"
+      }
+    }
+  ]
+}

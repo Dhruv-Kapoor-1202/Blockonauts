@@ -1,0 +1,120 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "rotation.arrival",
+      "speaker": "ops",
+      "tag": "ROTATION",
+      "text": "Day 84! The rotation lander glows on the horizon, bringing the new crew.",
+      "variants": [
+        {
+          "when": { "flags": ["landedOnRidge"] },
+          "text": "Day 84! The rotation lander touches down on our sunlit ridge pad, bringing the new crew."
+        },
+        {
+          "when": { "flags": ["landedInCraterEdge"] },
+          "text": "Day 84! The rotation lander creeps past the crater edge, bringing the new crew."
+        }
+      ],
+      "fact": "NASA's Artemis plans have astronauts staying on the Moon for longer and longer trips, starting with about a week.",
+      "left": {
+        "label": "Greet them outside",
+        "days": 1,
+        "effects": { "M": 4, "P": -2 },
+        "goto": "rotation.tour"
+      },
+      "right": {
+        "label": "Review the data",
+        "days": 1,
+        "sci": true,
+        "goto": "rotation.report"
+      }
+    },
+    {
+      "id": "rotation.tour",
+      "speaker": "arch",
+      "tag": "HANDOVER",
+      "text": "Ines Duarte walks the new crew through the base: the dust airlock, the water recycler and the quirky pump.",
+      "variants": [
+        {
+          "when": { "flags": ["skippedLeakTest"] },
+          "text": "Ines Duarte walks the new crew through the base, including the seals that once leaked and the lesson about leak tests."
+        },
+        {
+          "when": { "flags": ["tiltedLander"] },
+          "text": "Ines Duarte walks the new crew through the base, and points out the lander that landed a little crooked."
+        }
+      ],
+      "fact": "Real crews write lessons-learned notes after missions so the next team doesn't repeat the same mistakes.",
+      "left": {
+        "label": "Share hard lessons",
+        "days": 1,
+        "effects": { "M": 3 },
+        "setFlags": ["sharedLessons"],
+        "goto": "rotation.farewell"
+      },
+      "right": {
+        "label": "Show the wins",
+        "days": 1,
+        "effects": { "M": 5 },
+        "setFlags": ["showedWins"],
+        "goto": "rotation.farewell"
+      }
+    },
+    {
+      "id": "rotation.report",
+      "speaker": "sci",
+      "tag": "HANDOVER",
+      "text": "Dr. Okafor has months of data on ice, dust and radiation to hand to the next team.",
+      "variants": [
+        {
+          "when": { "flags": ["packedScience"] },
+          "text": "Thanks to the extra science rack, Dr. Okafor has a record-breaking pile of data for the next team."
+        }
+      ],
+      "fact": "Apollo astronauts brought back 382 kg of Moon rocks. Scientists are still studying them today.",
+      "left": {
+        "label": "Hand over data",
+        "days": 1,
+        "effects": { "M": 3 },
+        "setFlags": ["sharedData"],
+        "sci": true,
+        "goto": "rotation.farewell"
+      },
+      "right": {
+        "label": "Send it to Earth",
+        "days": 1,
+        "effects": { "C": -3, "M": 2 },
+        "setFlags": ["dataToEarth"],
+        "goto": "rotation.tour"
+      }
+    },
+    {
+      "id": "rotation.farewell",
+      "speaker": "psy",
+      "tag": "FAREWELL",
+      "text": "Time to go home. How do you say goodbye to the new crew?",
+      "fact": "Apollo 11 left a plaque on the Moon that reads: We came in peace for all mankind.",
+      "left": {
+        "label": "Hand over keys",
+        "days": 0,
+        "effects": { "M": 4 },
+        "goto": [
+          {
+            "when": { "flags": ["cleanLaunch"], "resourceAbove": { "M": 50, "H": 50 } },
+            "to": "rotation.legend"
+          },
+          { "when": { "flags": ["packedScience"] }, "to": "rotation.science" },
+          { "to": "rotation.quiet" }
+        ]
+      },
+      "right": {
+        "label": "Leave time capsule",
+        "days": 0,
+        "effects": { "M": 6 },
+        "setFlags": ["leftTimeCapsule"],
+        "goto": "rotation.legacy"
+      }
+    }
+  ]
+}

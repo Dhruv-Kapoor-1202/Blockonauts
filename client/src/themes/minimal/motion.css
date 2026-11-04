@@ -1,0 +1,50 @@
+/*
+ * minimal keyframes. Calm fades only (no rotation, no overshoot); every duration and easing is
+ * a token. They are referenced from the recipes as `animate-[m-fade_var(--t-dur-...)_...]`.
+ * Looping or `forwards` animations are switched off with `motion-reduce:animate-none` in the
+ * recipes; the global reduced-motion rule in styles/index.css shortens all the others.
+ */
+@keyframes m-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes m-deal {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+@keyframes m-sticker {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -46%);
+  }
+  14%,
+  78% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -56%);
+  }
+}
+
+@keyframes m-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  18%,
+  70% {
+    opacity: 1;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}

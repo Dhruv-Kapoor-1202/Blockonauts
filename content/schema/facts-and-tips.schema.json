@@ -1,0 +1,202 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "deaths": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "P",
+          "F",
+          "W",
+          "R",
+          "M",
+          "C",
+          "H"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "title",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "required": [
+        "P",
+        "F",
+        "W",
+        "R",
+        "M",
+        "C",
+        "H"
+      ]
+    },
+    "tips": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "enum": [
+          "P",
+          "F",
+          "W",
+          "R",
+          "M",
+          "C",
+          "H"
+        ]
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      },
+      "required": [
+        "P",
+        "F",
+        "W",
+        "R",
+        "M",
+        "C",
+        "H"
+      ]
+    },
+    "aria": {
+      "type": "object",
+      "properties": {
+        "night": {
+          "type": "string",
+          "minLength": 1
+        },
+        "storm": {
+          "type": "string",
+          "minLength": 1
+        },
+        "nominal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gambleHint": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "night",
+        "storm",
+        "nominal",
+        "gambleHint"
+      ],
+      "additionalProperties": false
+    },
+    "randomEvents": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "minItems": 1,
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "effects": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string",
+                "enum": [
+                  "P",
+                  "F",
+                  "W",
+                  "R",
+                  "M",
+                  "C",
+                  "H"
+                ]
+              },
+              "additionalProperties": {
+                "type": "number"
+              }
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "tone": {
+              "type": "string",
+              "enum": [
+                "good",
+                "bad"
+              ]
+            }
+          },
+          "required": [
+            "effects",
+            "title",
+            "tone"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "ticker": {
+      "type": "string",
+      "minLength": 1
+    },
+    "messages": {
+      "type": "object",
+      "properties": {
+        "laterLanded": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supplySubtitle": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "laterLanded",
+        "supplySubtitle"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "deaths",
+    "tips",
+    "aria",
+    "randomEvents",
+    "ticker",
+    "messages"
+  ],
+  "additionalProperties": false
+}

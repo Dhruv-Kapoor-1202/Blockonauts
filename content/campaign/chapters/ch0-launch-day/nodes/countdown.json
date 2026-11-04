@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "launch.countdown",
+      "speaker": "hq",
+      "tag": "COUNTDOWN",
+      "text": "T-0. Every station has reported in. Go or no-go, Commander?",
+      "variants": [
+        {
+          "when": { "flags": ["skippedLeakTest"] },
+          "text": "T-0. One engineer quietly notes the leak test was skipped. Go or no-go, Commander?"
+        },
+        {
+          "when": { "flags": ["crewExhausted"] },
+          "text": "T-0. The crew looks tired but eager. Go or no-go, Commander?"
+        },
+        {
+          "when": { "flags": ["patchedSeal"] },
+          "text": "T-0. The patched valve seal is holding. Go or no-go, Commander?"
+        }
+      ],
+      "fact": "Before launch, each team says 'go' if ready. Any single 'no-go' can stop the countdown.",
+      "left": {
+        "label": "GO for launch",
+        "days": 0,
+        "goto": [
+          { "when": { "flags": ["skippedLeakTest"] }, "to": "launch.ascent.alarm" },
+          { "when": { "flags": ["crewExhausted"] }, "to": "launch.ascent.fatigue" },
+          { "when": { "flags": ["patchedSeal"] }, "to": "launch.damaged" },
+          { "to": "launch.liftoff" }
+        ]
+      },
+      "right": {
+        "label": "Scrub today",
+        "days": 0,
+        "effects": { "M": -4 },
+        "goto": "launch.scrubbed"
+      }
+    }
+  ]
+}

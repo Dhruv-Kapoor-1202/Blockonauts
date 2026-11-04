@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "launch.cargo.manifest",
+      "speaker": "ops",
+      "tag": "CARGO",
+      "text": "The ship is nearly at its weight limit. There's room for one big crate: extra food or spare parts?",
+      "fact": "Most of a rocket's liftoff weight is fuel, so engineers count every kilogram of cargo.",
+      "left": {
+        "label": "Extra food",
+        "days": 0,
+        "effects": { "F": 10, "R": -2 },
+        "setFlags": ["packedExtraFood"],
+        "goto": "launch.cargo.science"
+      },
+      "right": {
+        "label": "Spare parts",
+        "days": 0,
+        "effects": { "R": 5, "P": 3, "F": -3 },
+        "setFlags": ["packedSpares"],
+        "goto": "launch.cargo.science"
+      }
+    },
+    {
+      "id": "launch.cargo.science",
+      "speaker": "sci",
+      "tag": "CARGO",
+      "text": "Dr. Okafor has one more rack of science instruments. Squeeze it in?",
+      "variants": [
+        {
+          "when": { "flags": ["packedExtraFood"] },
+          "text": "The food crate is in. Dr. Okafor begs for room for a rack of science instruments too."
+        },
+        {
+          "when": { "flags": ["packedSpares"] },
+          "text": "The spares crate is in. Dr. Okafor wants room for a rack of science instruments too."
+        }
+      ],
+      "fact": {
+        "moon": "Moon missions carry instruments that study dust, rocks and radiation, which helps keep future crews safe.",
+        "mars": "Mars rover Perseverance carries MOXIE, a toaster-sized machine that made oxygen from Mars's carbon dioxide air."
+      },
+      "left": {
+        "label": "Add the rack",
+        "days": 0,
+        "effects": { "M": 3, "F": -4 },
+        "setFlags": ["packedScience"],
+        "sci": true,
+        "goto": "launch.leak.sensor"
+      },
+      "right": {
+        "label": "Keep it light",
+        "days": 0,
+        "effects": { "P": 4 },
+        "goto": "launch.leak.sensor"
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "mars-ch3-red-winter",
+  "title": "Red Winter",
+  "worlds": ["mars"],
+  "goal": "Keep the outpost alive until the return window opens on Sol 100.",
+  "startNode": "redwinter.start.briefing",
+  "clock": { "startDay": 1, "simulate": true },
+  "endings": {
+    "redwinter.complete": {
+      "outcome": "advance",
+      "title": "RETURN WINDOW OPEN",
+      "text": "Sol 100. The outpost is still standing, and the planets line up for the trip home.",
+      "setFlags": ["survivedRedWinter"]
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "OUTPOST FAILED" },
+  "interludes": {
+    "pools": ["colony", "mars", "followup", "injected"],
+    "every": [2, 4],
+    "goalEnding": "redwinter.complete"
+  }
+}

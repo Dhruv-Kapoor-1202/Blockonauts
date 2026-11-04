@@ -1,0 +1,33 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "moon-epilogue-crew-rotation",
+  "title": "Crew Rotation",
+  "worlds": ["moon"],
+  "goal": "Hand the base over to the new crew.",
+  "startNode": "rotation.arrival",
+  "clock": { "unitOverride": "day" },
+  "endings": {
+    "rotation.legend": {
+      "outcome": "missionEnd",
+      "title": "BASE LEGEND",
+      "text": "You lifted off cleanly, kept everyone healthy and handed over a thriving base. Artemis Base will remember you for a long time."
+    },
+    "rotation.science": {
+      "outcome": "missionEnd",
+      "title": "SCIENCE PIONEERS",
+      "text": "Your extra science gear gave Earth a treasure of lunar data. Scientists will be studying it for years."
+    },
+    "rotation.legacy": {
+      "outcome": "missionEnd",
+      "title": "MESSAGE FOR THE FUTURE",
+      "text": "You left a time capsule and a heartfelt note. Someday visitors to Artemis Base will read your words."
+    },
+    "rotation.quiet": {
+      "outcome": "missionEnd",
+      "title": "QUIET SUCCESS",
+      "text": "It wasn't always smooth, but you kept the crew alive and the base running. That's what a commander does."
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "BASE SYSTEMS FAILED" },
+  "interludes": null
+}

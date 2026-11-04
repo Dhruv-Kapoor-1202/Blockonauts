@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "mars-ch1-long-cruise",
+  "title": "The Long Cruise",
+  "worlds": ["mars"],
+  "goal": "Keep the crew healthy and on course through seven months of deep space.",
+  "startNode": "cruise.ship.depart",
+  "clock": { "startDay": 1, "unitOverride": "day" },
+  "endings": {
+    "cruise.smooth": {
+      "outcome": "advance",
+      "title": "MARS AHEAD",
+      "text": "A small red dot grows in the window. The crew is ready for the hardest part of the trip.",
+      "setFlags": ["healthyArrival"],
+      "carryEffects": { "M": 1 }
+    },
+    "cruise.strained": {
+      "outcome": "advance",
+      "title": "ARRIVING TIRED",
+      "text": "Mars is in sight, but the long trip has worn everyone down. Landing will take extra focus.",
+      "setFlags": ["tiredArrival"],
+      "carryEffects": { "H": -3 }
+    },
+    "cruise.radiation": {
+      "outcome": "retry",
+      "title": "SOLAR STORM EXPOSURE",
+      "text": "The solar storm hit before the crew could hide. Everyone is sick, and the trip is cut short.",
+      "lesson": "Solar particle storms arrive fast. Real crews shelter behind water or cargo as soon as the warning comes."
+    },
+    "cruise.missed": {
+      "outcome": "retry",
+      "title": "FLEW PAST MARS",
+      "text": "The small burn was not enough. Mars slides by in the window and the ship cannot turn around.",
+      "lesson": "Course corrections are cheapest when made early. Waiting makes the burn bigger."
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "SHIP SYSTEMS FAILED" },
+  "interludes": null
+}

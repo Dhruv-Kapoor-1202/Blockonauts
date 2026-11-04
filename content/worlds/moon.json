@@ -1,0 +1,41 @@
+{
+  "$schema": "../schema/world.schema.json",
+  "id": "moon",
+  "strategy": "lunar",
+  "name": "ARTEMIS BASE",
+  "title": "THE MOON",
+  "location": "LUNAR SOUTH POLE",
+  "planet": "the Moon",
+  "unit": "day",
+  "units": "days",
+  "unitLabel": "DAY",
+  "goalDay": 84,
+  "goalName": "CREW ROTATION",
+  "supply": {
+    "every": 14,
+    "offset": 10,
+    "resources": { "F": 10, "W": 8, "P": 6 },
+    "message": "LANDER ARRIVED",
+    "chipLabel": "LANDER"
+  },
+  "startResources": { "P": 72, "F": 58, "W": 55, "R": 60, "M": 70, "C": 75, "H": 72 },
+  "drain": { "P": 0.6, "F": 1, "W": 0.95, "R": 0.3, "M": 0.45, "C": 0.25 },
+  "spec": [
+    { "label": "Day", "value": "14 days sun / 14 dark" },
+    { "label": "Signal", "value": "1.3 sec to Earth" },
+    { "label": "Resupply", "value": "Lander every 14 days" },
+    { "label": "Hazard", "value": "Lunar night, temp swings" },
+    { "label": "Goal", "value": "Reach Day 84" }
+  ],
+  "params": {
+    "cycleLength": 28,
+    "nightStartsAt": 14,
+    "nightPowerDrain": 1.7,
+    "dayPowerGain": 0.5,
+    "warningFrom": 10,
+    "warningTo": 12,
+    "warningCard": "m_night",
+    "nightMessage": { "title": "LUNAR NIGHT", "subtitle": "14 days. No sun. No solar power." },
+    "sunriseMessage": { "title": "SUNRISE", "subtitle": "Solar panels back online." }
+  }
+}

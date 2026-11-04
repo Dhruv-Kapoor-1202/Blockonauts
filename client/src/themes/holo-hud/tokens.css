@@ -1,0 +1,203 @@
+/*
+ * holo-hud design tokens: a dark spacecraft HUD. Glass fills are translucent, lines and glows are
+ * neon cyan / magenta, corners are thin brackets, type is monospace telemetry with Orbitron
+ * headings. This is the ONLY place for raw colours, fonts, geometry and easing of this theme;
+ * per-world accents live in worlds.css, keyframes in motion.css.
+ */
+.theme-holo {
+  color-scheme: dark;
+
+  /* surfaces and ink */
+  --t-bg: #02060f;
+  --t-surface: rgba(8, 20, 38, 0.66);
+  --t-surface-2: rgba(14, 36, 64, 0.6);
+  --t-well: rgba(2, 10, 22, 0.75);
+  --t-ink: #e6faff;
+  --t-muted: #84acbd;
+  --t-copy: #bfe3ee;
+  --t-placeholder: #4f7588;
+  --t-line: rgba(25, 227, 255, 0.28);
+  --t-edge: rgba(25, 227, 255, 0.6);
+  --t-on-accent: #021018;
+  --t-on-ink: #021018;
+  --t-on-ink-soft: rgba(2, 16, 24, 0.7);
+  --t-glass-solid: rgba(4, 14, 28, 0.96);
+
+  /* accents and tones */
+  --t-accent: #19e3ff;
+  --t-accent-2: #ff2bd6;
+  --t-good: #3dffb0;
+  --t-bad: #ff4a6e;
+  --t-warn: #ffc233;
+  --t-aria: #d38bff;
+
+  /* timeline cells */
+  --t-cell: rgba(25, 227, 255, 0.14);
+  --t-cell-lit: #2b7a99;
+  --t-cell-dark: #2a1f6b;
+  --t-cell-storm: #e8542a;
+
+  /* typography */
+  --t-font-display: 'Orbitron', 'Eurostile', 'Arial Black', sans-serif;
+  --t-font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --t-font-pixel: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --t-font-body: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --t-text-glow: 0 0 14px color-mix(in srgb, var(--t-accent) 55%, transparent);
+  --t-title-glow: 0 0 22px color-mix(in srgb, var(--t-accent) 70%, transparent);
+  --t-title-glow-2: 0 0 22px color-mix(in srgb, var(--t-accent-2) 70%, transparent);
+
+  /* borders, radii, glass */
+  --t-bw: 1px;
+  --t-bw-sm: 1px;
+  --t-bw-lg: 2px;
+  --t-bw-hair: 1px;
+  --t-marker-size: 4px;
+  --t-radius: 2px;
+  --t-radius-round: 50%;
+  --t-glass-blur: 10px;
+  --t-bracket-gap: 3px;
+  --t-clip-cut: polygon(
+    0 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+  --t-clip-cut-sm: polygon(
+    0 0,
+    calc(100% - 6px) 0,
+    100% 6px,
+    100% 100%,
+    6px 100%,
+    0 calc(100% - 6px)
+  );
+  /* four thin L-shaped corner brackets drawn as gradients on one pseudo-element */
+  --t-brackets:
+    linear-gradient(var(--t-accent), var(--t-accent)) top left / 14px 2px no-repeat,
+    linear-gradient(var(--t-accent), var(--t-accent)) top left / 2px 14px no-repeat,
+    linear-gradient(var(--t-accent), var(--t-accent)) top right / 14px 2px no-repeat,
+    linear-gradient(var(--t-accent), var(--t-accent)) top right / 2px 14px no-repeat,
+    linear-gradient(var(--t-accent), var(--t-accent)) bottom left / 14px 2px no-repeat,
+    linear-gradient(var(--t-accent), var(--t-accent)) bottom left / 2px 14px no-repeat,
+    linear-gradient(var(--t-accent), var(--t-accent)) bottom right / 14px 2px no-repeat,
+    linear-gradient(var(--t-accent), var(--t-accent)) bottom right / 2px 14px no-repeat;
+
+  /* shadows: neon glows in the world accent */
+  --t-glow-a: color-mix(in srgb, var(--t-accent) 40%, transparent);
+  --t-glow-b: color-mix(in srgb, var(--t-accent) 14%, transparent);
+  --t-shadow-panel: 0 0 20px -6px var(--t-glow-a), inset 0 0 28px var(--t-glow-b);
+  --t-shadow-notes: 0 0 14px -6px var(--t-glow-a), inset 0 0 20px var(--t-glow-b);
+  --t-shadow-hard: 0 0 12px -2px var(--t-glow-a);
+  --t-shadow-hard-hover: 0 0 20px 0 var(--t-glow-a);
+  --t-shadow-hard-press: inset 0 0 14px var(--t-glow-a);
+  --t-shadow-hard-xs: 0 0 8px -2px var(--t-glow-a);
+  --t-shadow-option: inset 0 0 0 1px var(--t-line);
+  --t-shadow-option-hover: inset 0 0 0 1px var(--t-accent), inset 0 0 22px -4px var(--t-glow-a);
+  --t-shadow-option-press: inset 0 0 0 1px var(--t-accent), inset 0 0 30px var(--t-glow-a);
+  --t-shadow-line: 0 0 10px -4px var(--t-glow-a);
+  --t-shadow-line-sm: 0 0 8px -4px var(--t-glow-a);
+  --t-shadow-accent-sm: 0 0 12px -2px var(--t-glow-a);
+  --t-shadow-world-selected: 0 0 0 1px var(--t-accent), 0 0 28px -4px var(--t-glow-a);
+  --t-shadow-edge-sm: 0 0 10px -2px var(--t-glow-a);
+  --t-shadow-edge: 0 0 14px -2px var(--t-glow-a);
+  --t-shadow-edge-md: 0 0 20px -2px var(--t-glow-a);
+  --t-shadow-edge-lg: 0 0 28px -2px var(--t-glow-a);
+  --t-shadow-edge-xl: 0 0 40px 0 var(--t-glow-a);
+
+  /* focus */
+  --t-focus-outline: 2px solid var(--t-accent-2);
+  --t-focus-offset: 3px;
+
+  /* motion */
+  --t-dur-fast: 0.12s;
+  --t-dur-snap: 0.25s;
+  --t-dur-pop: 0.15s;
+  --t-dur-stamp: 0.1s;
+  --t-dur-bar: 0.5s;
+  --t-dur-ghost: 0.7s;
+  --t-dur-goal: 0.5s;
+  --t-dur-flip: 0.3s;
+  --t-dur-deal: 0.45s;
+  --t-dur-world: 0.9s;
+  --t-dur-veil: 1.2s;
+  --t-dur-float: 1.4s;
+  --t-dur-sticker: 1.5s;
+  --t-dur-ticker: 30s;
+  --t-dur-twinkle: 3.2s;
+  --t-dur-storm: 2.4s;
+  --t-dur-alert: 0.9s;
+  --t-dur-crit: 0.7s;
+  --t-dur-shake: 0.35s;
+  --t-dur-bubble: 0.2s;
+  --t-dur-type: 0.4s;
+  --t-dur-blink: 3.5s;
+  --t-dur-grid: 3s;
+  --t-dur-globe: 48s;
+  --t-dur-scan: 7s;
+  --t-ease-bar: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --t-ease-deal: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --t-ease-snap: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --t-ease-float: cubic-bezier(0.2, 0.9, 0.3, 1);
+  --t-ease-sticker: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --t-ease-fly: ease-in;
+
+  /* resource gauge graduations (every 10%) */
+  --t-bar-ticks-v: repeating-linear-gradient(
+    0deg,
+    transparent 0 calc(10% - 1px),
+    rgba(2, 10, 22, 0.85) calc(10% - 1px) 10%
+  );
+  --t-bar-ticks-h: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(10% - 1px),
+    rgba(2, 10, 22, 0.85) calc(10% - 1px) 10%
+  );
+
+  /* card artwork: faint grid and fade mask */
+  --t-art-shade: rgba(0, 12, 24, 0.35);
+  --t-art-grid:
+    linear-gradient(var(--t-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--t-line) 1px, transparent 1px);
+  --t-art-grid-size: 22px 22px;
+  --t-art-mask: linear-gradient(to top, #000 10%, transparent 90%);
+
+  /* scene */
+  --t-scene-bg:
+    radial-gradient(60% 50% at 82% 10%, rgba(255, 43, 214, 0.12), transparent 70%),
+    radial-gradient(70% 60% at 15% 90%, rgba(25, 227, 255, 0.12), transparent 70%), #02060f;
+  --t-grid-line: color-mix(in srgb, var(--t-accent) 38%, transparent);
+  --t-grid-size: 48px 48px;
+  --t-grid-step: 48px;
+  --t-floor-mask: linear-gradient(to top, #000 15%, transparent 85%);
+  --t-scanlines: repeating-linear-gradient(
+    0deg,
+    rgba(120, 220, 255, 0.045) 0 1px,
+    transparent 1px 3px
+  );
+  --t-scan-band: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--t-accent) 9%, transparent),
+    transparent
+  );
+  --t-vignette: radial-gradient(ellipse at center, transparent 55%, rgba(0, 4, 12, 0.7));
+  --t-veil-night: rgba(14, 4, 60, 0.5);
+  --t-veil-night-lines: repeating-linear-gradient(
+    0deg,
+    rgba(120, 90, 255, 0.1) 0 1px,
+    transparent 1px 4px
+  );
+  --t-veil-storm-tint: rgba(255, 30, 90, 0.16);
+  --t-veil-storm-stripes: repeating-linear-gradient(
+    -8deg,
+    rgba(255, 60, 110, 0) 0 16px,
+    rgba(255, 60, 110, 0.14) 16px 18px
+  );
+
+  /* portraits: hologram scan mask (white shows the figure, black cuts the scanlines) */
+  --t-portrait-mask-on: #fff;
+  --t-portrait-mask-off: #000;
+  --t-portrait-beam: rgba(230, 250, 255, 0.4);
+  --t-portrait-glass: rgba(230, 250, 255, 0.18);
+}

@@ -1,0 +1,82 @@
+/**
+ * Fixed UI copy of the app (everything that is not story content). Keeping the strings in one
+ * module keeps components free of literals and makes the wording easy to review or translate.
+ */
+
+/** Copy of every screen and component. */
+export const COPY = {
+  loading: 'LOADING MISSION DATA…',
+  loadFailed: 'Mission data could not be loaded.',
+  offline: 'OFFLINE',
+  settings: { label: 'Settings', themes: 'THEME' },
+  landing: {
+    eyebrow: "NASA SPACE APPS '26 // PROTOTYPE",
+    titleStart: 'COMM',
+    titleEnd: 'ANDER',
+    intro: "You run humanity's first permanent off-world outpost. Every decision costs ",
+    resources: 'resources',
+    and: ' and ',
+    time: 'time',
+    outro: '. Swipe to choose. Keep the crew alive.',
+    callsignPlaceholder: 'Callsign',
+    callsignLabel: 'Commander callsign',
+    start: 'Start ▶',
+    continueRun: 'Continue ▶',
+    credit:
+      'Inspired by Reigns + Lapse: A Forgotten Future. A student-made experiment, not an official NASA product.',
+  },
+  select: {
+    step1: 'STEP 01 //',
+    heading: 'PICK YOUR ROCK.',
+    step2: 'STEP 02 // DIFFICULTY',
+    selected: 'SELECTED',
+    back: '◀ Back',
+    launch: 'Launch ▲',
+  },
+  chapter: {
+    kicker: (index: number): string => `CHAPTER ${index}`,
+    goal: 'GOAL',
+    retries: (used: number, limit: number | null): string =>
+      limit === null ? `RETRIES: ${used} (UNLIMITED)` : `RETRIES: ${used} / ${limit}`,
+    begin: 'Begin ▶',
+    resultAdvance: 'CHAPTER CLEARED',
+    resultRetry: 'CHAPTER FAILED',
+    lesson: 'LESSON',
+    next: { continue: 'Continue ▶', retry: 'Retry chapter ↺', report: 'Mission report ▶' },
+  },
+  game: {
+    ariaButton: 'AI',
+    ariaLabel: 'Ask ARIA, the colony AI',
+    ariaBubbleTitle: 'ARIA //',
+    systems: 'SYSTEMS',
+    notes: 'FIELD NOTES',
+    notesEmpty: 'Your first decision unlocks a note.',
+    dragHint: '◀ DRAG ▶',
+    file: (n: number): string => `FILE ${String(n).padStart(3, '0')}`,
+    chapterKicker: (index: number): string => `CH ${index}`,
+    noTime: 'NO TIME',
+    leftSide: 'Left option',
+    rightSide: 'Right option',
+    passTitle: (days: number, units: string): string => `${days} ${units} pass…`,
+  },
+  report: {
+    caption: 'MISSION REPORT //',
+    terminated: 'TERMINATED',
+    complete: 'COMPLETE',
+    survived: (units: string): string => `${units.toUpperCase()} SURVIVED`,
+    score: 'SCORE',
+    notes: 'NOTES LOGGED',
+    chapters: 'CHAPTERS CLEARED',
+    retries: 'RETRIES',
+    badges: 'BADGES',
+    learned: 'YOU LEARNED',
+    decisions: 'KEY DECISIONS',
+    lesson: 'LESSON',
+    board: 'TOP COMMANDERS',
+    boardLocal: 'TOP COMMANDERS // THIS DEVICE',
+    boardLoading: 'Loading the leaderboard…',
+    boardEmpty: 'No scores yet.',
+    switchRock: 'Switch rock',
+    flyAgain: 'Fly again ▲',
+  },
+} as const;

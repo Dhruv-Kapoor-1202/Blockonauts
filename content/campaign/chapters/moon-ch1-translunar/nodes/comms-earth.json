@@ -1,0 +1,63 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "translunar.comms",
+      "speaker": "com",
+      "tag": "COMMS",
+      "text": "We are far from home now. Radio signals take over a second to reach Earth.",
+      "variants": [
+        {
+          "when": { "flags": ["commsChecked"] },
+          "text": "Thanks to the pre-launch comms check the dish is locked on. Earth is 1.3 seconds away."
+        },
+        {
+          "when": { "flags": ["commsSkipped"] },
+          "text": "The dish lost its lock. The comms check we skipped on Earth would have caught this."
+        }
+      ],
+      "fact": "Radio signals take about 1.3 seconds to travel between Earth and the Moon, so conversations have a short delay.",
+      "left": {
+        "label": "Family video call",
+        "days": 0,
+        "effects": { "M": 4, "C": -3 },
+        "setFlags": ["calledHome"],
+        "goto": [
+          { "when": { "flags": ["commsSkipped"] }, "to": "translunar.antenna" },
+          { "to": "translunar.morale" }
+        ]
+      },
+      "right": {
+        "label": "Send science data",
+        "days": 0,
+        "effects": { "C": -2, "M": 2 },
+        "setFlags": ["sentData"],
+        "sci": true,
+        "goto": [
+          { "when": { "flags": ["commsSkipped"] }, "to": "translunar.antenna" },
+          { "to": "translunar.morale" }
+        ]
+      }
+    },
+    {
+      "id": "translunar.antenna",
+      "speaker": "com",
+      "tag": "COMMS",
+      "text": "The main dish won't lock on Earth. Re-point the whole capsule, or switch to the weak backup antenna?",
+      "fact": "Spacecraft carry a low-gain backup antenna that sends slow data in all directions when the main dish can't point at Earth.",
+      "left": {
+        "label": "Re-point capsule",
+        "days": 1,
+        "effects": { "P": -4 },
+        "goto": "translunar.morale"
+      },
+      "right": {
+        "label": "Backup antenna",
+        "days": 0,
+        "effects": { "C": -6 },
+        "setFlags": ["lowGainAntenna"],
+        "goto": "translunar.morale"
+      }
+    }
+  ]
+}

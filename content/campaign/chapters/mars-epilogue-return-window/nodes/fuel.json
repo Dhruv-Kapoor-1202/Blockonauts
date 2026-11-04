@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "return.fuel.check",
+      "speaker": "eng",
+      "tag": "ASCENT",
+      "text": "Fuel tanks are only 85% full. Launch light, or wait a few sols for a full load?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["packedSpares"]
+          },
+          "text": "Fuel tanks are only 85% full. Our spare parts could speed up the fuel plant, but it takes a few sols."
+        }
+      ],
+      "fact": "Making rocket fuel from Mars's air and water saves launching tons of fuel from Earth.",
+      "left": {
+        "label": "Launch light",
+        "days": 1,
+        "effects": {
+          "M": -2
+        },
+        "setFlags": ["leftGearBehind"],
+        "goto": "return.crew.farewell"
+      },
+      "right": {
+        "label": "Wait for full tanks",
+        "days": 3,
+        "effects": {
+          "P": -4,
+          "F": -3
+        },
+        "setFlags": ["fullTanks"],
+        "goto": "return.cargo.samples"
+      }
+    }
+  ]
+}

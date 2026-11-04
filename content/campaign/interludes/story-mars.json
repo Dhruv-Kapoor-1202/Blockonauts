@@ -1,0 +1,143 @@
+{
+  "$schema": "../../schema/interludes.schema.json",
+  "interludes": [
+    {
+      "id": "marsstory_extrafood",
+      "speaker": "cook",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "when": { "flags": ["packedExtraFood"] },
+      "text": "Chef Marco found the extra food crates from the cargo hold. Throw a feast, or save them?",
+      "fact": "Food is heavy to launch, so Mars planners want meals that are light, tasty and last for years.",
+      "left": {
+        "label": "Feast!",
+        "effects": { "M": 10, "F": -6 }
+      },
+      "right": {
+        "label": "Save crates",
+        "effects": { "F": 10, "M": -2 }
+      }
+    },
+    {
+      "id": "marsstory_spares",
+      "speaker": "eng",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "when": { "flags": ["packedSpares"] },
+      "text": "The water recycler is wheezing again. A spare pump from the cargo hold could fix it for good.",
+      "fact": "Real Mars plans include spare parts and 3D printers, because the nearest repair shop is tens of millions of kilometers away.",
+      "left": {
+        "label": "Install spare",
+        "days": 2,
+        "effects": { "W": 10, "P": -3 }
+      },
+      "right": {
+        "label": "Keep it boxed",
+        "effects": { "W": -4, "M": 2 },
+        "later": {
+          "in": 6,
+          "effects": { "H": 4 },
+          "message": "SPARE PARTS SAVED THE DAY"
+        }
+      }
+    },
+    {
+      "id": "marsstory_delta",
+      "speaker": "sci",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "when": { "flags": ["landedAtDelta"] },
+      "text": "Layered clay rocks sit in the old river delta. They might hold signs of ancient life. Collect some?",
+      "fact": "Perseverance is collecting rock samples at Jezero's delta for a future mission to bring them to Earth.",
+      "left": {
+        "label": "Not today",
+        "effects": { "M": -3 }
+      },
+      "right": {
+        "label": "Drill samples",
+        "days": 2,
+        "effects": { "P": -4 },
+        "gamble": {
+          "p": 0.6,
+          "win": { "M": 12, "W": 6 },
+          "lose": { "H": -6, "R": -4 },
+          "winText": "ANCIENT CLAY FOUND",
+          "loseText": "ROCKFALL"
+        },
+        "sci": true
+      }
+    },
+    {
+      "id": "marsstory_plains",
+      "speaker": "ops",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "when": { "flags": ["landedOnPlains"] },
+      "text": "Wind keeps coating our panels with dust on these open plains. Clean them now, or wait for a gust?",
+      "fact": "On Mars, wind sometimes cleans solar panels. In 2005, 'dust devils' cleaned Spirit rover's panels and boosted its power.",
+      "left": {
+        "label": "Sweep panels",
+        "days": 1,
+        "effects": { "P": 10, "H": -3 }
+      },
+      "right": {
+        "label": "Wait for wind",
+        "effects": { "P": -4, "M": 2 },
+        "later": {
+          "in": 4,
+          "effects": { "P": 8 },
+          "message": "DUST DEVIL CLEANED PANELS"
+        }
+      }
+    },
+    {
+      "id": "marsstory_hull",
+      "speaker": "eng",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "when": { "anyFlags": ["damagedHull", "hardLanding"] },
+      "text": "The old damage from our rough trip is creaking. A hairline crack is leaking air slowly.",
+      "fact": "Mars habitats must hold air against a thin atmosphere pressing from outside. Even tiny cracks matter.",
+      "left": {
+        "label": "Patch it now",
+        "days": 2,
+        "effects": { "P": -3, "R": 4, "M": -2 }
+      },
+      "right": {
+        "label": "Monitor it",
+        "effects": { "M": 2 },
+        "gamble": {
+          "p": 0.5,
+          "win": { "M": 4 },
+          "lose": { "H": -8, "R": -4 },
+          "winText": "CRACK HELD",
+          "loseText": "AIR LEAK"
+        }
+      }
+    },
+    {
+      "id": "marsstory_stronglegs",
+      "speaker": "med",
+      "pool": "mars",
+      "tag": "MARTIAN",
+      "worlds": ["mars"],
+      "when": { "flags": ["exerciseRoutine"] },
+      "text": "Thanks to the cruise workouts, the crew can haul heavy rocks. Build a wall around the habitat?",
+      "fact": "Mars gravity is only 38% of Earth's. Staying strong from exercise keeps bones healthy for the trip home.",
+      "left": {
+        "label": "Build the wall",
+        "days": 2,
+        "effects": { "R": 8, "H": -2, "M": 3 }
+      },
+      "right": {
+        "label": "Rest instead",
+        "effects": { "H": 5, "M": 2 }
+      }
+    }
+  ]
+}

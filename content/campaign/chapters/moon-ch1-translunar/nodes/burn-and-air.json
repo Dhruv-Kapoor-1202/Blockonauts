@@ -1,0 +1,134 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "translunar.tli",
+      "speaker": "eng",
+      "tag": "TRANSIT",
+      "text": "Trans-lunar injection: one long engine burn will throw us out of Earth orbit toward the Moon.",
+      "variants": [
+        {
+          "when": { "flags": ["damagedHull"] },
+          "text": "The hull is still creaking from launch. Chief Rao asks: burn now, or check it first?"
+        },
+        {
+          "when": { "flags": ["cleanLaunch"] },
+          "text": "A clean launch and a happy ship. One long engine burn will throw us toward the Moon."
+        }
+      ],
+      "fact": "Apollo's trans-lunar injection burn lasted about six minutes and sped the spacecraft up to over 10 km per second.",
+      "left": {
+        "label": "Burn now",
+        "days": 0,
+        "effects": { "P": -4 },
+        "goto": [
+          { "when": { "flags": ["damagedHull"] }, "to": "translunar.hull" },
+          { "to": "translunar.coast" }
+        ]
+      },
+      "right": {
+        "label": "Check hull first",
+        "days": 1,
+        "effects": { "P": -2, "M": -1 },
+        "setFlags": ["hullChecked"],
+        "goto": "translunar.coast"
+      }
+    },
+    {
+      "id": "translunar.hull",
+      "speaker": "eng",
+      "tag": "TRANSIT",
+      "text": "Mid-burn, the damaged hull groans and a seam starts to flex!",
+      "variants": [
+        {
+          "when": { "flags": ["packedSpares"] },
+          "text": "Mid-burn, the damaged hull groans and a seam starts to flex! At least we packed spare panels."
+        }
+      ],
+      "fact": "Spacecraft flex a little under engine thrust, which is why engineers test hull strength on the ground.",
+      "left": {
+        "label": "Finish the burn",
+        "days": 0,
+        "gamble": {
+          "p": 0.55,
+          "win": { "M": 3 },
+          "lose": { "R": -6, "H": -4 },
+          "winText": "SEAM HELD",
+          "loseText": "SEAM SPLIT",
+          "winGoto": "translunar.coast",
+          "loseGoto": [
+            { "when": { "flags": ["packedSpares"] }, "to": "translunar.coast" },
+            { "to": "translunar.hullBreach" }
+          ]
+        }
+      },
+      "right": {
+        "label": "Cut it short",
+        "days": 1,
+        "effects": { "P": -2 },
+        "setFlags": ["shortBurn"],
+        "goto": "translunar.coast"
+      }
+    },
+    {
+      "id": "translunar.coast",
+      "speaker": "ls",
+      "tag": "LIFE SUPPORT",
+      "text": "Day 2 in the capsule. The CO2 scrubber canister is almost full.",
+      "variants": [
+        {
+          "when": { "flags": ["packedSpares"] },
+          "text": "Day 2 in the capsule. The CO2 scrubber canister is almost full, but we packed spares."
+        },
+        {
+          "when": { "flags": ["crewExhausted"] },
+          "text": "Day 2 in the capsule. The sleepy crew is breathing hard and CO2 is creeping up."
+        }
+      ],
+      "fact": "Astronauts breathe out carbon dioxide, so spacecraft use filter canisters to scrub it from the air.",
+      "left": {
+        "label": "Swap canister",
+        "days": 1,
+        "effects": { "H": 3, "P": -2 },
+        "goto": [
+          { "when": { "flags": ["packedSpares"] }, "to": "translunar.flare" },
+          { "to": "translunar.scrubber" }
+        ]
+      },
+      "right": {
+        "label": "Stretch it",
+        "days": 0,
+        "effects": { "H": -3, "M": -2 },
+        "setFlags": ["stretchedScrubber"],
+        "later": {
+          "in": 2,
+          "effects": { "H": -3 },
+          "message": "STUFFY CABIN"
+        },
+        "goto": "translunar.flare"
+      }
+    },
+    {
+      "id": "translunar.scrubber",
+      "speaker": "ls",
+      "tag": "LIFE SUPPORT",
+      "text": "There's no spare canister! Rig a fix from what we have, or cut back activity to make air last?",
+      "fact": "In 1970 the Apollo 13 crew built a CO2 filter adapter from cardboard, hoses and duct tape. It saved their lives.",
+      "left": {
+        "label": "Rig an adapter",
+        "days": 1,
+        "effects": { "M": 3, "P": -2 },
+        "setFlags": ["riggedScrubber"],
+        "sci": true,
+        "goto": "translunar.flare"
+      },
+      "right": {
+        "label": "Cut activity",
+        "days": 1,
+        "effects": { "H": -3, "M": -5 },
+        "setFlags": ["lowActivity"],
+        "goto": "translunar.flare"
+      }
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "worlds": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "startNode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "clock": {
+      "type": "object",
+      "properties": {
+        "startDay": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        "unitOverride": {
+          "type": "string"
+        },
+        "simulate": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "endings": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "advance",
+              "retry",
+              "missionEnd"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lesson": {
+            "type": "string"
+          },
+          "setFlags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][A-Za-z0-9]*$"
+            }
+          },
+          "carryEffects": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "enum": [
+                "P",
+                "F",
+                "W",
+                "R",
+                "M",
+                "C",
+                "H"
+              ]
+            },
+            "additionalProperties": {
+              "type": "number"
+            }
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "win",
+              "loss"
+            ]
+          }
+        },
+        "required": [
+          "outcome",
+          "title",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "resourceFailure": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "retry",
+            "missionEnd"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "lesson": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "outcome"
+      ],
+      "additionalProperties": false
+    },
+    "interludes": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "pools": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "every": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                }
+              ],
+              "additionalItems": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "untilDay": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            "goalEnding": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "pools",
+            "every",
+            "goalEnding"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "worlds",
+    "goal",
+    "startNode",
+    "endings",
+    "resourceFailure"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "characters": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "default": "human",
+            "type": "string",
+            "enum": [
+              "human",
+              "ai",
+              "earth"
+            ]
+          },
+          "skin": {
+            "type": "string"
+          },
+          "hair": {
+            "type": "string"
+          },
+          "hairStyle": {
+            "type": "string",
+            "enum": [
+              "long",
+              "short",
+              "bun",
+              "curly",
+              "cap",
+              "bald"
+            ]
+          },
+          "hat": {
+            "type": "string",
+            "enum": [
+              "hard",
+              "chef"
+            ]
+          },
+          "glasses": {
+            "type": "boolean"
+          },
+          "headset": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "role",
+          "color"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "characters"
+  ],
+  "additionalProperties": false
+}

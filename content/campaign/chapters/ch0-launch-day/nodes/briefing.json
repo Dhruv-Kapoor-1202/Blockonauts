@@ -1,0 +1,48 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "launch.briefing",
+      "speaker": "hq",
+      "tag": "LAUNCH",
+      "text": {
+        "moon": "T-minus 3 days, Commander. Your crew launches for the Moon's south pole. Time to get the ship ready.",
+        "mars": "T-minus 3 days, Commander. Your crew launches for Mars, a seven-month trip. Time to get the ship ready."
+      },
+      "fact": {
+        "moon": "The Moon is about 384,400 km from Earth. A crew capsule needs around 3 to 4 days to fly there.",
+        "mars": "Launch windows to Mars open only about every 26 months, when Earth and Mars line up well."
+      },
+      "left": {
+        "label": "Start loading",
+        "days": 0,
+        "goto": "launch.cargo.manifest"
+      },
+      "right": {
+        "label": "Walk the pad",
+        "days": 0,
+        "goto": "launch.pad.walk"
+      }
+    },
+    {
+      "id": "launch.pad.walk",
+      "speaker": "eng",
+      "tag": "LAUNCH",
+      "text": "Frost is forming on a fuel line. Super-cold fuel does that, but frost can also hide a leak.",
+      "fact": "Liquid oxygen rocket fuel is about -183°C, so water vapor from the air freezes onto the outside of the pipes.",
+      "left": {
+        "label": "Flag it",
+        "days": 0,
+        "setFlags": ["noticedFrost"],
+        "goto": "launch.cargo.manifest"
+      },
+      "right": {
+        "label": "Wipe it off",
+        "days": 0,
+        "effects": { "M": 1 },
+        "setFlags": ["ignoredFrost"],
+        "goto": "launch.cargo.manifest"
+      }
+    }
+  ]
+}

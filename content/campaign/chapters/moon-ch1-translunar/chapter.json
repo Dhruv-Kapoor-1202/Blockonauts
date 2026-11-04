@@ -1,0 +1,45 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "moon-ch1-translunar",
+  "title": "Translunar",
+  "worlds": ["moon"],
+  "goal": "Fly the crew safely to lunar orbit.",
+  "startNode": "translunar.tli",
+  "clock": { "startDay": 1, "unitOverride": "day" },
+  "endings": {
+    "translunar.orbit": {
+      "outcome": "advance",
+      "title": "LUNAR ORBIT",
+      "text": "The engine fires behind the Moon and gravity gently catches the ship. The crew is in a perfect lunar orbit.",
+      "setFlags": ["stableOrbit"],
+      "carryEffects": { "M": 1 }
+    },
+    "translunar.orbitRough": {
+      "outcome": "advance",
+      "title": "ORBIT... ROUGHLY",
+      "text": "The burn was a little off, but the ship is circling the Moon. Fuel is tight for the landing.",
+      "setFlags": ["roughArrival"],
+      "carryEffects": { "P": -6, "M": -2 }
+    },
+    "translunar.flyby": {
+      "outcome": "retry",
+      "title": "MISSED THE MOON",
+      "text": "The burn failed and the ship swung around the Moon and headed back toward Earth.",
+      "lesson": "The orbit insertion burn happens just once. Correct your course early so the final burn has the best chance."
+    },
+    "translunar.radiation": {
+      "outcome": "retry",
+      "title": "RADIATION SICKNESS",
+      "text": "The crew took too much radiation and mission control ordered the ship home.",
+      "lesson": "During a solar flare, shelter behind thick walls or water tanks. Then rest if you feel unwell."
+    },
+    "translunar.hullBreach": {
+      "outcome": "retry",
+      "title": "HULL SEAM FAILED",
+      "text": "The damaged hull seam split under engine thrust and the cabin lost air. The crew had to abort.",
+      "lesson": "Damage from launch gets worse under stress. Inspect and repair it before you fire the big engine."
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "SYSTEMS COLLAPSED" },
+  "interludes": null
+}

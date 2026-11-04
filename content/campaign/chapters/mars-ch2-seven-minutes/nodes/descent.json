@@ -1,0 +1,71 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "edl.descent.hazard",
+      "speaker": "eng",
+      "tag": "POWERED DESCENT",
+      "text": "Engines on! The radar sees rocks below. Trust the terrain map, or fly by hand?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["targetDelta"],
+            "notFlags": ["ballisticEntry"]
+          },
+          "text": "Engines on! The delta is full of cliffs and boulders. Trust the terrain map, or fly by hand?"
+        },
+        {
+          "when": {
+            "flags": ["ballisticEntry"]
+          },
+          "text": "Engines on! The simple entry left us far off target, with rocks everywhere. Trust the map, or fly by hand?"
+        },
+        {
+          "when": {
+            "flags": ["targetPlains"]
+          },
+          "text": "Engines on! The plains look smooth, but the dust may hide rocks. Trust the map, or fly by hand?"
+        }
+      ],
+      "fact": "Perseverance used Terrain-Relative Navigation, comparing camera images to a map to dodge hazards at Jezero.",
+      "left": {
+        "label": "Trust terrain map",
+        "days": 0,
+        "effects": {
+          "P": -2
+        },
+        "setFlags": ["usedTerrainNav"],
+        "goto": "edl.land.skycrane"
+      },
+      "right": {
+        "label": "Fly by hand",
+        "days": 0,
+        "gamble": {
+          "p": 0.55,
+          "win": {
+            "M": 5
+          },
+          "lose": {
+            "H": -6,
+            "P": -4
+          },
+          "winText": "PERFECT SPOT",
+          "loseText": "BOULDER STRIKE",
+          "winGoto": "edl.land.skycrane",
+          "loseGoto": [
+            {
+              "when": {
+                "flags": ["targetPlains"]
+              },
+              "to": "edl.land.skycrane"
+            },
+            {
+              "to": "edl.crash"
+            }
+          ]
+        },
+        "setFlags": ["manualLanding"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "launch.crew.fatigue",
+      "speaker": "med",
+      "tag": "CREW",
+      "text": "Dr. Silva says the crew has been awake for 30 hours finishing checks. Rest, or press on?",
+      "variants": [
+        {
+          "when": { "flags": ["waitedForWeather"] },
+          "text": "The weather hold gave everyone a break, but Dr. Silva says they are still running on fumes. Rest, or press on?"
+        }
+      ],
+      "fact": "NASA shifts astronauts' sleep schedules before launch so they are wide awake at liftoff.",
+      "left": {
+        "label": "Rest the crew",
+        "days": 1,
+        "effects": { "H": 5, "M": 3 },
+        "setFlags": ["crewRested"],
+        "goto": "launch.comms.check"
+      },
+      "right": {
+        "label": "Press on",
+        "days": 0,
+        "effects": { "M": 2, "H": -5 },
+        "setFlags": ["crewExhausted"],
+        "later": {
+          "in": 2,
+          "effects": { "H": -4 },
+          "message": "SLEEPY CREW"
+        },
+        "goto": "launch.comms.check"
+      }
+    }
+  ]
+}

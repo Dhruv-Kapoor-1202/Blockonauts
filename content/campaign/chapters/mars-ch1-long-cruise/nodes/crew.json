@@ -1,0 +1,178 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "cruise.crew.medical",
+      "speaker": "med",
+      "tag": "HEALTH",
+      "text": "Floating weakens bones and muscles. Time to pick a fitness plan for the long trip.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["crewExhausted"]
+          },
+          "text": "Several of us never recovered from the pre-launch fatigue. We need a plan that works."
+        },
+        {
+          "when": {
+            "flags": ["crewRested"]
+          },
+          "text": "The crew started well-rested and strong. Let's keep it that way."
+        }
+      ],
+      "fact": "ISS astronauts exercise about two hours a day to protect their bones and muscles in microgravity.",
+      "left": {
+        "label": "Daily workouts",
+        "days": 1,
+        "effects": {
+          "H": 6,
+          "M": -3,
+          "P": -2
+        },
+        "setFlags": ["exerciseRoutine"],
+        "goto": [
+          {
+            "when": {
+              "flags": ["crewExhausted"]
+            },
+            "to": "cruise.crew.sick"
+          },
+          {
+            "to": "cruise.crew.rations"
+          }
+        ]
+      },
+      "right": {
+        "label": "Light workouts",
+        "days": 1,
+        "effects": {
+          "H": 1,
+          "M": 4
+        },
+        "setFlags": ["lightExercise"],
+        "goto": [
+          {
+            "when": {
+              "flags": ["crewExhausted"]
+            },
+            "to": "cruise.crew.sick"
+          },
+          {
+            "to": "cruise.crew.rations"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cruise.crew.sick",
+      "speaker": "med",
+      "tag": "HEALTH",
+      "text": "Rookie Kim has a fever and a cough. Tired crews catch bugs more easily.",
+      "fact": "Spaceflight can weaken the immune system, so doctors watch crews closely for illness.",
+      "left": {
+        "label": "Isolate Kim",
+        "days": 3,
+        "effects": {
+          "M": -4,
+          "H": 4
+        },
+        "setFlags": ["isolatedPatient"],
+        "goto": "cruise.crew.rations"
+      },
+      "right": {
+        "label": "Use medicine",
+        "days": 1,
+        "effects": {
+          "H": 5
+        },
+        "later": {
+          "in": 15,
+          "effects": {
+            "H": -6
+          },
+          "message": "MEDICINE STOCK RAN LOW"
+        },
+        "setFlags": ["usedMedicine"],
+        "goto": "cruise.crew.rations"
+      }
+    },
+    {
+      "id": "cruise.crew.rations",
+      "speaker": "cook",
+      "tag": "SUPPLIES",
+      "text": "Chef Marco counts the pantry. Four months to go. Should we ration?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["packedExtraFood"]
+          },
+          "text": "Marco grins: those extra crates mean food to spare. Ration anyway, or eat well?"
+        }
+      ],
+      "fact": "Space food must stay safe for years. Mars mission planners want meals that last about 5 years.",
+      "left": {
+        "label": "Ration food, water",
+        "days": 1,
+        "effects": {
+          "F": 6,
+          "W": 5,
+          "M": -6
+        },
+        "setFlags": ["rationedSupplies"],
+        "goto": "cruise.nav.course"
+      },
+      "right": {
+        "label": "Normal meals",
+        "days": 1,
+        "effects": {
+          "F": -7,
+          "M": 5
+        },
+        "setFlags": ["fullMeals"],
+        "goto": "cruise.nav.course"
+      }
+    },
+    {
+      "id": "cruise.crew.morale",
+      "speaker": "psy",
+      "tag": "MORALE",
+      "text": "Month five. Earth is a tiny dot and the crew is getting quiet.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["flexibleRoutine"]
+          },
+          "text": "Month five. Our relaxed days drifted into lazy ones, and the crew is bored."
+        },
+        {
+          "when": {
+            "flags": ["strictRoutine"]
+          },
+          "text": "Month five. The strict schedule worked, but the crew misses having fun."
+        }
+      ],
+      "fact": "In the Mars-500 study, six volunteers lived sealed in a mock spacecraft for 520 days to test isolation.",
+      "left": {
+        "label": "Movie night, calls",
+        "days": 1,
+        "effects": {
+          "M": 6,
+          "C": -3
+        },
+        "setFlags": ["calledHome"],
+        "goto": "cruise.nav.arrival"
+      },
+      "right": {
+        "label": "Science fair",
+        "days": 2,
+        "effects": {
+          "M": 3,
+          "C": 2
+        },
+        "sci": true,
+        "setFlags": ["scienceFair"],
+        "goto": "cruise.nav.arrival"
+      }
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "./schema/achievements.schema.json",
+  "achievements": [
+    {
+      "id": "d14",
+      "name": "2 WEEKS IN",
+      "description": "Reach day 14.",
+      "rule": { "type": "dayAtLeast", "day": 14 }
+    },
+    {
+      "id": "d42",
+      "name": "6 WEEKS IN",
+      "description": "Reach day 42.",
+      "rule": { "type": "dayAtLeast", "day": 42 }
+    },
+    {
+      "id": "phase",
+      "name": "WEATHERED IT",
+      "description": "Survive a lunar night or a dust storm.",
+      "rule": { "type": "event", "event": "phaseWeathered" }
+    },
+    {
+      "id": "sup",
+      "name": "SPECIAL DELIVERY",
+      "description": "Receive a supply drop.",
+      "rule": { "type": "event", "event": "supplyLanded" }
+    },
+    {
+      "id": "sci",
+      "name": "CURIOUS MIND",
+      "description": "Make 5 science choices.",
+      "rule": { "type": "counterAtLeast", "counter": "science", "value": 5 }
+    },
+    {
+      "id": "bal",
+      "name": "PERFECT BALANCE",
+      "description": "Keep every system at 50 or more after day 12.",
+      "rule": { "type": "balanced", "afterDay": 12, "minEach": 50 }
+    },
+    {
+      "id": "facts",
+      "name": "SPACE SCHOLAR",
+      "description": "Log 12 field notes.",
+      "rule": { "type": "counterAtLeast", "counter": "facts", "value": 12 }
+    },
+    {
+      "id": "win",
+      "name": "MISSION COMPLETE",
+      "description": "Finish the mission.",
+      "rule": { "type": "event", "event": "missionWon" }
+    }
+  ]
+}

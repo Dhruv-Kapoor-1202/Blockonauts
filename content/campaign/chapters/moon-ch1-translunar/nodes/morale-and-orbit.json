@@ -1,0 +1,97 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "translunar.morale",
+      "speaker": "psy",
+      "tag": "MORALE",
+      "text": "Four astronauts in a tiny capsule for days. Tempers are getting short.",
+      "variants": [
+        {
+          "when": { "flags": ["crewExhausted"] },
+          "text": "Everyone is cranky after the rushed launch, and the capsule is tiny. Tempers are short."
+        },
+        {
+          "when": { "flags": ["crewRested"] },
+          "text": "The pre-launch rest paid off and spirits are good. Still, the capsule is tiny."
+        }
+      ],
+      "fact": "Orion's living space is about 9 cubic meters, about the inside of a small camper van, shared by four astronauts.",
+      "left": {
+        "label": "Movie night",
+        "days": 1,
+        "effects": { "M": 5, "F": -2 },
+        "setFlags": ["movieNight"],
+        "goto": "translunar.correction"
+      },
+      "right": {
+        "label": "Quiet hour",
+        "days": 0,
+        "effects": { "M": 3, "H": 2 },
+        "setFlags": ["quietHour"],
+        "goto": "translunar.correction"
+      }
+    },
+    {
+      "id": "translunar.correction",
+      "speaker": "ops",
+      "tag": "NAVIGATION",
+      "text": "We're drifting 40 km off course. A small engine burn can fix it.",
+      "variants": [
+        {
+          "when": { "flags": ["shortBurn"] },
+          "text": "That short burn left us 300 km off course. We need a bigger correction."
+        }
+      ],
+      "fact": "Spacecraft on the way to the Moon make small course-correction burns. Apollo crews did a few each trip.",
+      "left": {
+        "label": "Burn now",
+        "days": 0,
+        "effects": { "P": -5 },
+        "setFlags": ["trimmedCourse"],
+        "goto": "translunar.insertion"
+      },
+      "right": {
+        "label": "Wait and measure",
+        "days": 1,
+        "gamble": {
+          "p": 0.5,
+          "win": { "P": 2 },
+          "lose": { "P": -9 },
+          "winText": "DRIFT CANCELLED",
+          "loseText": "DRIFT GREW"
+        },
+        "goto": "translunar.insertion"
+      }
+    },
+    {
+      "id": "translunar.insertion",
+      "speaker": "ops",
+      "tag": "ORBIT",
+      "text": "Lunar orbit insertion: the engine fires behind the Moon, where Earth cannot hear us.",
+      "fact": "Apollo and Artemis capsules slow down with a burn behind the Moon, out of radio contact, so lunar gravity can capture them.",
+      "left": {
+        "label": "Autopilot burn",
+        "days": 0,
+        "effects": { "P": -3 },
+        "goto": [
+          { "when": { "flags": ["trimmedCourse"] }, "to": "translunar.orbit" },
+          { "to": "translunar.orbitRough" }
+        ]
+      },
+      "right": {
+        "label": "Fly it manually",
+        "days": 0,
+        "gamble": {
+          "p": 0.55,
+          "win": { "M": 3 },
+          "lose": { "P": -6 },
+          "winText": "PERFECT BURN",
+          "loseText": "BURN WENT WIDE",
+          "winGoto": "translunar.orbit",
+          "loseGoto": "translunar.flyby"
+        }
+      }
+    }
+  ]
+}

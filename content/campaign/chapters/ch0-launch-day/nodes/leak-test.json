@@ -1,0 +1,84 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "launch.leak.sensor",
+      "speaker": "eng",
+      "tag": "LEAK TEST",
+      "text": "The oxidizer line shows a tiny pressure drop. A full leak test takes a day.",
+      "variants": [
+        {
+          "when": { "flags": ["noticedFrost"] },
+          "text": "The frosty fuel line you flagged now shows a tiny pressure drop. A full leak test takes a day."
+        },
+        {
+          "when": { "flags": ["ignoredFrost"] },
+          "text": "That frosty line you wiped clean now shows a tiny pressure drop. A full leak test takes a day."
+        }
+      ],
+      "fact": "Artemis I's first launch tries in 2022 were called off for a hydrogen leak. Tiny leaks delay big rockets.",
+      "left": {
+        "label": "Launch anyway",
+        "days": 0,
+        "effects": { "M": 2 },
+        "setFlags": ["skippedLeakTest"],
+        "goto": "launch.weather.forecast"
+      },
+      "right": {
+        "label": "Run the test",
+        "days": 1,
+        "effects": { "P": -3, "M": -2 },
+        "goto": "launch.leak.found"
+      }
+    },
+    {
+      "id": "launch.leak.found",
+      "speaker": "eng",
+      "tag": "LEAK TEST",
+      "text": "Good call! The test found a hairline crack in a valve seal.",
+      "variants": [
+        {
+          "when": { "flags": ["packedSpares"] },
+          "text": "Good call! The test found a cracked valve seal, and we packed spares."
+        }
+      ],
+      "fact": "Engineers sniff out leaks with helium gas. Its atoms are so tiny they escape through hairline cracks.",
+      "left": {
+        "label": "Swap the seal",
+        "days": 0,
+        "effects": { "P": -2 },
+        "goto": [
+          { "when": { "flags": ["packedSpares"] }, "to": "launch.weather.forecast" },
+          { "to": "launch.leak.nospare" }
+        ]
+      },
+      "right": {
+        "label": "Patch and go",
+        "days": 0,
+        "effects": { "M": 2 },
+        "setFlags": ["patchedSeal"],
+        "goto": "launch.weather.forecast"
+      }
+    },
+    {
+      "id": "launch.leak.nospare",
+      "speaker": "eng",
+      "tag": "LEAK TEST",
+      "text": "There's no spare seal in the hold! Borrow one from a cargo-bay panel, or patch the old one?",
+      "fact": "Nobody can pop to a shop in space, so crews repair things with the parts they brought along.",
+      "left": {
+        "label": "Borrow a seal",
+        "days": 0,
+        "effects": { "R": -5 },
+        "goto": "launch.weather.forecast"
+      },
+      "right": {
+        "label": "Patch old seal",
+        "days": 0,
+        "effects": { "M": 2 },
+        "setFlags": ["patchedSeal"],
+        "goto": "launch.weather.forecast"
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "./schema/difficulties.schema.json",
+  "difficulties": [
+    {
+      "id": "cadet",
+      "name": "CADET",
+      "description": "Slow drain. Shows ▲▼ hints.",
+      "drainMultiplier": 0.65,
+      "hints": true,
+      "retryLimit": null
+    },
+    {
+      "id": "commander",
+      "name": "COMMANDER",
+      "description": "The intended balance.",
+      "drainMultiplier": 1,
+      "hints": false,
+      "retryLimit": 3
+    },
+    {
+      "id": "veteran",
+      "name": "VETERAN",
+      "description": "Space is not your friend.",
+      "drainMultiplier": 1.4,
+      "hints": false,
+      "retryLimit": 1
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "resources": {
+      "minItems": 7,
+      "maxItems": 7,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "P",
+              "F",
+              "W",
+              "R",
+              "M",
+              "C",
+              "H"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "color": {
+            "type": "string",
+            "minLength": 1
+          },
+          "icon": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "key",
+          "name",
+          "color",
+          "icon"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "resources"
+  ],
+  "additionalProperties": false
+}

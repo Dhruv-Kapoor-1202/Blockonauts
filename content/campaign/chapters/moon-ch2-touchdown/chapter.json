@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "moon-ch2-touchdown",
+  "title": "Touchdown",
+  "worlds": ["moon"],
+  "goal": "Land safely near the lunar south pole.",
+  "startNode": "touchdown.site",
+  "clock": { "startDay": 1, "unitOverride": "day" },
+  "endings": {
+    "touchdown.ridge": {
+      "outcome": "advance",
+      "title": "TOUCHDOWN ON THE RIDGE",
+      "text": "Contact light! The lander stands on a sunlit ridge where the Sun shines almost all month.",
+      "setFlags": ["landedOnRidge"],
+      "carryEffects": { "P": 6 }
+    },
+    "touchdown.craterEdge": {
+      "outcome": "advance",
+      "title": "TOUCHDOWN AT THE CRATER",
+      "text": "Contact light! The lander rests at the edge of a shadowed crater, close to ancient ice.",
+      "setFlags": ["landedInCraterEdge"],
+      "carryEffects": { "W": 6, "P": -3 }
+    },
+    "touchdown.abort": {
+      "outcome": "retry",
+      "title": "ABORT TO ORBIT",
+      "text": "The lander ran too low on fuel to hover, so it fired back up to orbit to try again.",
+      "lesson": "Fuel is time. A gentle descent leaves less hover fuel, so plan your descent with the fuel you really have."
+    },
+    "touchdown.crash": {
+      "outcome": "retry",
+      "title": "HARD LANDING",
+      "text": "Blinded by dust, the lander hit a boulder and tipped over. The crew is safe but the base site is lost.",
+      "lesson": "Engine dust can hide the ground. Hover until you can see, or have a plan for when the cameras go blind."
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "SYSTEMS COLLAPSED" },
+  "interludes": null
+}

@@ -1,0 +1,232 @@
+/*
+ * neo-brutalist design tokens. This is the ONLY place for raw colour values, font stacks, border
+ * widths, radii, shadows and easing curves of this theme; recipes reference them through the
+ * Tailwind mapping in styles/index.css. Per-world accents are the `.world-*` classes at the bottom.
+ */
+.theme-neo {
+  color-scheme: dark;
+
+  /* surfaces and ink */
+  --t-bg: #0b0b0d;
+  --t-surface: #151518;
+  --t-surface-2: #1d1d21;
+  --t-well: #0e0e10;
+  --t-ink: #f1ede4;
+  --t-muted: #8f8b84;
+  --t-copy: #d9d4ca;
+  --t-placeholder: #5f5b55;
+  --t-line: #3a3a40;
+  --t-edge: #000;
+  --t-on-accent: #000;
+  --t-on-ink: #000;
+  --t-on-ink-soft: #333;
+
+  /* accents and tones */
+  --t-accent: #ffd23f;
+  --t-accent-2: #ff5b2e;
+  --t-good: #7ae582;
+  --t-bad: #ff4d4d;
+  --t-warn: #ffb020;
+  --t-aria: #b388ff;
+
+  /* timeline cells */
+  --t-cell: #2b2b31;
+  --t-cell-lit: #5a5a62;
+  --t-cell-dark: #16162e;
+  --t-cell-storm: #a8431a;
+
+  /* typography */
+  --t-font-display: 'Archivo Black', 'Arial Black', Impact, sans-serif;
+  --t-font-mono: 'Space Mono', 'Courier New', monospace;
+  --t-font-pixel: 'Silkscreen', 'Space Mono', monospace;
+  --t-font-body: 'Space Grotesk', system-ui, 'Segoe UI', sans-serif;
+  --t-title-stroke: 2px;
+  --t-title-shadow: 6px 6px 0 var(--t-accent-2);
+
+  /* borders, radii */
+  --t-bw: 3px;
+  --t-bw-sm: 2px;
+  --t-bw-lg: 4px;
+  --t-bw-hair: 1px;
+  --t-marker-size: 4px;
+  --t-radius: 0;
+  --t-radius-round: 50%;
+
+  /* shadows (hard offset, no blur) */
+  --t-sh: 5px;
+  --t-shadow-panel: var(--t-sh) var(--t-sh) 0 var(--t-accent);
+  --t-shadow-notes: var(--t-sh) var(--t-sh) 0 var(--t-line);
+  --t-shadow-hard: 5px 5px 0 var(--t-ink);
+  --t-shadow-hard-hover: 7px 7px 0 var(--t-ink);
+  --t-shadow-hard-press: 1px 1px 0 var(--t-ink);
+  --t-shadow-hard-xs: 3px 3px 0 var(--t-ink);
+  --t-shadow-option: 4px 4px 0 var(--t-ink);
+  --t-shadow-option-hover: 6px 6px 0 var(--t-ink);
+  --t-shadow-option-press: 1px 1px 0 var(--t-ink);
+  --t-shadow-line: 5px 5px 0 var(--t-line);
+  --t-shadow-line-sm: 4px 4px 0 var(--t-line);
+  --t-shadow-accent-sm: 4px 4px 0 var(--t-accent);
+  --t-shadow-world-selected: 8px 8px 0 var(--t-accent);
+  --t-shadow-edge-sm: 3px 3px 0 var(--t-edge);
+  --t-shadow-edge: 4px 4px 0 var(--t-edge);
+  --t-shadow-edge-md: 5px 5px 0 var(--t-edge);
+  --t-shadow-edge-lg: 6px 6px 0 var(--t-edge);
+  --t-shadow-edge-xl: 7px 7px 0 var(--t-edge);
+
+  /* focus */
+  --t-focus-outline: 3px dashed var(--t-accent);
+  --t-focus-offset: 3px;
+
+  /* motion */
+  --t-dur-fast: 0.08s;
+  --t-dur-snap: 0.3s;
+  --t-dur-pop: 0.12s;
+  --t-dur-stamp: 0.08s;
+  --t-dur-bar: 0.45s;
+  --t-dur-ghost: 0.6s;
+  --t-dur-goal: 0.4s;
+  --t-dur-flip: 0.22s;
+  --t-dur-deal: 0.38s;
+  --t-dur-world: 0.8s;
+  --t-dur-veil: 1s;
+  --t-dur-float: 1.5s;
+  --t-dur-sticker: 1.5s;
+  --t-dur-ticker: 26s;
+  --t-dur-twinkle: 2.6s;
+  --t-dur-storm: 1.2s;
+  --t-dur-alert: 1s;
+  --t-dur-crit: 0.6s;
+  --t-dur-shake: 0.35s;
+  --t-dur-bubble: 0.18s;
+  --t-dur-type: 0.4s;
+  --t-dur-blink: 3.2s;
+  --t-ease-bar: cubic-bezier(0.3, 0.9, 0.3, 1);
+  --t-ease-deal: cubic-bezier(0.2, 1, 0.3, 1.15);
+  --t-ease-snap: cubic-bezier(0.2, 1, 0.3, 1.3);
+  --t-ease-float: cubic-bezier(0.2, 0.9, 0.3, 1);
+  --t-ease-sticker: cubic-bezier(0.2, 1, 0.3, 1.2);
+  --t-ease-fly: ease-in;
+
+  /* resource bar graduations (every 10%) */
+  --t-bar-ticks-v: repeating-linear-gradient(
+    0deg,
+    transparent 0 calc(10% - 2px),
+    var(--t-well) calc(10% - 2px) 10%
+  );
+  --t-bar-ticks-h: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(10% - 2px),
+    var(--t-well) calc(10% - 2px) 10%
+  );
+
+  /* halftone dots */
+  --t-art-dots: radial-gradient(rgba(0, 0, 0, 0.28) 30%, transparent 34%);
+  --t-art-dots-size: 8px 8px;
+  --t-art-dots-mask: linear-gradient(200deg, #000, transparent 70%);
+  --t-art-shade: rgba(0, 0, 0, 0.18);
+  --t-halftone: radial-gradient(#000 38%, transparent 42%);
+  --t-halftone-size: 9px 9px;
+  --t-halftone-mask: linear-gradient(120deg, transparent 35%, #000 70%);
+
+  /* scene */
+  --t-scene-dots: radial-gradient(rgba(241, 237, 228, 0.09) 1px, transparent 1.3px);
+  --t-scene-dots-size: 24px 24px;
+  --t-veil-night: rgba(3, 4, 22, 0.6);
+  --t-veil-storm-tint: rgba(120, 40, 10, 0.35);
+  --t-veil-storm-stripes: repeating-linear-gradient(
+    -8deg,
+    rgba(255, 120, 60, 0) 0 18px,
+    rgba(255, 120, 60, 0.16) 18px 20px
+  );
+  --t-grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --t-sat2-bg: #7d746b;
+
+  /* world artwork (selected per world by the `.world-*` classes below) */
+  --t-art-moon-planet:
+    radial-gradient(circle at 30% 30%, #55555c 0 5%, transparent 5.3%),
+    radial-gradient(circle at 58% 18%, #5f5f66 0 3%, transparent 3.3%),
+    radial-gradient(circle at 44% 52%, #5d5d64 0 8%, transparent 8.3%),
+    radial-gradient(circle at 20% 62%, #64646b 0 4%, transparent 4.3%), #8a8a91;
+  --t-art-moon-sat:
+    radial-gradient(ellipse 22% 16% at 38% 40%, #5bd17a 0 70%, transparent 73%),
+    radial-gradient(ellipse 14% 20% at 66% 62%, #5bd17a 0 70%, transparent 73%),
+    radial-gradient(circle at 72% 72%, rgba(0, 0, 0, 0.4) 0 32%, transparent 33%), #3c7dff;
+  --t-art-moon-disc:
+    radial-gradient(circle at 30% 34%, #55555c 0 9%, transparent 10%),
+    radial-gradient(circle at 64% 60%, #5d5d64 0 13%, transparent 14%), #9a9aa1;
+  --t-art-mars-planet:
+    radial-gradient(ellipse 18% 7% at 40% 40%, #7a2a10 0 60%, transparent 62%),
+    radial-gradient(ellipse 12% 5% at 62% 26%, #8c3314 0 60%, transparent 62%),
+    radial-gradient(circle at 50% 4%, #f3e9dc 0 6%, transparent 6.4%),
+    radial-gradient(circle at 24% 60%, #93391a 0 6%, transparent 6.3%), #c1491a;
+  --t-art-mars-sat: #8c8379;
+  --t-art-mars-disc:
+    radial-gradient(ellipse 34% 11% at 46% 46%, #7a2a10 0 60%, transparent 62%),
+    radial-gradient(circle at 50% 4%, #f3e9dc 0 10%, transparent 11%), #c8521f;
+  --t-art-neutral-sat:
+    radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.35) 0 30%, transparent 31%), #c1491a;
+
+  /* scene defaults (no world selected, e.g. the landing page) */
+  --t-sat2-opacity: 0;
+  --t-sat-size: clamp(44px, 9vmin, 90px);
+  --t-sat-radius: 50%;
+  --t-sat-top: 9%;
+  --t-sat-left: 8%;
+  --t-planet-bg: var(--t-art-moon-planet);
+  --t-sat-bg: var(--t-art-neutral-sat);
+  --t-disc-bg: var(--t-art-moon-disc);
+
+  /* portraits (flat colours of the shared parts; per-character colours come from content) */
+  --t-portrait-line: #000;
+  --t-portrait-suit: #ece8dd;
+  --t-portrait-blush: #ff7b8a;
+  --t-portrait-glass: rgba(255, 255, 255, 0.25);
+  --t-portrait-hardhat: #ffd23f;
+  --t-portrait-hardhat-band: #e0b000;
+  --t-portrait-chef: #fff;
+  --t-portrait-ai-body: #2a2a2e;
+  --t-portrait-ai-neck: #444;
+  --t-portrait-ai-head: #151518;
+  --t-portrait-ai-screen: #0b0b0d;
+  --t-portrait-earth-ocean: #3c7dff;
+  --t-portrait-earth-land: #5bd17a;
+  --t-portrait-earth-shade: rgba(0, 0, 0, 0.25);
+  --t-portrait-earth-label: #9be7ff;
+}
+
+@media (min-width: 980px) {
+  .theme-neo {
+    --t-sh: 7px;
+  }
+}
+
+/* ---- per-world accents: applied on <html> or on any element to scope a world ---- */
+.theme-neo.world-moon,
+.theme-neo .world-moon,
+.world-moon {
+  --t-accent: #7df9ff;
+  --t-accent-2: #ffd23f;
+  --t-planet-bg: var(--t-art-moon-planet);
+  --t-sat-bg: var(--t-art-moon-sat);
+  --t-disc-bg: var(--t-art-moon-disc);
+  --t-sat-size: clamp(44px, 9vmin, 90px);
+  --t-sat-radius: 50%;
+  --t-sat-top: 9%;
+  --t-sat-left: 8%;
+  --t-sat2-opacity: 0;
+}
+
+.theme-neo.world-mars,
+.theme-neo .world-mars,
+.world-mars {
+  --t-accent: #ff5b2e;
+  --t-accent-2: #ffc94d;
+  --t-planet-bg: var(--t-art-mars-planet);
+  --t-sat-bg: var(--t-art-mars-sat);
+  --t-disc-bg: var(--t-art-mars-disc);
+  --t-sat-size: clamp(24px, 4.5vmin, 44px);
+  --t-sat-radius: 46% 54% 50% 50% / 56% 44% 56% 44%;
+  --t-sat-top: 12%;
+  --t-sat-left: 12%;
+  --t-sat2-opacity: 1;
+}

@@ -1,0 +1,141 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "redwinter.storm.warning",
+      "speaker": "ops",
+      "tag": "DUST STORM",
+      "text": "An orbiter spotted a huge dust storm heading our way. It should arrive in about four sols.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["bigSolarField"]
+          },
+          "text": "A huge dust storm is coming in four sols, and our big panel field will be buried in dust."
+        },
+        {
+          "when": {
+            "flags": ["batteryBank"]
+          },
+          "text": "A huge dust storm is coming in four sols. At least the battery bank is full."
+        }
+      ],
+      "fact": "Martian dust storms can cover the whole planet and block sunlight for weeks.",
+      "left": {
+        "label": "Secure everything",
+        "days": 2,
+        "effects": {
+          "P": -3,
+          "M": -2
+        },
+        "setFlags": ["stormPrepped"],
+        "goto": "redwinter.storm.crisis"
+      },
+      "right": {
+        "label": "Fetch ice first",
+        "days": 3,
+        "gamble": {
+          "p": 0.6,
+          "win": {
+            "W": 12
+          },
+          "lose": {
+            "H": -6,
+            "R": -4
+          },
+          "winText": "ICE HAULED",
+          "loseText": "CAUGHT BY DUST"
+        },
+        "setFlags": ["stormUnprepared"],
+        "goto": "redwinter.storm.crisis"
+      }
+    },
+    {
+      "id": "redwinter.storm.crisis",
+      "speaker": "ls",
+      "tag": "DUST STORM",
+      "text": "Fine dust has clogged the water recycler's pump! Fix it before the tanks run low.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["stormUnprepared"]
+          },
+          "text": "Dust got into everything because we were not ready. The recycler's pump has seized!"
+        },
+        {
+          "when": {
+            "flags": ["packedSpares"]
+          },
+          "text": "Fine dust has clogged the water recycler's pump! Good thing we packed spare parts."
+        }
+      ],
+      "fact": "ISS crews have repaired their water recycling system many times in orbit. On Mars, they must fix it alone.",
+      "left": {
+        "label": "Fit spare pump",
+        "days": 1,
+        "effects": {
+          "W": 6,
+          "P": -2
+        },
+        "goto": [
+          {
+            "when": {
+              "flags": ["packedSpares"]
+            },
+            "to": "redwinter.crew.morale"
+          },
+          {
+            "to": "redwinter.storm.scavenge"
+          }
+        ]
+      },
+      "right": {
+        "label": "Improvise repair",
+        "days": 2,
+        "gamble": {
+          "p": 0.5,
+          "win": {
+            "W": 6,
+            "M": 5
+          },
+          "lose": {
+            "W": -8,
+            "H": -4
+          },
+          "winText": "PUMP REVIVED",
+          "loseText": "PUMP SHATTERED"
+        },
+        "setFlags": ["improvisedRepair"],
+        "goto": "redwinter.crew.morale"
+      }
+    },
+    {
+      "id": "redwinter.storm.scavenge",
+      "speaker": "eng",
+      "tag": "DUST STORM",
+      "text": "We did not pack a spare pump. Borrow one from the rover, or clean the old one by hand?",
+      "fact": "Spare parts are precious on Mars. Resupply ships take months, so crews reuse parts from other machines.",
+      "left": {
+        "label": "Borrow rover pump",
+        "days": 2,
+        "effects": {
+          "W": 5,
+          "P": -3
+        },
+        "setFlags": ["cannibalizedRover"],
+        "goto": "redwinter.crew.morale"
+      },
+      "right": {
+        "label": "Clean it by hand",
+        "days": 3,
+        "effects": {
+          "W": 3,
+          "H": -4,
+          "M": -2
+        },
+        "setFlags": ["handCleanedPump"],
+        "goto": "redwinter.crew.morale"
+      }
+    }
+  ]
+}

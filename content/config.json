@@ -1,0 +1,21 @@
+{
+  "$schema": "./schema/config.schema.json",
+  "thresholds": { "low": 35, "critical": 20, "ariaAlert": 25, "ariaTip": 40 },
+  "daily": { "criticalHealthPenalty": 0.8 },
+  "randomEvents": { "chance": 0.08, "afterDay": 4 },
+  "interludes": {
+    "recentMemoryMax": 18,
+    "recentMemoryReserve": 8,
+    "helpBias": 0.35,
+    "winNextDelay": 3
+  },
+  "scoring": {
+    "perDay": 100,
+    "perFact": 20,
+    "perAchievement": 200,
+    "winBonus": 2000,
+    "perChapterCleared": 300,
+    "perRetry": 150
+  },
+  "notes": { "max": 4 }
+}

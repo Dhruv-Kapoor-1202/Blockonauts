@@ -1,0 +1,111 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "edl.comms.plan",
+      "speaker": "com",
+      "tag": "COMMS",
+      "text": "During landing, Earth hears us 11 minutes late. How do we report in?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["commsSkipped"]
+          },
+          "text": "Our dish gave us trouble and we skipped its check. How do we report in during landing?"
+        },
+        {
+          "when": {
+            "flags": ["slowComms"]
+          },
+          "text": "Our weak antenna struggled all cruise. Landing signals take 11 minutes to reach Earth, so how do we report in?"
+        },
+        {
+          "when": {
+            "flags": ["commsChecked"]
+          },
+          "text": "Our radios are in great shape thanks to the comms check. How do we report in during landing?"
+        }
+      ],
+      "fact": "During Perseverance's landing, orbiters like Mars Odyssey relayed its signals home, because Earth was 11 minutes away.",
+      "left": {
+        "label": "Use orbiter relay",
+        "days": 1,
+        "effects": {
+          "C": 3,
+          "P": -2
+        },
+        "setFlags": ["relayPlanned"],
+        "goto": "edl.hull.shield"
+      },
+      "right": {
+        "label": "Direct to Earth",
+        "days": 0,
+        "effects": {
+          "P": 2
+        },
+        "setFlags": ["directOnly"],
+        "goto": "edl.hull.shield"
+      }
+    },
+    {
+      "id": "edl.comms.wait",
+      "speaker": "hq",
+      "tag": "SEVEN MINUTES",
+      "text": "Seven minutes of terror are over, but Earth only learns the result 11 minutes after it happened.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["relayPlanned"]
+          },
+          "text": "The orbiter relayed our touchdown beep to Earth. Mission Control cheers, 11 minutes late."
+        },
+        {
+          "when": {
+            "flags": ["directOnly"]
+          },
+          "text": "No relay, so Earth heard nothing yet. Mission Control is silent and waiting for a sign."
+        }
+      ],
+      "fact": "NASA calls the landing 'seven minutes of terror' because Earth cannot help. The lander must do everything alone.",
+      "left": {
+        "label": "Wait for Earth",
+        "days": 1,
+        "effects": {
+          "M": -2
+        },
+        "setFlags": ["waitedForEarth"],
+        "goto": [
+          {
+            "when": {
+              "flags": ["targetDelta"]
+            },
+            "to": "edl.delta"
+          },
+          {
+            "to": "edl.plains"
+          }
+        ]
+      },
+      "right": {
+        "label": "Beam our report",
+        "days": 1,
+        "effects": {
+          "C": 4,
+          "P": -3
+        },
+        "setFlags": ["beamedToEarth"],
+        "goto": [
+          {
+            "when": {
+              "flags": ["targetDelta"]
+            },
+            "to": "edl.delta"
+          },
+          {
+            "to": "edl.plains"
+          }
+        ]
+      }
+    }
+  ]
+}

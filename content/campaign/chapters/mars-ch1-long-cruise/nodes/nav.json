@@ -1,0 +1,152 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "cruise.nav.comms",
+      "speaker": "com",
+      "tag": "COMMS",
+      "text": "The big dish is drifting off Earth. Messages already take several minutes each way.",
+      "variants": [
+        {
+          "when": {
+            "flags": ["commsSkipped"]
+          },
+          "text": "The dish motor is stuck. The comms check we skipped would have caught it."
+        },
+        {
+          "when": {
+            "flags": ["commsChecked"]
+          },
+          "text": "The dish is slightly off. Good thing our launch-day check left clear notes for the fix."
+        }
+      ],
+      "fact": "Signals between Earth and Mars take 3 to 22 minutes one way, depending on where the planets are.",
+      "left": {
+        "label": "Re-aim dish",
+        "days": 2,
+        "effects": {
+          "C": 6,
+          "P": -3
+        },
+        "setFlags": ["antennaFixed"],
+        "goto": "cruise.sky.flare"
+      },
+      "right": {
+        "label": "Use weak antenna",
+        "days": 1,
+        "effects": {
+          "C": -5,
+          "P": 2
+        },
+        "setFlags": ["slowComms"],
+        "goto": "cruise.sky.flare"
+      }
+    },
+    {
+      "id": "cruise.nav.course",
+      "speaker": "ops",
+      "tag": "NAVIGATION",
+      "text": "Navigation says we will miss our target by hundreds of kilometers. A correction burn would fix it.",
+      "fact": "Mars spacecraft make several small course corrections. Early ones cost the least fuel.",
+      "left": {
+        "label": "Burn now",
+        "days": 1,
+        "effects": {
+          "P": -4
+        },
+        "setFlags": ["earlyCorrection"],
+        "goto": "cruise.crew.morale"
+      },
+      "right": {
+        "label": "Wait and see",
+        "days": 8,
+        "effects": {
+          "M": 2
+        },
+        "setFlags": ["lateCorrection"],
+        "goto": "cruise.nav.courseLate"
+      }
+    },
+    {
+      "id": "cruise.nav.courseLate",
+      "speaker": "eng",
+      "tag": "NAVIGATION",
+      "text": "Waiting made the error bigger. A full correction burn now will be expensive.",
+      "fact": "A tiny nudge early in the trip can equal a huge burn later, because the error grows with distance.",
+      "left": {
+        "label": "Big burn",
+        "days": 1,
+        "effects": {
+          "P": -10
+        },
+        "setFlags": ["bigCorrection"],
+        "goto": "cruise.crew.morale"
+      },
+      "right": {
+        "label": "Small burn, hope",
+        "days": 1,
+        "effects": {
+          "P": -3
+        },
+        "gamble": {
+          "p": 0.5,
+          "win": {
+            "M": 6
+          },
+          "lose": {
+            "C": -4
+          },
+          "winText": "CLOSE ENOUGH",
+          "loseText": "STILL OFF TARGET",
+          "winGoto": "cruise.crew.morale",
+          "loseGoto": "cruise.missed"
+        }
+      }
+    },
+    {
+      "id": "cruise.nav.arrival",
+      "speaker": "hq",
+      "tag": "ARRIVAL",
+      "text": "Mars is in sight. Mission Control wants a final systems and health check before approach.",
+      "fact": "Flight teams spend days checking every system just before arrival. There are no second chances at Mars.",
+      "left": {
+        "label": "Go straight in",
+        "days": 1,
+        "effects": {
+          "H": -2
+        },
+        "goto": [
+          {
+            "when": {
+              "resourceBelow": {
+                "H": 65
+              }
+            },
+            "to": "cruise.strained"
+          },
+          {
+            "when": {
+              "resourceBelow": {
+                "M": 62
+              }
+            },
+            "to": "cruise.strained"
+          },
+          {
+            "to": "cruise.smooth"
+          }
+        ]
+      },
+      "right": {
+        "label": "Rest day first",
+        "days": 3,
+        "effects": {
+          "M": 4,
+          "H": 3
+        },
+        "setFlags": ["restedArrival"],
+        "goto": "cruise.smooth"
+      }
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "longnight.briefing",
+      "speaker": "aria",
+      "tag": "BASE",
+      "text": "Welcome to Artemis Base, Commander. Every choice costs resources and time. Hold on until Day 84 for crew rotation. Drag me left or right.",
+      "fact": "The lunar south pole is a top target for bases: sunlit peaks plus ice hidden in shadowed craters.",
+      "left": {
+        "label": "Power first",
+        "days": 1,
+        "goto": "longnight.power"
+      },
+      "right": {
+        "label": "Water first",
+        "days": 1,
+        "goto": "longnight.ice"
+      }
+    },
+    {
+      "id": "longnight.power",
+      "speaker": "arch",
+      "tag": "POWER",
+      "text": "Setup day: where do we put the solar array?",
+      "variants": [
+        {
+          "when": { "flags": ["landedOnRidge"] },
+          "text": "Our ridge sees the Sun almost all month. A tall mast array could catch every last ray."
+        },
+        {
+          "when": { "flags": ["landedInCraterEdge"] },
+          "text": "The crater edge is shadowy, and the Sun only peeks over the rim. Where do we put the solar array?"
+        }
+      ],
+      "fact": "Near the poles the Sun sits low on the horizon and casts long shadows, so panels on tall masts catch sunlight longer.",
+      "left": {
+        "label": "Tall mast array",
+        "days": 2,
+        "effects": { "P": 10, "M": -2 },
+        "setFlags": ["towerArray"],
+        "goto": "longnight.nightprep"
+      },
+      "right": {
+        "label": "Ground panels",
+        "days": 1,
+        "effects": { "P": 5 },
+        "setFlags": ["groundArray"],
+        "goto": "longnight.nightprep"
+      }
+    },
+    {
+      "id": "longnight.ice",
+      "speaker": "sci",
+      "tag": "WATER",
+      "text": "Setup day: ice hides in a permanently shadowed crater. Send the rover, or drill nearby soil?",
+      "variants": [
+        {
+          "when": { "flags": ["landedInCraterEdge"] },
+          "text": "Setup day: the ice crater is right next to base! Send the rover, or drill nearby soil?"
+        },
+        {
+          "when": { "flags": ["landedOnRidge"] },
+          "text": "Setup day: the ice is a long drive from our ridge. Send the rover, or drill nearby soil?"
+        }
+      ],
+      "fact": "NASA's LCROSS mission crashed a rocket stage into a polar crater in 2009 and found water in the plume.",
+      "left": {
+        "label": "Send the rover",
+        "days": 2,
+        "effects": { "P": -4 },
+        "setFlags": ["roverSent"],
+        "sci": true,
+        "gamble": {
+          "p": 0.6,
+          "win": { "W": 14, "M": 4 },
+          "lose": { "P": -4, "M": -3 },
+          "winText": "ICE FOUND",
+          "loseText": "ROVER STUCK"
+        },
+        "goto": "longnight.nightprep"
+      },
+      "right": {
+        "label": "Drill nearby",
+        "days": 1,
+        "effects": { "W": 5, "P": -3 },
+        "setFlags": ["drilledNearby"],
+        "goto": "longnight.nightprep"
+      }
+    }
+  ]
+}

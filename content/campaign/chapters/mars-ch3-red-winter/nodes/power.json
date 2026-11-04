@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "redwinter.power.field",
+      "speaker": "eng",
+      "tag": "POWER",
+      "text": "Solar panels power us, but dust storms block the Sun. How should we build the power field?",
+      "variants": [
+        {
+          "when": {
+            "flags": ["packedSpares"]
+          },
+          "text": "With the spare parts we packed, I can build a backup battery bank. Big panel field, or panels plus batteries?"
+        }
+      ],
+      "fact": "Mars gets less than half the sunlight Earth does, so solar fields must be large.",
+      "left": {
+        "label": "Big panel field",
+        "days": 2,
+        "effects": {
+          "P": 10,
+          "M": -2
+        },
+        "setFlags": ["bigSolarField"],
+        "goto": "redwinter.storm.warning"
+      },
+      "right": {
+        "label": "Panels, batteries",
+        "days": 3,
+        "effects": {
+          "P": 5,
+          "R": 3
+        },
+        "setFlags": ["batteryBank"],
+        "goto": "redwinter.storm.warning"
+      }
+    }
+  ]
+}

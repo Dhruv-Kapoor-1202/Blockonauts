@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "difficulties": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "drainMultiplier": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "hints": {
+            "type": "boolean"
+          },
+          "retryLimit": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "drainMultiplier",
+          "hints",
+          "retryLimit"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "difficulties"
+  ],
+  "additionalProperties": false
+}

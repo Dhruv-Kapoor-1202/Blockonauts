@@ -1,0 +1,39 @@
+{
+  "$schema": "../../../schema/chapter.schema.json",
+  "id": "mars-ch2-seven-minutes",
+  "title": "Seven Minutes of Terror",
+  "worlds": ["mars"],
+  "goal": "Survive entry, descent and landing on Mars.",
+  "startNode": "edl.site.choose",
+  "clock": { "startDay": 1, "unitOverride": "day" },
+  "endings": {
+    "edl.delta": {
+      "outcome": "advance",
+      "title": "TOUCHDOWN AT THE DELTA",
+      "text": "Wheels down in Jezero Crater, right beside an ancient river delta. The science team is jumping for joy.",
+      "setFlags": ["landedAtDelta"],
+      "carryEffects": { "M": 2 }
+    },
+    "edl.plains": {
+      "outcome": "advance",
+      "title": "TOUCHDOWN ON THE PLAINS",
+      "text": "A smooth landing on flat ground. Building here will be easy, though the rocks are far away.",
+      "setFlags": ["landedOnPlains"],
+      "carryEffects": { "P": 4 }
+    },
+    "edl.crash": {
+      "outcome": "retry",
+      "title": "LANDER LOST",
+      "text": "The lander hit the ground too hard. Mission Control only learns the news 11 minutes later.",
+      "lesson": "Landing is the riskiest part of a Mars mission. Backups like terrain navigation and early engine firing save landers."
+    },
+    "edl.burnthrough": {
+      "outcome": "retry",
+      "title": "HEAT SHIELD FAILED",
+      "text": "The hot spot grew into a hole. The capsule could not survive the fire of entry.",
+      "lesson": "Heat shields must be checked before entry. A damaged shield can fail under 1,300 degrees Celsius."
+    }
+  },
+  "resourceFailure": { "outcome": "retry", "title": "LANDER SYSTEMS FAILED" },
+  "interludes": null
+}

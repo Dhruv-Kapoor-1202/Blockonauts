@@ -1,0 +1,60 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "translunar.flare",
+      "speaker": "hq",
+      "tag": "RADIATION",
+      "text": "Solar flare alert! High-energy particles arrive in 20 minutes.",
+      "fact": "Water blocks radiation well, so astronauts can shelter behind water tanks during a solar flare.",
+      "left": {
+        "label": "Storm shelter",
+        "days": 1,
+        "effects": { "W": -3, "M": -3 },
+        "setFlags": ["usedStormShelter"],
+        "goto": "translunar.comms"
+      },
+      "right": {
+        "label": "Stay at posts",
+        "days": 0,
+        "effects": { "M": 2 },
+        "setFlags": ["skippedShelter"],
+        "gamble": {
+          "p": 0.4,
+          "win": { "M": 4 },
+          "lose": { "H": -14, "R": -8 },
+          "winText": "LUCKY MISS",
+          "loseText": "RADIATION DOSE",
+          "winGoto": "translunar.comms",
+          "loseGoto": "translunar.sick"
+        }
+      }
+    },
+    {
+      "id": "translunar.sick",
+      "speaker": "med",
+      "tag": "RADIATION",
+      "text": "Several crew feel sick and dizzy. Dr. Silva says it looks like radiation sickness.",
+      "fact": "A big dose of radiation can cause nausea and tiredness, which is why spaceships need shielding and storm shelters.",
+      "left": {
+        "label": "Rest and fluids",
+        "days": 1,
+        "effects": { "H": 5, "W": -3 },
+        "goto": "translunar.comms"
+      },
+      "right": {
+        "label": "Push through",
+        "days": 0,
+        "gamble": {
+          "p": 0.5,
+          "win": { "M": 3 },
+          "lose": { "H": -8 },
+          "winText": "TOUGH CREW",
+          "loseText": "CREW COLLAPSED",
+          "winGoto": "translunar.comms",
+          "loseGoto": "translunar.radiation"
+        }
+      }
+    }
+  ]
+}

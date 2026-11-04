@@ -1,0 +1,73 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "edl.chute.deploy",
+      "speaker": "ops",
+      "tag": "PARACHUTE",
+      "text": "Parachute time! Deploy now at Mach 1.7, or wait a moment for a better position?",
+      "fact": "Perseverance's parachute is 21.5 meters wide and opened while the capsule was still faster than sound.",
+      "left": {
+        "label": "Deploy on schedule",
+        "days": 0,
+        "effects": {
+          "P": -1
+        },
+        "goto": "edl.descent.hazard"
+      },
+      "right": {
+        "label": "Wait for sweet spot",
+        "days": 0,
+        "gamble": {
+          "p": 0.5,
+          "win": {
+            "P": 4,
+            "M": 3
+          },
+          "lose": {
+            "R": -5
+          },
+          "winText": "PERFECT TIMING",
+          "loseText": "CHUTE SHREDDING",
+          "winGoto": "edl.descent.hazard",
+          "loseGoto": "edl.chute.torn"
+        },
+        "setFlags": ["lateChute"]
+      }
+    },
+    {
+      "id": "edl.chute.torn",
+      "speaker": "ops",
+      "tag": "PARACHUTE",
+      "text": "The parachute is flapping and ripping! We are falling too fast.",
+      "fact": "Parachutes cannot work alone on Mars, because the air is only about 1% as thick as Earth's. Engines finish the job.",
+      "left": {
+        "label": "Fire engines early",
+        "days": 0,
+        "effects": {
+          "P": -8
+        },
+        "setFlags": ["engineBurnEarly"],
+        "goto": "edl.descent.hazard"
+      },
+      "right": {
+        "label": "Hold on, hope",
+        "days": 0,
+        "gamble": {
+          "p": 0.4,
+          "win": {
+            "M": 6
+          },
+          "lose": {
+            "H": -10
+          },
+          "winText": "CHUTE HELD",
+          "loseText": "TOO FAST",
+          "winGoto": "edl.descent.hazard",
+          "loseGoto": "edl.crash"
+        },
+        "setFlags": ["riskedTornChute"]
+      }
+    }
+  ]
+}

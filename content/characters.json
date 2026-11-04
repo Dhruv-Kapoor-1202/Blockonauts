@@ -1,0 +1,135 @@
+{
+  "$schema": "../schema/characters.schema.json",
+  "characters": [
+    {
+      "id": "eng",
+      "name": "CHIEF ENG. RAO",
+      "role": "ENGINEERING",
+      "color": "#ffd23f",
+      "kind": "human",
+      "skin": "#c68642",
+      "hair": "#1a1a1a",
+      "hairStyle": "long",
+      "hat": "hard"
+    },
+    {
+      "id": "sci",
+      "name": "DR. OKAFOR",
+      "role": "SCIENCE TEAM",
+      "color": "#4cc9f0",
+      "kind": "human",
+      "skin": "#8d5524",
+      "hair": "#111",
+      "hairStyle": "curly",
+      "glasses": true
+    },
+    {
+      "id": "ops",
+      "name": "OPS LEAD CHEN",
+      "role": "OPERATIONS",
+      "color": "#b388ff",
+      "kind": "human",
+      "skin": "#f1c27d",
+      "hair": "#222",
+      "hairStyle": "short"
+    },
+    {
+      "id": "med",
+      "name": "DR. SILVA",
+      "role": "MEDICAL",
+      "color": "#ff70a6",
+      "kind": "human",
+      "skin": "#e0ac69",
+      "hair": "#5a3825",
+      "hairStyle": "bun"
+    },
+    {
+      "id": "com",
+      "name": "LT. HADDAD",
+      "role": "COMMS",
+      "color": "#ff9f1c",
+      "kind": "human",
+      "skin": "#c68642",
+      "hair": "#2b1b10",
+      "hairStyle": "short",
+      "headset": true
+    },
+    {
+      "id": "bot",
+      "name": "MEI TANAKA",
+      "role": "BOTANY",
+      "color": "#7ae582",
+      "kind": "human",
+      "skin": "#f1c27d",
+      "hair": "#111",
+      "hairStyle": "long"
+    },
+    {
+      "id": "ls",
+      "name": "SGT. NOVAK",
+      "role": "LIFE SUPPORT",
+      "color": "#5fa8ff",
+      "kind": "human",
+      "skin": "#ffdbac",
+      "hair": "#c9a26b",
+      "hairStyle": "short"
+    },
+    {
+      "id": "hq",
+      "name": "MISSION CONTROL",
+      "role": "EARTH",
+      "color": "#9be7ff",
+      "kind": "earth"
+    },
+    {
+      "id": "psy",
+      "name": "DR. ADEYEMI",
+      "role": "CREW PSYCH",
+      "color": "#ff9f1c",
+      "kind": "human",
+      "skin": "#6b3e1f",
+      "hair": "#111",
+      "hairStyle": "bald",
+      "glasses": true
+    },
+    {
+      "id": "rook",
+      "name": "ROOKIE KIM",
+      "role": "JUNIOR ASTRONAUT",
+      "color": "#c6ff3d",
+      "kind": "human",
+      "skin": "#ffe0bd",
+      "hair": "#333",
+      "hairStyle": "cap"
+    },
+    {
+      "id": "aria",
+      "name": "ARIA",
+      "role": "COLONY AI",
+      "color": "#b388ff",
+      "kind": "ai"
+    },
+    {
+      "id": "arch",
+      "name": "INES DUARTE",
+      "role": "HABITAT BUILDER",
+      "color": "#ff9f1c",
+      "kind": "human",
+      "skin": "#e0ac69",
+      "hair": "#3b2414",
+      "hairStyle": "long",
+      "hat": "hard"
+    },
+    {
+      "id": "cook",
+      "name": "CHEF MARCO",
+      "role": "GALLEY",
+      "color": "#ffd23f",
+      "kind": "human",
+      "skin": "#f1c27d",
+      "hair": "#111",
+      "hairStyle": "short",
+      "hat": "chef"
+    }
+  ]
+}

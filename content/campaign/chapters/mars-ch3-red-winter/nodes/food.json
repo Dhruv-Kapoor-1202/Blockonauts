@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../../schema/nodes.schema.json",
+  "nodes": [
+    {
+      "id": "redwinter.food.greenhouse",
+      "speaker": "bot",
+      "tag": "GREENHOUSE",
+      "text": "Mars soil has toxic perchlorate salts. Wash the soil, or grow plants in water trays?",
+      "fact": "Mars soil contains perchlorates, salts that are toxic to people. Crops need washed soil or hydroponics.",
+      "left": {
+        "label": "Water trays",
+        "days": 2,
+        "effects": {
+          "W": -5,
+          "P": -3,
+          "F": 6
+        },
+        "setFlags": ["hydroponics"],
+        "goto": "redwinter.storm.warning"
+      },
+      "right": {
+        "label": "Wash the soil",
+        "days": 3,
+        "effects": {
+          "W": -8,
+          "F": 4
+        },
+        "later": {
+          "in": 10,
+          "effects": {
+            "F": 10
+          },
+          "message": "POTATOES SPROUTED"
+        },
+        "setFlags": ["soilGarden"],
+        "goto": "redwinter.storm.warning"
+      }
+    }
+  ]
+}
